@@ -1,4 +1,4 @@
-package com.example.shoppieeclient.presentation.auth.signin.components
+package com.example.shoppieeclient.presentation.auth.components
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size

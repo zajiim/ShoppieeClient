@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.shoppieeclient.presentation.auth.forget_password.ForgotPasswordScreen
 import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnboardingScreen
@@ -34,12 +35,25 @@ fun ShoppieNavGraph(
         }
 
         composable<Destination.SignIn> {
-            SignInScreen()
+            SignInScreen(
+                onForgotPasswordClicked = {
+                    navController.navigate(Destination.Forgot)
+                }
+            )
         }
 
         composable<Destination.SignUp> {
             SignUpScreen()
         }
+
+        composable<Destination.Forgot> {
+            ForgotPasswordScreen(
+                onBackClicked = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
         composable<Destination.Home> {
             HomeScreen()
         }

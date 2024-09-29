@@ -1,7 +1,9 @@
 package com.example.shoppieeclient.presentation.auth.signin
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,14 +21,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.R
-import com.example.shoppieeclient.presentation.auth.signin.components.CustomButton
-import com.example.shoppieeclient.presentation.auth.signin.components.CustomSocialMediaButton
-import com.example.shoppieeclient.presentation.auth.signin.components.CustomTextButtonQuery
-import com.example.shoppieeclient.presentation.auth.signin.components.CustomTextField
+import com.example.shoppieeclient.presentation.auth.components.CustomButton
+import com.example.shoppieeclient.presentation.auth.components.CustomSocialMediaButton
+import com.example.shoppieeclient.presentation.auth.components.CustomTextButtonQuery
+import com.example.shoppieeclient.presentation.auth.components.CustomTextField
 import com.example.shoppieeclient.ui.theme.Primary
 
 @Composable
-fun SignInScreen() {
+fun SignInScreen(
+    onForgotPasswordClicked: () -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -77,14 +81,19 @@ fun SignInScreen() {
                 trailingIcon = null,
                 onTrailingIconClicked = null
             )
-            Text(
-                text = "Recovery Password",
-                style = MaterialTheme.typography.titleSmall,
-                color = Color.LightGray,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                textAlign = TextAlign.End
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = "Recovery Password",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = Color.LightGray,
+                    modifier = Modifier
+                        .clickable { onForgotPasswordClicked() },
+                    textAlign = TextAlign.End
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 

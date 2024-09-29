@@ -2,15 +2,6 @@ package com.example.shoppieeclient.presentation.navigation
 
 import kotlinx.serialization.Serializable
 
-//@Serializable
-//data object Onboarding
-//@Serializable
-//data object SignIn
-//@Serializable
-//data object SignUp
-//@Serializable
-//data object Home
-
 @Serializable
 sealed class Destination {
     @Serializable
@@ -21,6 +12,9 @@ sealed class Destination {
 
     @Serializable
     data object SignUp : Destination()
+
+    @Serializable
+    data object Forgot : Destination()
 
     @Serializable
     data object Home : Destination()
