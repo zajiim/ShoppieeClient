@@ -63,7 +63,7 @@ fun SignInScreen(
                 onValueChange = {},
                 hint = "Enter your email",
                 keyboardType = KeyboardType.Email,
-                errorString = "Invalid email",
+                errorString = null,
                 trailingIcon = null,
                 onTrailingIconClicked = null
             )
@@ -77,7 +77,7 @@ fun SignInScreen(
                 onValueChange = {},
                 hint = "Enter your password",
                 keyboardType = KeyboardType.Password,
-                errorString = "Invalid password",
+                errorString = null,
                 trailingIcon = null,
                 onTrailingIconClicked = null
             )

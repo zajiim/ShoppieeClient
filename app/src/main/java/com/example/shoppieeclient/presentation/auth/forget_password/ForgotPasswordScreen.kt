@@ -67,7 +67,7 @@ fun ForgotPasswordScreen(
                     onValueChange = {},
                     hint = "Enter your email",
                     keyboardType = KeyboardType.Email,
-                    errorString = "Invalid email",
+                    errorString = null,
                     trailingIcon = null,
                     onTrailingIconClicked = null
                 )

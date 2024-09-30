@@ -5,6 +5,10 @@ import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.ReadOnBoardingUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.SaveOnBoardingUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.SignupValidationsUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.ValidateConfirmPasswordUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.ValidateEmailUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.ValidatePasswordUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.ValidateUserNameUseCase
 import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewModel
 import com.example.shoppieeclient.presentation.auth.signup.SignUpViewModel
@@ -15,6 +19,11 @@ val appModule = module {
     single<LocalUserManager> { LocalUserManagerImpl(get()) }
     single { SaveOnBoardingUseCase(get()) }
     single { ReadOnBoardingUseCase(get()) }
+
+    single { ValidateUserNameUseCase() }
+    single { ValidateEmailUseCase() }
+    single { ValidatePasswordUseCase() }
+    single { ValidateConfirmPasswordUseCase() }
 
     single { SignupValidationsUseCase(
         validateUserName = get(),

@@ -6,5 +6,6 @@ sealed class SignUpEvents {
     data class PasswordChanged(val password: String) : SignUpEvents()
     data class ConfirmPasswordChanged(val confirmPassword: String) : SignUpEvents()
     data class VisiblePasswordChanged(val isVisiblePassword: Boolean) : SignUpEvents()
+    data class VisibleConfirmPasswordChanged(val isVisiblePassword: Boolean) : SignUpEvents()
     data object Submit : SignUpEvents()
 }

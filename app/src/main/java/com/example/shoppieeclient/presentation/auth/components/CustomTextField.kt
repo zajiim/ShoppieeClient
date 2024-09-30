@@ -1,5 +1,10 @@
 package com.example.shoppieeclient.presentation.auth.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,10 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.ui.theme.Primary
+import com.example.shoppieeclient.utils.UiText
 
 @Composable
 fun CustomTextField(
@@ -30,10 +37,12 @@ fun CustomTextField(
     hint: String,
     keyboardType: KeyboardType = KeyboardType.Ascii,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    errorString: String? = null,
+    hasError: Boolean= false,
+    errorString: UiText? = null,
     trailingIcon: ImageVector? = null,
     onTrailingIconClicked: (() -> Unit)?,
 ) {
+    val context = LocalContext.current
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -75,11 +84,17 @@ fun CustomTextField(
             }
         )
 
-        Text(
-            text = errorString ?: "",
-            color = Color.Red,
-            style = MaterialTheme.typography.bodySmall
-        )
+        AnimatedVisibility(
+            visible = hasError,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Text(
+                text = errorString?.asString(context) ?: "",
+                color = Color.Red,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
 
     }
 }

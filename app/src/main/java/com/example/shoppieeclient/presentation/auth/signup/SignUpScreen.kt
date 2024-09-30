@@ -17,7 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.auth.components.CustomBackButton
@@ -30,9 +34,13 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignUpScreen(
-    onSignInClicked: () -> Unit, onBackClicked: () -> Unit,
+    onSignInClicked: () -> Unit,
+    onBackClicked: () -> Unit,
     signUpViewModel: SignUpViewModel = koinViewModel()
 ) {
+    val visiblePasswordIcon = ImageVector.vectorResource(id = R.drawable.ic_visibility_on)
+    val inVisiblePasswordIcon = ImageVector.vectorResource(id = R.drawable.ic_visibility_off)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -66,11 +74,12 @@ fun SignUpScreen(
                 CustomTextField(
                     modifier = Modifier.fillMaxWidth(),
                     title = "Your name",
-                    textValue = "",
-                    onValueChange = {},
+                    textValue = signUpViewModel.signUpFormState.userName,
+                    onValueChange = { signUpViewModel.onEvent(SignUpEvents.UsernameChanged(it)) },
+                    hasError = signUpViewModel.signUpFormState.userNameError != null,
                     hint = "Enter your name",
                     keyboardType = KeyboardType.Text,
-                    errorString = "Invalid name",
+                    errorString = signUpViewModel.signUpFormState.userNameError,
                     trailingIcon = null,
                     onTrailingIconClicked = null
                 )
@@ -80,11 +89,12 @@ fun SignUpScreen(
                 CustomTextField(
                     modifier = Modifier.fillMaxWidth(),
                     title = "Email Address",
-                    textValue = "",
-                    onValueChange = {},
+                    textValue = signUpViewModel.signUpFormState.email,
+                    onValueChange = { signUpViewModel.onEvent(SignUpEvents.EmailChanged(it)) },
+                    hasError = signUpViewModel.signUpFormState.emailError != null,
                     hint = "Enter your email",
                     keyboardType = KeyboardType.Email,
-                    errorString = "Invalid email",
+                    errorString = signUpViewModel.signUpFormState.emailError,
                     trailingIcon = null,
                     onTrailingIconClicked = null
                 )
@@ -92,30 +102,44 @@ fun SignUpScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                CustomTextField(
-                    modifier = Modifier.fillMaxWidth(),
+                CustomTextField(modifier = Modifier.fillMaxWidth(),
                     title = "Password",
-                    textValue = "",
-                    onValueChange = {},
+                    textValue = signUpViewModel.signUpFormState.password,
+                    onValueChange = { signUpViewModel.onEvent(SignUpEvents.PasswordChanged(it)) },
+                    hasError = signUpViewModel.signUpFormState.passwordError != null,
                     hint = "Enter your password",
                     keyboardType = KeyboardType.Password,
-                    errorString = "Invalid password",
-                    trailingIcon = null,
-                    onTrailingIconClicked = null
-                )
+                    errorString = signUpViewModel.signUpFormState.passwordError,
+                    trailingIcon = if (signUpViewModel.signUpFormState.visiblePassword) visiblePasswordIcon else inVisiblePasswordIcon,
+                    visualTransformation = if (signUpViewModel.signUpFormState.visiblePassword) VisualTransformation.None else PasswordVisualTransformation(),
+                    onTrailingIconClicked = {
+                        signUpViewModel.onEvent(
+                            SignUpEvents.VisiblePasswordChanged(
+                                !(signUpViewModel.signUpFormState.visiblePassword)
+                            )
+                        )
+                    })
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 CustomTextField(
                     modifier = Modifier.fillMaxWidth(),
                     title = "Confirm Password",
-                    textValue = "",
-                    onValueChange = {},
+                    textValue = signUpViewModel.signUpFormState.confirmPassword,
+                    onValueChange = { signUpViewModel.onEvent(SignUpEvents.ConfirmPasswordChanged(it)) },
+                    hasError = signUpViewModel.signUpFormState.confirmPasswordError != null,
                     hint = "Confirm your password",
                     keyboardType = KeyboardType.Password,
-                    errorString = "Passwords must be same",
-                    trailingIcon = null,
-                    onTrailingIconClicked = null
+                    errorString = signUpViewModel.signUpFormState.confirmPasswordError,
+                    trailingIcon = if (signUpViewModel.signUpFormState.visibleConfirmPassword) visiblePasswordIcon else inVisiblePasswordIcon,
+                    visualTransformation = if (signUpViewModel.signUpFormState.visibleConfirmPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                    onTrailingIconClicked = {
+                        signUpViewModel.onEvent(
+                            SignUpEvents.VisibleConfirmPasswordChanged(
+                                !(signUpViewModel.signUpFormState.visibleConfirmPassword)
+                            )
+                        )
+                    }
                 )
 
 

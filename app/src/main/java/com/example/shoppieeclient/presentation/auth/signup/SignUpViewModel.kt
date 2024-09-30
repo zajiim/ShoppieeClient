@@ -37,6 +37,9 @@ class SignUpViewModel(
             is SignUpEvents.VisiblePasswordChanged -> {
                 signUpFormState = signUpFormState.copy(visiblePassword = event.isVisiblePassword)
             }
+            is SignUpEvents.VisibleConfirmPasswordChanged -> {
+                signUpFormState = signUpFormState.copy(visibleConfirmPassword = event.isVisiblePassword)
+            }
             SignUpEvents.Submit -> {
                 if (validateUserName() && validateEmail() && validatePassword() && validateConfirmPassword()) {
                     Log.e(TAG, "onEvent: ======Signup Api call", )                }
@@ -67,6 +70,7 @@ class SignUpViewModel(
             signUpFormState.password,
             signUpFormState.confirmPassword
         )
+        signUpFormState = signUpFormState.copy(confirmPasswordError = confirmPasswordResult.errorMessage)
         return confirmPasswordResult.successful
     }
 
