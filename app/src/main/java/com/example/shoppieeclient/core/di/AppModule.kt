@@ -9,7 +9,9 @@ import com.example.shoppieeclient.domain.auth.use_cases.validations.auth.Validat
 import com.example.shoppieeclient.domain.auth.use_cases.validations.auth.ValidateEmailUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.auth.ValidatePasswordUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.auth.ValidateUserNameUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.validations.forgot_password.ForgotPasswordValidationUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signin.SignInValidationsUseCases
+import com.example.shoppieeclient.presentation.auth.forget_password.ForgotPasswordViewModel
 import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewModel
 import com.example.shoppieeclient.presentation.auth.signin.SignInState
@@ -40,9 +42,14 @@ val appModule = module {
         validatePassword = get()
     ) }
 
+    single { ForgotPasswordValidationUseCase(
+        validateEmail = get()
+    ) }
+
 
     viewModel<OnBoardingViewModel> { OnBoardingViewModel(get()) }
     viewModel<MainActivityViewModel> { MainActivityViewModel(get()) }
     viewModel<SignUpViewModel> { SignUpViewModel(get()) }
     viewModel<SignInViewModel> { SignInViewModel(get()) }
+    viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }
 }

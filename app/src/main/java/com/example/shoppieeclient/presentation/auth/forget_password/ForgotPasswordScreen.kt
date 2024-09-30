@@ -24,10 +24,12 @@ import com.example.shoppieeclient.presentation.auth.components.CustomBackButton
 import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.presentation.auth.components.CustomTextField
 import com.example.shoppieeclient.ui.theme.Primary
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ForgotPasswordScreen(
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    forgotPasswordViewModel: ForgotPasswordViewModel = koinViewModel()
 ) {
     Box(
         modifier = Modifier
@@ -63,11 +65,12 @@ fun ForgotPasswordScreen(
                 CustomTextField(
                     modifier = Modifier.fillMaxWidth(),
                     title = "Email Address",
-                    textValue = "",
-                    onValueChange = {},
+                    textValue = forgotPasswordViewModel.forgotPasswordFormState.email,
+                    onValueChange = { forgotPasswordViewModel.onEvent(ForgotPasswordEvents.EmailChanged(it)) },
+                    hasError = forgotPasswordViewModel.forgotPasswordFormState.emailError != null,
                     hint = "Enter your email",
                     keyboardType = KeyboardType.Email,
-                    errorString = null,
+                    errorString = forgotPasswordViewModel.forgotPasswordFormState.emailError,
                     trailingIcon = null,
                     onTrailingIconClicked = null
                 )
