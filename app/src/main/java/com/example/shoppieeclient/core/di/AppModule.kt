@@ -2,8 +2,8 @@ package com.example.shoppieeclient.common.di
 
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
-import com.example.shoppieeclient.domain.auth.use_cases.ReadOnBoardingUseCase
-import com.example.shoppieeclient.domain.auth.use_cases.SaveOnBoardingUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.onboarding.ReadOnBoardingUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.onboarding.SaveOnBoardingUseCase
 import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewModel
 import org.koin.core.module.dsl.viewModel
