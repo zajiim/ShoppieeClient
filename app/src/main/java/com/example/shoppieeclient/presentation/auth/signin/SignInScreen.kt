@@ -29,7 +29,7 @@ import com.example.shoppieeclient.ui.theme.Primary
 
 @Composable
 fun SignInScreen(
-    onForgotPasswordClicked: () -> Unit
+    onForgotPasswordClicked: () -> Unit, onSignUpClicked: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -82,15 +82,13 @@ fun SignInScreen(
                 onTrailingIconClicked = null
             )
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
             ) {
                 Text(
                     text = "Recovery Password",
                     style = MaterialTheme.typography.titleSmall,
                     color = Color.LightGray,
-                    modifier = Modifier
-                        .clickable { onForgotPasswordClicked() },
+                    modifier = Modifier.clickable { onForgotPasswordClicked() },
                     textAlign = TextAlign.End
                 )
             }
@@ -113,15 +111,12 @@ fun SignInScreen(
                 title = "Sign in with Google",
                 icon = R.drawable.ic_google_logo,
                 onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(100.dp))
-            CustomTextButtonQuery(
-                title = "Don\'t have an Account?",
+            CustomTextButtonQuery(title = "Don\'t have an Account?",
                 clickableText = "Sign Up For Free",
-                onClick = {}
-            )
+                onClick = { onSignUpClicked() })
             Spacer(modifier = Modifier.height(50.dp))
         }
     }

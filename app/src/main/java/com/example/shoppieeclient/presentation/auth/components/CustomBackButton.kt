@@ -21,11 +21,9 @@ fun CustomBackButton(
     onBackClicked: () -> Unit,
     modifier: Modifier
 ) {
-    Box(
-        modifier = modifier.fillMaxWidth().padding(top = 16.dp)
-    ) {
+    Box {
         IconButton(
-            modifier = Modifier.size(56.dp).clip(CircleShape).background(Color.White),
+            modifier = modifier.size(56.dp).clip(CircleShape).background(Color.White),
             onClick = { onBackClicked() }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null

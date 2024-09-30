@@ -38,12 +38,26 @@ fun ShoppieNavGraph(
             SignInScreen(
                 onForgotPasswordClicked = {
                     navController.navigate(Destination.Forgot)
+                },
+                onSignUpClicked =  {
+                    navController.navigate(Destination.SignUp) {
+                        popUpTo(Destination.SignIn) {inclusive = false}
+                    }
                 }
             )
         }
 
         composable<Destination.SignUp> {
-            SignUpScreen()
+            SignUpScreen(
+                onSignInClicked = {
+                    navController.navigate(Destination.SignIn) {
+                        popUpTo(Destination.SignUp) {inclusive = true}
+                    }
+                },
+                onBackClicked = {
+                    navController.navigateUp()
+                }
+            )
         }
 
         composable<Destination.Forgot> {
