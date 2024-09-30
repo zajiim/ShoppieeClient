@@ -3,7 +3,7 @@ package com.example.shoppieeclient.presentation.auth.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shoppieeclient.domain.auth.use_cases.ReadOnBoardingUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.onboarding.ReadOnBoardingUseCase
 import com.example.shoppieeclient.presentation.navigation.Destination
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

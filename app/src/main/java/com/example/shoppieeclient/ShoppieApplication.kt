@@ -1,7 +1,7 @@
 package com.example.shoppieeclient
 
 import android.app.Application
-import com.example.shoppieeclient.common.di.appModule
+import com.example.shoppieeclient.core.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 

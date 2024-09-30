@@ -1,4 +1,4 @@
-package com.example.shoppieeclient.domain.auth.use_cases
+package com.example.shoppieeclient.domain.auth.use_cases.onboarding
 
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 

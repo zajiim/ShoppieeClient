@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">ShoppieeClient</string>
+    
+    <string name="validation_email_cannot_be_empty">Email cannot be empty</string>
+    <string name="validation_please_provide_a_valid_email">Please provide a valid email</string>
+    <string name="validation_please_provide_a_valid_username">Username must contain at least 4 letters</string>
+    <string name="validation_password_must_contain_8_letters">Password must contain at least 8 letters</string>
+    <string name="validation_password_must_contain_1_letter_and_1_number">Password must contain 1 letter and 1 digit</string>
+    <string name="validation_confirm_password_please_confirm_your_password">Please confirm your password</string>
+    <string name="validation_confirm_password_does_not_match">Password does not match</string>
 </resources>

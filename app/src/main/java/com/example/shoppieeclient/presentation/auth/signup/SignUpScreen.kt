@@ -26,10 +26,12 @@ import com.example.shoppieeclient.presentation.auth.components.CustomSocialMedia
 import com.example.shoppieeclient.presentation.auth.components.CustomTextButtonQuery
 import com.example.shoppieeclient.presentation.auth.components.CustomTextField
 import com.example.shoppieeclient.ui.theme.Primary
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignUpScreen(
-    onSignInClicked: () -> Unit, onBackClicked: () -> Unit
+    onSignInClicked: () -> Unit, onBackClicked: () -> Unit,
+    signUpViewModel: SignUpViewModel = koinViewModel()
 ) {
     Box(
         modifier = Modifier

@@ -3,8 +3,7 @@ package com.example.shoppieeclient.presentation.auth.onboarding
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shoppieeclient.domain.auth.use_cases.ReadOnBoardingUseCase
-import com.example.shoppieeclient.domain.auth.use_cases.SaveOnBoardingUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.onboarding.SaveOnBoardingUseCase
 import kotlinx.coroutines.launch
 
 class OnBoardingViewModel(

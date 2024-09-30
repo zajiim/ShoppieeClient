@@ -1,4 +1,4 @@
-package com.example.shoppieeclient.domain.auth.use_cases.validations
+package com.example.shoppieeclient.domain.auth.use_cases.validations.signup
 
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.domain.auth.models.validation.ValidationResult
