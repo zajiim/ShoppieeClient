@@ -17,7 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.R
@@ -25,12 +29,18 @@ import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.presentation.auth.components.CustomSocialMediaButton
 import com.example.shoppieeclient.presentation.auth.components.CustomTextButtonQuery
 import com.example.shoppieeclient.presentation.auth.components.CustomTextField
+import com.example.shoppieeclient.presentation.auth.signup.SignUpEvents
 import com.example.shoppieeclient.ui.theme.Primary
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignInScreen(
-    onForgotPasswordClicked: () -> Unit, onSignUpClicked: () -> Unit
+    onForgotPasswordClicked: () -> Unit,
+    onSignUpClicked: () -> Unit,
+    signInViewModel: SignInViewModel = koinViewModel()
 ) {
+    val visiblePasswordIcon = ImageVector.vectorResource(id = R.drawable.ic_visibility_on)
+    val inVisiblePasswordIcon = ImageVector.vectorResource(id = R.drawable.ic_visibility_off)
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -59,28 +69,36 @@ fun SignInScreen(
             CustomTextField(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Email Address",
-                textValue = "",
-                onValueChange = {},
+                textValue = signInViewModel.signInFormState.email,
+                onValueChange = { signInViewModel.onEvent(SignInEvents.EmailChanged(it)) },
+                hasError = signInViewModel.signInFormState.emailError != null,
                 hint = "Enter your email",
                 keyboardType = KeyboardType.Email,
-                errorString = null,
+                errorString = signInViewModel.signInFormState.emailError,
                 trailingIcon = null,
                 onTrailingIconClicked = null
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
             CustomTextField(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Password",
-                textValue = "",
-                onValueChange = {},
+                textValue = signInViewModel.signInFormState.password,
+                onValueChange = { signInViewModel.onEvent(SignInEvents.PasswordChanged(it)) },
+                hasError = signInViewModel.signInFormState.passwordError != null,
                 hint = "Enter your password",
                 keyboardType = KeyboardType.Password,
-                errorString = null,
-                trailingIcon = null,
-                onTrailingIconClicked = null
-            )
+                errorString = signInViewModel.signInFormState.passwordError,
+                trailingIcon = if (signInViewModel.signInFormState.visiblePassword) visiblePasswordIcon else inVisiblePasswordIcon,
+                visualTransformation = if (signInViewModel.signInFormState.visiblePassword) VisualTransformation.None else PasswordVisualTransformation(),
+                onTrailingIconClicked = {
+                    signInViewModel.onEvent(
+                        SignInEvents.VisiblePasswordChanged(
+                            !(signInViewModel.signInFormState.visiblePassword)
+                        )
+                    )
+                })
+
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
             ) {

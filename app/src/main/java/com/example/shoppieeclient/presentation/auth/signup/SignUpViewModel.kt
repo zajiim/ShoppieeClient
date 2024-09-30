@@ -1,48 +1,55 @@
 package com.example.shoppieeclient.presentation.auth.signup
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
-import com.example.shoppieeclient.domain.auth.use_cases.validations.SignupValidationsUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.SignupValidationsUseCase
 
 private const val TAG = "SignUpViewModel"
+
 class SignUpViewModel(
     private val signUpValidationsUseCase: SignupValidationsUseCase
-): ViewModel() {
+) : ViewModel() {
 
     var signUpFormState by mutableStateOf(SignUpState())
 
     fun onEvent(event: SignUpEvents) {
-        when(event) {
+        when (event) {
             is SignUpEvents.UsernameChanged -> {
                 signUpFormState = signUpFormState.copy(userName = event.username)
                 validateUserName()
             }
+
             is SignUpEvents.EmailChanged -> {
                 signUpFormState = signUpFormState.copy(email = event.email)
                 validateEmail()
             }
+
             is SignUpEvents.PasswordChanged -> {
                 signUpFormState = signUpFormState.copy(password = event.password)
                 validatePassword()
             }
+
             is SignUpEvents.ConfirmPasswordChanged -> {
                 signUpFormState = signUpFormState.copy(confirmPassword = event.confirmPassword)
                 validateConfirmPassword()
             }
+
             is SignUpEvents.VisiblePasswordChanged -> {
                 signUpFormState = signUpFormState.copy(visiblePassword = event.isVisiblePassword)
             }
+
             is SignUpEvents.VisibleConfirmPasswordChanged -> {
-                signUpFormState = signUpFormState.copy(visibleConfirmPassword = event.isVisiblePassword)
+                signUpFormState =
+                    signUpFormState.copy(visibleConfirmPassword = event.isVisiblePassword)
             }
+
             SignUpEvents.Submit -> {
                 if (validateUserName() && validateEmail() && validatePassword() && validateConfirmPassword()) {
-                    Log.e(TAG, "onEvent: ======Signup Api call", )                }
+                    Log.e(TAG, "onEvent: ======Signup Api call")
+                }
             }
         }
     }
@@ -70,7 +77,8 @@ class SignUpViewModel(
             signUpFormState.password,
             signUpFormState.confirmPassword
         )
-        signUpFormState = signUpFormState.copy(confirmPasswordError = confirmPasswordResult.errorMessage)
+        signUpFormState =
+            signUpFormState.copy(confirmPasswordError = confirmPasswordResult.errorMessage)
         return confirmPasswordResult.successful
     }
 
