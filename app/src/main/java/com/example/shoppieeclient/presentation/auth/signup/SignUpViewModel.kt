@@ -23,6 +23,7 @@ class SignUpViewModel(
 ) : ViewModel() {
 
     var signUpFormState by mutableStateOf(SignUpState())
+        private set
 
     fun onEvent(event: SignUpEvents) {
         when (event) {

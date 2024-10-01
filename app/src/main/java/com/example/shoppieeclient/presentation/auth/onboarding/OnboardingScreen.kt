@@ -1,12 +1,10 @@
 package com.example.shoppieeclient.presentation.auth.onboarding
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
@@ -28,13 +27,16 @@ import com.example.shoppieeclient.presentation.auth.onboarding.components.Custom
 import com.example.shoppieeclient.presentation.auth.onboarding.components.CustomPagerIndicator
 import com.example.shoppieeclient.presentation.auth.onboarding.components.CustomTextButton
 import com.example.shoppieeclient.presentation.auth.onboarding.components.PagerScreen
+import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
 import com.example.shoppieeclient.presentation.navigation.Destination
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(
-    navController: NavHostController,
-    event: (OnBoardingEvent) -> Unit
+    isLoading: Boolean,
+    event: (OnBoardingEvent) -> Unit,
+    navigateToAuth: () -> Unit,
 ) {
     val pages = listOf(
         OnBoardingPageModel.First,
@@ -56,71 +58,79 @@ fun OnboardingScreen(
             }
         }
     }
-    Column(modifier = Modifier.fillMaxSize()) {
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.8f)
-        ) { index ->
-            PagerScreen(
-                onBoardingPage = pages[index],
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            HorizontalPager(
+                state = pagerState,
                 modifier = Modifier
-            )
-
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            CustomPagerIndicator(
-                pageCount = pages.size,
-                currentPage = pagerState.currentPage,
-                modifier = Modifier
-            )
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                val scope = rememberCoroutineScope()
-                AnimatedVisibility(
-//                    visible = buttonState.value[0].isNotEmpty(),
-                    visible = pagerState.currentPage > 0,
-                    enter = fadeIn() + slideInVertically(),
-                ) {
-                    CustomTextButton(
-                        text = buttonState.value[0],
-                        onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(page = pagerState.currentPage - 1)
-                            }
-                        }
-                    )
-                }
-
-                CustomButtonOnBoarding(text = buttonState.value[1],
-                    onClick = {
-                        scope.launch {
-                            if (pagerState.currentPage == 2) {
-                                event(OnBoardingEvent.SaveOnBoardingEvent)
-                                navController.navigate(Destination.SignIn)
-                            } else {
-                                pagerState.animateScrollToPage(
-                                    page = pagerState.currentPage + 1
-                                )
-                            }
-                        }
-                    }
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.8f)
+            ) { index ->
+                PagerScreen(
+                    onBoardingPage = pages[index],
+                    modifier = Modifier
                 )
 
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
+                CustomPagerIndicator(
+                    pageCount = pages.size,
+                    currentPage = pagerState.currentPage,
+                    modifier = Modifier
+                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    val scope = rememberCoroutineScope()
+                    AnimatedVisibility(
+                        //                    visible = buttonState.value[0].isNotEmpty(),
+                        visible = pagerState.currentPage > 0,
+                        enter = fadeIn() + slideInVertically(),
+                    ) {
+                        CustomTextButton(
+                            text = buttonState.value[0],
+                            onClick = {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(page = pagerState.currentPage - 1)
+                                }
+                            }
+                        )
+                    }
+
+                    CustomButtonOnBoarding(text = buttonState.value[1],
+                        onClick = {
+                            scope.launch {
+                                if (pagerState.currentPage == 2) {
+                                    event(OnBoardingEvent.SaveOnBoardingEvent)
+                                    navigateToAuth()
+                                } else {
+                                    pagerState.animateScrollToPage(
+                                        page = pagerState.currentPage + 1
+                                    )
+                                }
+                            }
+                        }
+                    )
+
+                }
+
+            }
+        }
+        if(isLoading) {
+            CustomLineProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
     }
+
 
 }

@@ -48,7 +48,9 @@ fun ShoppieNavGraph(
         composable<Destination.Onboarding> {
             val onBoardingViewModel: OnBoardingViewModel = koinViewModel()
             OnboardingScreen(
-                navController = navController, event = onBoardingViewModel::onEvent
+                isLoading = onBoardingViewModel.onBoardingState.isLoading,
+                event = onBoardingViewModel::onEvent,
+                navigateToAuth = { navController.navigate(Destination.SignIn)}
             )
         }
 
