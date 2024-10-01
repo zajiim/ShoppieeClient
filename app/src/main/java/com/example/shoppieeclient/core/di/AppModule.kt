@@ -1,11 +1,11 @@
 package com.example.shoppieeclient.core.di
 
-import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiImpl
-import com.example.shoppieeclient.data.auth.remote.api.ShoppieeApi
+import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.data.auth.repository.ShoppieeRepoImpl
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
+import com.example.shoppieeclient.domain.auth.use_cases.auth.SignUpUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.ReadOnBoardingUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.SaveOnBoardingUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.auth.ValidateConfirmPasswordUseCase
@@ -53,8 +53,6 @@ val appModule = module {
         }
     }
 
-    single<ShoppieeApi> { ShoppieApiImpl(get()) }
-//    single<ShoppieRepo> { ShoppieeRepoImpl(get()) }
     single<LocalUserManager> { LocalUserManagerImpl(get()) }
     single { SaveOnBoardingUseCase(get()) }
     single { ReadOnBoardingUseCase(get()) }
@@ -63,6 +61,12 @@ val appModule = module {
     single { ValidateEmailUseCase() }
     single { ValidatePasswordUseCase() }
     single { ValidateConfirmPasswordUseCase() }
+
+    // Provide ShoppieApiService
+    single { ShoppieApiService(get()) }
+
+    // Provide Repository
+    single<ShoppieRepo> { ShoppieeRepoImpl(get()) }
 
     single { SignupValidationsUseCase(
         validateUserName = get(),
@@ -79,6 +83,11 @@ val appModule = module {
     single { ForgotPasswordValidationUseCase(
         validateEmail = get()
     ) }
+
+    single { SignUpUseCase(
+        repository = get()
+    ) }
+
 
 
     viewModel<OnBoardingViewModel> { OnBoardingViewModel(get()) }

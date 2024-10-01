@@ -11,10 +11,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 
-class ShoppieApiImpl(
+class ShoppieApiService(
     private val client: HttpClient
-): ShoppieeApi {
-    override suspend fun signUp(signUpRequestDto: SignUpRequestDto): SignUpResponseDto {
+) {
+     suspend fun signUp(signUpRequestDto: SignUpRequestDto): SignUpResponseDto {
         return client.post("${Constants.SHOPPIEE_URL}/signup") {
             contentType(ContentType.Application.Json)
             setBody(signUpRequestDto)

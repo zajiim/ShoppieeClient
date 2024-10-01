@@ -1,21 +1,22 @@
 package com.example.shoppieeclient.presentation.auth.signup
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shoppieeclient.data.auth.remote.api.ShoppieeApi
-import com.example.shoppieeclient.data.auth.remote.dto.signup.SignUpRequestDto
+import com.example.shoppieeclient.domain.auth.use_cases.auth.SignUpUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.SignupValidationsUseCase
+import com.example.shoppieeclient.utils.Resource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG = "SignUpViewModel"
 
 class SignUpViewModel(
     private val signUpValidationsUseCase: SignupValidationsUseCase,
-    private val shoppieeApi: ShoppieeApi
+    private val signUpUseCase: SignUpUseCase
 ) : ViewModel() {
 
     var signUpFormState by mutableStateOf(SignUpState())
@@ -59,26 +60,83 @@ class SignUpViewModel(
         }
     }
 
-    private fun signUpUser() = viewModelScope.launch{
-        try {
-            signUpFormState = signUpFormState.copy(isLoading = true)
-            val signUpRequest = SignUpRequestDto(
-                name = signUpFormState.userName,
-                email = signUpFormState.email,
-                password = signUpFormState.password,
-                confirmPassword = signUpFormState.confirmPassword
-            )
-            val response = shoppieeApi.signUp(signUpRequest)
-            Log.d(TAG, "Sign up successful: $response")
+//    private fun signUpUser() = viewModelScope.launch{
+//        try {
+//            signUpFormState = signUpFormState.copy(isLoading = true)
+//            val response = signUpUseCase(
+//                name = signUpFormState.userName,
+//                email = signUpFormState.email,
+//                password = signUpFormState.password,
+//                confirmPassword = signUpFormState.confirmPassword
+//            ).collect { result ->
+//                when(result) {
+//                    is Resource.Loading -> {
+//                        signUpFormState = signUpFormState.copy(isLoading = true)
+//                    }
+//                    is Resource.Success -> {
+//                        val user = result.data
+//                        signUpFormState = signUpFormState.copy(isLoading = false)
+//                        Log.e(TAG, "signUpUser: Signed up successfully", )
+//                    }
+//                    is Resource.Error -> {
+//                        signUpFormState = signUpFormState.copy(isLoading = false, signUpError = result.message)
+//                        Log.e(TAG, "signUpUser: Error during sign up ===> ${result.message}", )
+//                    }
+//                }
+//            }
+//            Log.d(TAG, "Sign up successful: $response")
+//
+//        } catch (e: Exception) {
+//            signUpFormState = signUpFormState.copy(signUpError = "Sign up failed: ${e.message}" )
+//            Log.e(TAG, "Error during sign up: $e")
+//        } finally {
+//            signUpFormState = signUpFormState.copy(isLoading = false)
+//        }
+//
+//    }
 
-        } catch (e: Exception) {
-            signUpFormState = signUpFormState.copy(signUpError = "Sign up failed: ${e.message}" )
-            Log.e(TAG, "Error during sign up: $e")
-        } finally {
-            signUpFormState = signUpFormState.copy(isLoading = false)
+
+    private fun signUpUser() = viewModelScope.launch(Dispatchers.IO) {
+        signUpUseCase(
+            name = signUpFormState.userName,
+            email = signUpFormState.email,
+            password = signUpFormState.password,
+            confirmPassword = signUpFormState.confirmPassword
+        ).collect { result ->
+            withContext(Dispatchers.Main) {
+                try {
+                    signUpFormState = signUpFormState.copy(isLoading = true)
+                    when (result) {
+                        is Resource.Success -> {
+                            signUpFormState = signUpFormState.copy(
+                                isLoading = false,
+                                signUpError = null
+                            )
+                        }
+
+                        is Resource.Error -> {
+                            signUpFormState = signUpFormState.copy(
+                                isLoading = false,
+                                signUpError = result.message ?: "Unknown error"
+                            )
+                        }
+
+                        is Resource.Loading -> {
+                            signUpFormState = signUpFormState.copy(
+                                isLoading = true
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    signUpFormState = signUpFormState.copy(
+                        isLoading = false,
+                        signUpError = "Sign up failed: ${e.message}"
+                    )
+                }
+            }
         }
-
     }
+
 
     private fun validateUserName(): Boolean {
         val userNameResult = signUpValidationsUseCase.validateUserName(signUpFormState.userName)
@@ -100,8 +158,7 @@ class SignUpViewModel(
 
     private fun validateConfirmPassword(): Boolean {
         val confirmPasswordResult = signUpValidationsUseCase.validateConfirmPassword(
-            signUpFormState.password,
-            signUpFormState.confirmPassword
+            signUpFormState.password, signUpFormState.confirmPassword
         )
         signUpFormState =
             signUpFormState.copy(confirmPasswordError = confirmPasswordResult.errorMessage)

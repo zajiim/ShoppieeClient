@@ -1,6 +1,6 @@
 package com.example.shoppieeclient.data.auth.repository
 
-import com.example.shoppieeclient.data.auth.remote.api.ShoppieeApi
+import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.data.auth.remote.dto.signup.SignUpRequestDto
 import com.example.shoppieeclient.data.auth.remote.mapper.toUserModel
 import com.example.shoppieeclient.domain.auth.models.signup.UserModel
@@ -15,7 +15,7 @@ import kotlinx.serialization.SerializationException
 import java.io.IOException
 
 class ShoppieeRepoImpl(
-    private val api: ShoppieeApi
+    private val api: ShoppieApiService
 ): ShoppieRepo {
     override fun signUp(
         name: String,
