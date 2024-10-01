@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.data.auth.repository
 
+import android.util.Log
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.data.auth.remote.dto.signup.SignUpRequestDto
 import com.example.shoppieeclient.data.auth.remote.mapper.toUserModel
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.SerializationException
 import java.io.IOException
 
+private const val TAG = "ShoppieeRepoImpl"
 class ShoppieeRepoImpl(
     private val api: ShoppieApiService
 ): ShoppieRepo {
@@ -34,10 +36,14 @@ class ShoppieeRepoImpl(
             )
 
             val userResponse = api.signUp(signUpRequestDto)
+            Log.e(TAG, "status == ${userResponse.status} message:== ${userResponse.message}, data ==${userResponse.result?.data}", )
             if (userResponse.status == 200 && userResponse.result?.data != null) {
+
                 val userModel = userResponse.result.data.toUserModel()
-                emit(Resource.Success(userModel))
+                Log.e(TAG, "after parsing==: ${userResponse.message}", )
+                emit(Resource.Success(data = userModel, message = userResponse.message))
             } else {
+                Log.e(TAG, "after parsing error==: ${userResponse.message}", )
                 emit(Resource.Error(userResponse.message))
             }
         } catch (e: ClientRequestException) {

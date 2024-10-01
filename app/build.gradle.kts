@@ -78,6 +78,8 @@ dependencies {
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.client.cio)
+    //Lottie
+    implementation(libs.lottie.compose)
 
 
     testImplementation(libs.junit)

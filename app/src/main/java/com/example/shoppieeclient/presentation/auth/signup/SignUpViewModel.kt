@@ -1,13 +1,16 @@
 package com.example.shoppieeclient.presentation.auth.signup
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shoppieeclient.R
 import com.example.shoppieeclient.domain.auth.use_cases.auth.SignUpUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.SignupValidationsUseCase
 import com.example.shoppieeclient.utils.Resource
+import com.example.shoppieeclient.utils.UiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -57,44 +60,11 @@ class SignUpViewModel(
                     signUpUser()
                 }
             }
+            SignUpEvents.DismissDialog -> {
+                signUpFormState = signUpFormState.copy(alertDialog = null)
+            }
         }
     }
-
-//    private fun signUpUser() = viewModelScope.launch{
-//        try {
-//            signUpFormState = signUpFormState.copy(isLoading = true)
-//            val response = signUpUseCase(
-//                name = signUpFormState.userName,
-//                email = signUpFormState.email,
-//                password = signUpFormState.password,
-//                confirmPassword = signUpFormState.confirmPassword
-//            ).collect { result ->
-//                when(result) {
-//                    is Resource.Loading -> {
-//                        signUpFormState = signUpFormState.copy(isLoading = true)
-//                    }
-//                    is Resource.Success -> {
-//                        val user = result.data
-//                        signUpFormState = signUpFormState.copy(isLoading = false)
-//                        Log.e(TAG, "signUpUser: Signed up successfully", )
-//                    }
-//                    is Resource.Error -> {
-//                        signUpFormState = signUpFormState.copy(isLoading = false, signUpError = result.message)
-//                        Log.e(TAG, "signUpUser: Error during sign up ===> ${result.message}", )
-//                    }
-//                }
-//            }
-//            Log.d(TAG, "Sign up successful: $response")
-//
-//        } catch (e: Exception) {
-//            signUpFormState = signUpFormState.copy(signUpError = "Sign up failed: ${e.message}" )
-//            Log.e(TAG, "Error during sign up: $e")
-//        } finally {
-//            signUpFormState = signUpFormState.copy(isLoading = false)
-//        }
-//
-//    }
-
 
     private fun signUpUser() = viewModelScope.launch(Dispatchers.IO) {
         signUpUseCase(
@@ -108,29 +78,42 @@ class SignUpViewModel(
                     signUpFormState = signUpFormState.copy(isLoading = true)
                     when (result) {
                         is Resource.Success -> {
+                            Log.d(TAG, "Success: ${result.message}")
                             signUpFormState = signUpFormState.copy(
                                 isLoading = false,
-                                signUpError = null
+                                isSignUpSuccessful = true,
+                                alertDialog = result.message,
+                                alertButtonString = "Go to Login"
+//                                signUpError = null
                             )
                         }
 
                         is Resource.Error -> {
+                            Log.d(TAG, "Error: ${result.message}")
                             signUpFormState = signUpFormState.copy(
                                 isLoading = false,
-                                signUpError = result.message ?: "Unknown error"
+                                isSignUpSuccessful = false,
+//                                signUpError = result.message ?: "Unknown error"
+                                alertDialog = result.message,
+                                alertButtonString = "Go back"
                             )
                         }
 
                         is Resource.Loading -> {
+                            Log.d(TAG, "Loading: ${result.message}")
                             signUpFormState = signUpFormState.copy(
                                 isLoading = true
                             )
                         }
                     }
                 } catch (e: Exception) {
+                    Log.d(TAG, "Exception: ${result.message}, excep ==> ${e.message}")
                     signUpFormState = signUpFormState.copy(
                         isLoading = false,
-                        signUpError = "Sign up failed: ${e.message}"
+                        isSignUpSuccessful = false,
+//                        signUpError = "Sign up failed: ${e.message}"
+                        alertDialog = result.message,
+                        alertButtonString = "Go back"
                     )
                 }
             }

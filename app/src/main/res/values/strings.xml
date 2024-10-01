@@ -8,4 +8,7 @@
     <string name="validation_password_must_contain_1_letter_and_1_number">Password must contain 1 letter and 1 digit</string>
     <string name="validation_confirm_password_please_confirm_your_password">Please confirm your password</string>
     <string name="validation_confirm_password_does_not_match">Password does not match</string>
+
+    <string name="signup_alert_button_success">Go to Login</string>
+    <string name="signup_alert_button_failure">Go back</string>
 </resources>

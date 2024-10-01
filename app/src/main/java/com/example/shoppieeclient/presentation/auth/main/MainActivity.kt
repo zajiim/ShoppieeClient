@@ -14,10 +14,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.shoppieeclient.presentation.navigation.ShoppieNavGraph
 import com.example.shoppieeclient.ui.theme.ShoppieeClientTheme
 import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val TAG = "MainActivity"
 class MainActivity : ComponentActivity() {
-    private val mainActivityViewModel by viewModels<MainActivityViewModel>()
+//    private val mainActivityViewModel by viewModels<MainActivityViewModel>()
+private val mainActivityViewModel: MainActivityViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().setKeepOnScreenCondition {

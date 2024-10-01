@@ -29,8 +29,11 @@ import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.presentation.auth.components.CustomSocialMediaButton
 import com.example.shoppieeclient.presentation.auth.components.CustomTextButtonQuery
 import com.example.shoppieeclient.presentation.auth.components.CustomTextField
+import com.example.shoppieeclient.presentation.common.components.CustomAlertBox
 import com.example.shoppieeclient.ui.theme.Primary
 import org.koin.androidx.compose.koinViewModel
+
+private const val TAG = "SignUpScreen"
 
 @Composable
 fun SignUpScreen(
@@ -150,7 +153,7 @@ fun SignUpScreen(
                     text = "Sign In",
                     backgroundColor = Primary,
                     contentColor = Color.White,
-                    onButtonClicked = {signUpViewModel.onEvent(SignUpEvents.Submit)},
+                    onButtonClicked = { signUpViewModel.onEvent(SignUpEvents.Submit) },
                     isLoading = signUpViewModel.signUpFormState.isLoading,
                     enabled = !(signUpViewModel.signUpFormState.isLoading),
                     modifier = Modifier.fillMaxWidth()
@@ -175,5 +178,23 @@ fun SignUpScreen(
                 .padding(top = 16.dp, start = 24.dp)
                 .align(alignment = Alignment.TopStart), onBackClicked = onBackClicked
         )
+        if (signUpViewModel.signUpFormState.alertDialog != null) {
+            CustomAlertBox(
+                onDismiss = {
+                    signUpViewModel.onEvent(SignUpEvents.DismissDialog)
+                },
+                onButtonClick = {
+                    if (signUpViewModel.signUpFormState.isSignUpSuccessful)
+                        onSignInClicked()
+                    else
+                        signUpViewModel.onEvent(SignUpEvents.DismissDialog)
+                },
+                animationRes = if (signUpViewModel.signUpFormState.isSignUpSuccessful) R.raw.success else R.raw.failure,
+                message = signUpViewModel.signUpFormState.alertDialog
+                    ?: "Unknown error, Please try once again",
+                buttonText = signUpViewModel.signUpFormState.alertButtonString!!
+            )
+        }
+
     }
 }
