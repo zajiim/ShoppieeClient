@@ -13,4 +13,6 @@ data class SignUpState(
     val confirmPasswordError: UiText? = null,
     val visiblePassword: Boolean = false,
     val visibleConfirmPassword: Boolean = false,
+    val signUpError: String? = null,
+    val isLoading: Boolean = false
 )

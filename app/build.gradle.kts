@@ -68,11 +68,16 @@ dependencies {
     implementation(libs.koin.androidx.compose)
     //Kotlin-x-serialization
     implementation(libs.kotlinx.serialization.json)
-
     //Coil
     implementation(libs.coil.compose)
     //DataStore Preferences
     implementation(libs.androidx.datastore.preferences)
+    //Ktor
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.cio)
 
 
     testImplementation(libs.junit)

@@ -150,9 +150,9 @@ fun SignUpScreen(
                     text = "Sign In",
                     backgroundColor = Primary,
                     contentColor = Color.White,
-                    onButtonClicked = {},
-                    isLoading = false,
-                    enabled = true,
+                    onButtonClicked = {signUpViewModel.onEvent(SignUpEvents.Submit)},
+                    isLoading = signUpViewModel.signUpFormState.isLoading,
+                    enabled = !(signUpViewModel.signUpFormState.isLoading),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))

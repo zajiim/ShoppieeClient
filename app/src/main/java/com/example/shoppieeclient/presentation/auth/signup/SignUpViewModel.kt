@@ -5,12 +5,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.shoppieeclient.data.auth.remote.api.ShoppieeApi
+import com.example.shoppieeclient.data.auth.remote.dto.signup.SignUpRequestDto
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.SignupValidationsUseCase
+import kotlinx.coroutines.launch
 
 private const val TAG = "SignUpViewModel"
 
 class SignUpViewModel(
-    private val signUpValidationsUseCase: SignupValidationsUseCase
+    private val signUpValidationsUseCase: SignupValidationsUseCase,
+    private val shoppieeApi: ShoppieeApi
 ) : ViewModel() {
 
     var signUpFormState by mutableStateOf(SignUpState())
@@ -48,10 +53,31 @@ class SignUpViewModel(
 
             SignUpEvents.Submit -> {
                 if (validateUserName() && validateEmail() && validatePassword() && validateConfirmPassword()) {
-                    Log.e(TAG, "onEvent: ======Signup Api call")
+                    signUpUser()
                 }
             }
         }
+    }
+
+    private fun signUpUser() = viewModelScope.launch{
+        try {
+            signUpFormState = signUpFormState.copy(isLoading = true)
+            val signUpRequest = SignUpRequestDto(
+                name = signUpFormState.userName,
+                email = signUpFormState.email,
+                password = signUpFormState.password,
+                confirmPassword = signUpFormState.confirmPassword
+            )
+            val response = shoppieeApi.signUp(signUpRequest)
+            Log.d(TAG, "Sign up successful: $response")
+
+        } catch (e: Exception) {
+            signUpFormState = signUpFormState.copy(signUpError = "Sign up failed: ${e.message}" )
+            Log.e(TAG, "Error during sign up: $e")
+        } finally {
+            signUpFormState = signUpFormState.copy(isLoading = false)
+        }
+
     }
 
     private fun validateUserName(): Boolean {
