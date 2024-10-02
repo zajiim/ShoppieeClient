@@ -6,6 +6,8 @@ import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObse
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.signup.SignUpUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.ReadOnBoardingUseCase
@@ -62,6 +64,8 @@ val appModule = module {
     single<LocalUserManager> { LocalUserManagerImpl(get()) }
     single { SaveOnBoardingUseCase(get()) }
     single { ReadOnBoardingUseCase(get()) }
+    single { SaveTokenUseCase(get()) }
+    single { ReadAppTokenUseCase(get())}
 
     single { ValidateUserNameUseCase() }
     single { ValidateEmailUseCase() }
@@ -111,8 +115,8 @@ val appModule = module {
 
 
     viewModel<OnBoardingViewModel> { OnBoardingViewModel(get()) }
-    viewModel<MainActivityViewModel> { MainActivityViewModel(get()) }
+    viewModel<MainActivityViewModel> { MainActivityViewModel(get(), get()) }
     viewModel<SignUpViewModel> { SignUpViewModel(get(), get()) }
-    viewModel<SignInViewModel> { SignInViewModel(get(), get()) }
+    viewModel<SignInViewModel> { SignInViewModel(get(), get(), get()) }
     viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }
 }

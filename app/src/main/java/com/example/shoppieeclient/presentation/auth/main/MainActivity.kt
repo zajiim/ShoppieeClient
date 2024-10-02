@@ -43,46 +43,49 @@ class MainActivity : ComponentActivity() {
         }
         enableEdgeToEdge()
         setContent {
-            val status by connectivityObserver.networkStatus.collectAsState()
-            var showMessageBar by rememberSaveable { mutableStateOf(false) }
-            var message by rememberSaveable { mutableStateOf("") }
-            var backgroundColor by remember { mutableStateOf(Color.Red) }
+//            val status by connectivityObserver.networkStatus.collectAsState()
+//            var showMessageBar by rememberSaveable { mutableStateOf(false) }
+//            var message by rememberSaveable { mutableStateOf("") }
+//            var backgroundColor by remember { mutableStateOf(Color.Red) }
 
-            LaunchedEffect(key1 = status) {
-                when (status) {
-                    NetworkStatus.Connected -> {
-                        message = "Connected To Internet"
-                        backgroundColor = Color.Green
-                        delay(timeMillis = 2000)
-                        showMessageBar = false
-                    }
-
-                    NetworkStatus.Disconnected -> {
-                        showMessageBar = true
-                        message = "No Internet Connection"
-                        backgroundColor = Color.Red
-                    }
-                }
-            }
+//            LaunchedEffect(key1 = status) {
+//                when (status) {
+//                    NetworkStatus.Connected -> {
+//                        message = "Connected To Internet"
+//                        backgroundColor = Color.Green
+//                        delay(timeMillis = 2000)
+//                        showMessageBar = false
+//                    }
+//
+//                    NetworkStatus.Disconnected -> {
+//                        showMessageBar = true
+//                        message = "No Internet Connection"
+//                        backgroundColor = Color.Red
+//                    }
+//                }
+//            }
 
 
             ShoppieeClientTheme {
-                val snackBarHostState = remember { SnackbarHostState() }
+//                val snackBarHostState = remember { SnackbarHostState() }
 
                 Scaffold(
-                    snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
+//                    snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
                     modifier = Modifier.fillMaxSize(),
-                    bottomBar = {
-                        NetworkStatusBar(
-                            modifier = Modifier.safeGesturesPadding(),
-                            showMessageBar = showMessageBar,
-                            message = message,
-                            backgroundColor = backgroundColor
-                        )
-                    }
+//                    bottomBar = {
+//                        NetworkStatusBar(
+//                            modifier = Modifier.safeGesturesPadding(),
+//                            showMessageBar = showMessageBar,
+//                            message = message,
+//                            backgroundColor = backgroundColor
+//                        )
+//                    }
                 ) { innerPadding ->
                     val navController = rememberNavController()
-                    ShoppieNavGraph(navController = navController)
+                    ShoppieNavGraph(
+                        navController = navController,
+                        connectivityObserver = connectivityObserver
+                        )
                 }
             }
         }

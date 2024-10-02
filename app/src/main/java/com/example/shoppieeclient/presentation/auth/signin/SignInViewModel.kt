@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signin.SignInValidationsUseCases
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.SignupValidationsUseCase
@@ -17,7 +18,8 @@ import kotlinx.coroutines.withContext
 private const val TAG = "SignInViewModel"
 class SignInViewModel(
     private val signInValidationsUseCase: SignInValidationsUseCases,
-    private val signInUseCase: SignInUseCase
+    private val signInUseCase: SignInUseCase,
+    private val saveTokenUseCase: SaveTokenUseCase
 ): ViewModel() {
 
     var signInFormState by mutableStateOf(SignInState())
@@ -62,6 +64,10 @@ class SignInViewModel(
                             signInFormState = signInFormState.copy(isLoading = true)
                         }
                         is Resource.Success -> {
+                            Log.e(TAG, "signInUser token: ${result.data?.token}")
+                            result.data?.token?.let { token ->
+                                saveTokenUseCase(token)
+                            }
                             signInFormState = signInFormState.copy(
                                 isLoading = false,
                                 isSignInSuccessful = true,

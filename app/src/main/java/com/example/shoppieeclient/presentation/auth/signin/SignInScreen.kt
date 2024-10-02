@@ -10,11 +10,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.safeGesturesPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,23 +34,53 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.R
+import com.example.shoppieeclient.domain.common.model.NetworkStatus
+import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityObserver
 import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.presentation.auth.components.CustomSocialMediaButton
 import com.example.shoppieeclient.presentation.auth.components.CustomTextButtonQuery
 import com.example.shoppieeclient.presentation.auth.components.CustomTextField
 import com.example.shoppieeclient.presentation.auth.signup.SignUpEvents
 import com.example.shoppieeclient.presentation.common.components.CustomAlertBox
+import com.example.shoppieeclient.presentation.common.components.NetworkStatusBar
 import com.example.shoppieeclient.ui.theme.Primary
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignInScreen(
     onForgotPasswordClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
-    signInViewModel: SignInViewModel = koinViewModel()
+    onSignInSuccessful: () -> Unit,
+    signInViewModel: SignInViewModel = koinViewModel(),
+    connectivityObserver: NetworkConnectivityObserver
 ) {
+    val status by connectivityObserver.networkStatus.collectAsState()
+    var showMessageBar by rememberSaveable { mutableStateOf(false) }
+    var message by rememberSaveable { mutableStateOf("") }
+    var backgroundColor by remember { mutableStateOf(Color.Red) }
     val visiblePasswordIcon = ImageVector.vectorResource(id = R.drawable.ic_visibility_on)
     val inVisiblePasswordIcon = ImageVector.vectorResource(id = R.drawable.ic_visibility_off)
+
+
+    LaunchedEffect(key1 = status) {
+        when(status) {
+            NetworkStatus.Connected -> {
+                message = "Connected To Internet"
+                backgroundColor = Color.Green
+                delay(timeMillis = 2000)
+                showMessageBar = false
+            }
+
+            NetworkStatus.Disconnected -> {
+                showMessageBar = true
+                message = "No Internet Connection"
+                backgroundColor = Color.Red
+            }
+        }
+    }
+
+
     Box(modifier = Modifier
         .fillMaxSize()
         .systemBarsPadding()
@@ -147,7 +185,7 @@ fun SignInScreen(
                 onDismiss = { signInViewModel.onEvent(SignInEvents.DismissDialog) },
                 onButtonClick = {
                     if (signInViewModel.signInFormState.isSignInSuccessful) {
-                        onSignUpClicked()
+                        onSignInSuccessful()
                     } else {
                         signInViewModel.onEvent(SignInEvents.DismissDialog)
                     }
@@ -157,5 +195,12 @@ fun SignInScreen(
                 buttonText = signInViewModel.signInFormState.alertButtonString!!
             )
         }
+
+        NetworkStatusBar(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            showMessageBar = showMessageBar,
+            message = message,
+            backgroundColor = backgroundColor
+        )
     }
 }

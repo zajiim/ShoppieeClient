@@ -5,10 +5,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 import com.example.shoppieeclient.utils.Constants
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -27,6 +27,18 @@ class LocalUserManagerImpl(
         }
     }
 
+    override suspend fun saveAppToken(token: String) {
+        context.datastore.edit { prefs ->
+            prefs[PreferencesKeys.TOKEN] = token
+        }
+    }
+
+    override fun readAppToken(): Flow<String?> {
+        return context.datastore.data.map { prefs ->
+            prefs[PreferencesKeys.TOKEN]
+        }
+    }
+
 }
 
 private val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = Constants.DATASTORE_NAME)
@@ -34,4 +46,5 @@ private val Context.datastore: DataStore<Preferences> by preferencesDataStore(na
 
 private object PreferencesKeys {
     val ONBOARDING_VALUE = booleanPreferencesKey(Constants.DATASTORE_ONBOARDING_KEY)
+    val TOKEN = stringPreferencesKey(Constants.DATASTORE_TOKEN_KEY)
 }
