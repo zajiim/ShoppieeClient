@@ -2,6 +2,7 @@ package com.example.shoppieeclient.core.di
 
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.data.auth.repository.ShoppieeRepoImpl
+import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObserverImpl
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
@@ -16,6 +17,7 @@ import com.example.shoppieeclient.domain.auth.use_cases.validations.auth.Validat
 import com.example.shoppieeclient.domain.auth.use_cases.validations.forgot_password.ForgotPasswordValidationUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signin.SignInValidationsUseCases
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.SignupValidationsUseCase
+import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityObserver
 import com.example.shoppieeclient.presentation.auth.forget_password.ForgotPasswordViewModel
 import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewModel
@@ -28,6 +30,9 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -62,6 +67,16 @@ val appModule = module {
     single { ValidateEmailUseCase() }
     single { ValidatePasswordUseCase() }
     single { ValidateConfirmPasswordUseCase() }
+
+    // Network connectivity
+    single { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
+
+    // Provide NetworkConnectivityObserver
+    single<NetworkConnectivityObserver> {
+        NetworkConnectivityObserverImpl(
+            context = get(),
+            scope = get())
+    }
 
     // Provide ShoppieApiService
     single { ShoppieApiService(get()) }
