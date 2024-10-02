@@ -6,11 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shoppieeclient.R
-import com.example.shoppieeclient.domain.auth.use_cases.auth.SignUpUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.signup.SignUpUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.SignupValidationsUseCase
 import com.example.shoppieeclient.utils.Resource
-import com.example.shoppieeclient.utils.UiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

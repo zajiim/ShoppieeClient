@@ -2,9 +2,12 @@ package com.example.shoppieeclient.data.auth.repository
 
 import android.util.Log
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
+import com.example.shoppieeclient.data.auth.remote.dto.signin.SingInRequestDto
 import com.example.shoppieeclient.data.auth.remote.dto.signup.SignUpRequestDto
-import com.example.shoppieeclient.data.auth.remote.mapper.toUserModel
-import com.example.shoppieeclient.domain.auth.models.signup.UserModel
+import com.example.shoppieeclient.data.auth.remote.mapper.signin.toSignInUserModel
+import com.example.shoppieeclient.data.auth.remote.mapper.signup.toSignUpUserModel
+import com.example.shoppieeclient.domain.auth.models.signin.SignInUserModel
+import com.example.shoppieeclient.domain.auth.models.signup.SignUpUserModel
 import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
 import com.example.shoppieeclient.utils.Resource
 import io.ktor.client.plugins.ClientRequestException
@@ -24,7 +27,7 @@ class ShoppieeRepoImpl(
         email: String,
         password: String,
         confirmPassword: String
-    ): Flow<Resource<UserModel>> = flow {
+    ): Flow<Resource<SignUpUserModel>> = flow {
         try {
             emit(Resource.Loading())
 
@@ -38,8 +41,7 @@ class ShoppieeRepoImpl(
             val userResponse = api.signUp(signUpRequestDto)
             Log.e(TAG, "status == ${userResponse.status} message:== ${userResponse.message}, data ==${userResponse.result?.data}", )
             if (userResponse.status == 200 && userResponse.result?.data != null) {
-
-                val userModel = userResponse.result.data.toUserModel()
+                val userModel = userResponse.result.data.toSignUpUserModel()
                 Log.e(TAG, "after parsing==: ${userResponse.message}", )
                 emit(Resource.Success(data = userModel, message = userResponse.message))
             } else {
@@ -58,6 +60,39 @@ class ShoppieeRepoImpl(
             emit(Resource.Error(e.message ?: "Unknown error occurred"))
         }
     }.catch { e ->
+        emit(Resource.Error(e.localizedMessage ?: "Unexpected error occurred"))
+    }
+
+    override fun signIn(
+        email: String,
+        password: String
+    ): Flow<Resource<SignInUserModel>> = flow {
+        try {
+            emit(Resource.Loading())
+            val signInRequestDto = SingInRequestDto(
+                email = email,
+                password = password
+            )
+
+            val userResponse = api.signIn(signInRequestDto)
+            if (userResponse.status == 200 && userResponse.result?.data != null) {
+                val userModel = userResponse.result.data.toSignInUserModel()
+                emit(Resource.Success(data = userModel, message = userResponse.message))
+            } else {
+                emit(Resource.Error(userResponse.message))
+            }
+        } catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException){
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+    }.catch { e->
         emit(Resource.Error(e.localizedMessage ?: "Unexpected error occurred"))
     }
 }

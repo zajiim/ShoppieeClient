@@ -5,7 +5,8 @@ import com.example.shoppieeclient.data.auth.repository.ShoppieeRepoImpl
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
-import com.example.shoppieeclient.domain.auth.use_cases.auth.SignUpUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.signup.SignUpUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.ReadOnBoardingUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.SaveOnBoardingUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.auth.ValidateConfirmPasswordUseCase
@@ -88,11 +89,15 @@ val appModule = module {
         repository = get()
     ) }
 
+    single { SignInUseCase(
+        repository = get()
+    ) }
+
 
 
     viewModel<OnBoardingViewModel> { OnBoardingViewModel(get()) }
     viewModel<MainActivityViewModel> { MainActivityViewModel(get()) }
     viewModel<SignUpViewModel> { SignUpViewModel(get(), get()) }
-    viewModel<SignInViewModel> { SignInViewModel(get()) }
+    viewModel<SignInViewModel> { SignInViewModel(get(), get()) }
     viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }
 }

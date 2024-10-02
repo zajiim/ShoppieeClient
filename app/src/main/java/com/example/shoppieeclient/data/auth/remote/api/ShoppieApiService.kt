@@ -1,5 +1,7 @@
 package com.example.shoppieeclient.data.auth.remote.api
 
+import com.example.shoppieeclient.data.auth.remote.dto.signin.SignInResponseDto
+import com.example.shoppieeclient.data.auth.remote.dto.signin.SingInRequestDto
 import com.example.shoppieeclient.data.auth.remote.dto.signup.SignUpRequestDto
 import com.example.shoppieeclient.data.auth.remote.dto.signup.SignUpResponseDto
 import com.example.shoppieeclient.utils.Constants
@@ -18,6 +20,13 @@ class ShoppieApiService(
         return client.post("${Constants.SHOPPIEE_URL}/signup") {
             contentType(ContentType.Application.Json)
             setBody(signUpRequestDto)
+        }.body()
+    }
+
+    suspend fun signIn(signInRequestDto: SingInRequestDto): SignInResponseDto {
+        return client.post("${Constants.SHOPPIEE_URL}/signin") {
+            contentType(ContentType.Application.Json)
+            setBody(signInRequestDto)
         }.body()
     }
 }

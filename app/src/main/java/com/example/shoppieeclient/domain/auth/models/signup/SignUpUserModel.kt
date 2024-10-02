@@ -1,6 +1,6 @@
 package com.example.shoppieeclient.domain.auth.models.signup
 
-data class UserModel(
+data class SignUpUserModel(
     val id: String,
     val name: String,
     val email: String,
