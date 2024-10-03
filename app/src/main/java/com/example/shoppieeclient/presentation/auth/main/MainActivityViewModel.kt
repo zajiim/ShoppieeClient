@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.ReadOnBoardingUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.SaveOnBoardingUseCase
@@ -20,7 +21,8 @@ private const val TAG = "MainActivityViewModel"
 
 class MainActivityViewModel(
     private val readOnBoardingUseCase: ReadOnBoardingUseCase,
-    private val readAppTokenUseCase: ReadAppTokenUseCase
+    private val readAppTokenUseCase: ReadAppTokenUseCase,
+    private val apiService: ShoppieApiService
 ) : ViewModel() {
     private val _splashCondition = MutableStateFlow(true)
     val splashCondition = _splashCondition.asStateFlow()
@@ -41,8 +43,16 @@ class MainActivityViewModel(
                     startDestination = Destination.Onboarding
                 } else {
 //                    _startDestination.value = Destination.SignIn
-                    startDestination = Destination.SignIn
+//                    startDestination = Destination.SignIn
                     val token = readAppTokenUseCase().firstOrNull()
+
+                    val isTokenValid = token?.let { apiService.isTokenValid(it) }
+                    Log.e(TAG, "isTokenValid: $isTokenValid")
+                    startDestination = if (isTokenValid?.status == 200) {
+                        Destination.Home
+                    } else {
+                        Destination.SignIn
+                    }
 //                    startDestination = Destination.Home
                 }
                 delay(300)

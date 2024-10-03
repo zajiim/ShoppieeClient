@@ -1,13 +1,14 @@
-package com.example.shoppieeclient.domain.auth.models.signup
+package com.example.shoppieeclient.domain.auth.models.auth.signin
 
-data class SignUpUserModel(
+
+data class SignInUserModel(
     val id: String,
     val name: String,
     val email: String,
     val userType: String,
-    val cartItems: List<ProductModel>
+    val cartItems: List<ProductModel>,
+    val token: String
 )
-
 data class ProductModel(
     val productId: String,
     val name: String,

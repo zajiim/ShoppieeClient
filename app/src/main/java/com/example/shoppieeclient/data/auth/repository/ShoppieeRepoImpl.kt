@@ -2,12 +2,14 @@ package com.example.shoppieeclient.data.auth.repository
 
 import android.util.Log
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
-import com.example.shoppieeclient.data.auth.remote.dto.signin.SingInRequestDto
-import com.example.shoppieeclient.data.auth.remote.dto.signup.SignUpRequestDto
-import com.example.shoppieeclient.data.auth.remote.mapper.signin.toSignInUserModel
-import com.example.shoppieeclient.data.auth.remote.mapper.signup.toSignUpUserModel
-import com.example.shoppieeclient.domain.auth.models.signin.SignInUserModel
-import com.example.shoppieeclient.domain.auth.models.signup.SignUpUserModel
+import com.example.shoppieeclient.data.auth.remote.dto.auth.signin.SingInRequestDto
+import com.example.shoppieeclient.data.auth.remote.dto.auth.signup.SignUpRequestDto
+import com.example.shoppieeclient.data.auth.remote.mapper.auth.signin.toSignInUserModel
+import com.example.shoppieeclient.data.auth.remote.mapper.auth.signup.toSignUpUserModel
+import com.example.shoppieeclient.data.auth.remote.mapper.auth.toValidUserModel
+import com.example.shoppieeclient.domain.auth.models.auth.ValidUserModel
+import com.example.shoppieeclient.domain.auth.models.auth.signin.SignInUserModel
+import com.example.shoppieeclient.domain.auth.models.auth.signup.SignUpUserModel
 import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
 import com.example.shoppieeclient.utils.Resource
 import io.ktor.client.plugins.ClientRequestException
@@ -93,6 +95,31 @@ class ShoppieeRepoImpl(
             emit(Resource.Error(e.message ?: "Unknown error occurred"))
         }
     }.catch { e->
+        emit(Resource.Error(e.localizedMessage ?: "Unexpected error occurred"))
+    }
+
+    override fun isTokenValid(token: String): Flow<Resource<ValidUserModel>> = flow {
+        try {
+            emit(Resource.Loading())
+            val response = api.isTokenValid(token)
+            if (response.status == 200 ) {
+                emit(Resource.Success(data = response.toValidUserModel(), message = response.message))
+            } else {
+                emit(Resource.Error(response.message))
+            }
+
+        } catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException){
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+    }.catch { e ->
         emit(Resource.Error(e.localizedMessage ?: "Unexpected error occurred"))
     }
 }

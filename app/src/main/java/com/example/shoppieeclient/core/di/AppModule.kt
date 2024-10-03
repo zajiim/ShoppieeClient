@@ -115,7 +115,7 @@ val appModule = module {
 
 
     viewModel<OnBoardingViewModel> { OnBoardingViewModel(get()) }
-    viewModel<MainActivityViewModel> { MainActivityViewModel(get(), get()) }
+    viewModel<MainActivityViewModel> { MainActivityViewModel(get(), get(), get()) }
     viewModel<SignUpViewModel> { SignUpViewModel(get(), get()) }
     viewModel<SignInViewModel> { SignInViewModel(get(), get(), get()) }
     viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }

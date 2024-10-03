@@ -1,9 +1,9 @@
-package com.example.shoppieeclient.data.auth.remote.mapper.signup
+package com.example.shoppieeclient.data.auth.remote.mapper.auth.signup
 
-import com.example.shoppieeclient.data.auth.remote.dto.signup.Product
-import com.example.shoppieeclient.data.auth.remote.dto.signup.SignUpUserData
-import com.example.shoppieeclient.domain.auth.models.signup.ProductModel
-import com.example.shoppieeclient.domain.auth.models.signup.SignUpUserModel
+import com.example.shoppieeclient.data.auth.remote.dto.auth.signup.Product
+import com.example.shoppieeclient.data.auth.remote.dto.auth.signup.SignUpUserData
+import com.example.shoppieeclient.domain.auth.models.auth.signup.ProductModel
+import com.example.shoppieeclient.domain.auth.models.auth.signup.SignUpUserModel
 
 fun SignUpUserData.toSignUpUserModel(): SignUpUserModel {
     return SignUpUserModel(

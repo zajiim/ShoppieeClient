@@ -1,9 +1,9 @@
-package com.example.shoppieeclient.data.auth.remote.dto.signup
+package com.example.shoppieeclient.data.auth.remote.dto.auth.signin
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SignUpResponseDto(
+data class SignInResponseDto(
     val status: Int,
     val message: String,
     val result: Result?
@@ -11,16 +11,18 @@ data class SignUpResponseDto(
 
 @Serializable
 data class Result(
-    val data: SignUpUserData?
+    val data: SignInUserData,
 )
 
+
 @Serializable
-data class SignUpUserData (
+data class SignInUserData(
     val id: String,
     val name: String,
     val email: String,
     val type: String,
-    val cart: List<Product>
+    val cart: List<Product>,
+    val token: String
 )
 
 @Serializable

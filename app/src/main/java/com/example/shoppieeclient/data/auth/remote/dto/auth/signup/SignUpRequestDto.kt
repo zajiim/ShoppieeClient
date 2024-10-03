@@ -1,4 +1,4 @@
-package com.example.shoppieeclient.data.auth.remote.dto.signup
+package com.example.shoppieeclient.data.auth.remote.dto.auth.signup
 
 import kotlinx.serialization.Serializable
 

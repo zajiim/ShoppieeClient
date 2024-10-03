@@ -1,6 +1,6 @@
 package com.example.shoppieeclient.domain.auth.use_cases.auth.siginin
 
-import com.example.shoppieeclient.domain.auth.models.signin.SignInUserModel
+import com.example.shoppieeclient.domain.auth.models.auth.signin.SignInUserModel
 import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
 import com.example.shoppieeclient.domain.auth.use_cases.validations.auth.ValidatePasswordUseCase
 import com.example.shoppieeclient.utils.Resource

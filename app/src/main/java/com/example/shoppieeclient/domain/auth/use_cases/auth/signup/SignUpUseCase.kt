@@ -1,6 +1,6 @@
 package com.example.shoppieeclient.domain.auth.use_cases.auth.signup
 
-import com.example.shoppieeclient.domain.auth.models.signup.SignUpUserModel
+import com.example.shoppieeclient.domain.auth.models.auth.signup.SignUpUserModel
 import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
 import com.example.shoppieeclient.utils.Resource
 import kotlinx.coroutines.flow.Flow
