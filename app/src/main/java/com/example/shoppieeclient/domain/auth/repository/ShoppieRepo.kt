@@ -1,6 +1,5 @@
 package com.example.shoppieeclient.domain.auth.repository
 
-import com.example.shoppieeclient.domain.auth.models.auth.ValidUserModel
 import com.example.shoppieeclient.domain.auth.models.auth.signin.SignInUserModel
 import com.example.shoppieeclient.domain.auth.models.auth.signup.SignUpUserModel
 import com.example.shoppieeclient.utils.Resource
@@ -18,8 +17,4 @@ interface ShoppieRepo {
         email: String,
         password: String
     ): Flow<Resource<SignInUserModel>>
-
-    fun isTokenValid(
-        token: String
-    ): Flow<Resource<ValidUserModel>>
 }

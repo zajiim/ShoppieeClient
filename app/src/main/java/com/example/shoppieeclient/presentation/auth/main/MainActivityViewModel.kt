@@ -6,10 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.ReadOnBoardingUseCase
-import com.example.shoppieeclient.domain.auth.use_cases.onboarding.SaveOnBoardingUseCase
 import com.example.shoppieeclient.presentation.navigation.Destination
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,20 +20,19 @@ private const val TAG = "MainActivityViewModel"
 class MainActivityViewModel(
     private val readOnBoardingUseCase: ReadOnBoardingUseCase,
     private val readAppTokenUseCase: ReadAppTokenUseCase,
-    private val apiService: ShoppieApiService
 ) : ViewModel() {
     private val _splashCondition = MutableStateFlow(true)
     val splashCondition = _splashCondition.asStateFlow()
 
-//    private val _startDestination = MutableStateFlow<Destination>(Destination.Onboarding)
+    //    private val _startDestination = MutableStateFlow<Destination>(Destination.Onboarding)
 //    val startDestination = _startDestination.asStateFlow()
     var startDestination by mutableStateOf<Destination>(Destination.Onboarding)
-    private set
+        private set
 
     init {
         Log.e(TAG, "MainActivityViewModel invoked")
         viewModelScope.launch {
-            Log.e(TAG, "splashVal started: ${_splashCondition.value}", )
+            Log.e(TAG, "splashVal started: ${_splashCondition.value}")
             readOnBoardingUseCase().collect { onBoardingValue ->
                 Log.e(TAG, "onboarding value ==> $onBoardingValue")
                 if (onBoardingValue) {
@@ -46,9 +43,7 @@ class MainActivityViewModel(
 //                    startDestination = Destination.SignIn
                     val token = readAppTokenUseCase().firstOrNull()
 
-                    val isTokenValid = token?.let { apiService.isTokenValid(it) }
-                    Log.e(TAG, "isTokenValid: $isTokenValid")
-                    startDestination = if (isTokenValid?.status == 200) {
+                    startDestination = if (token.isNullOrEmpty().not()) {
                         Destination.Home
                     } else {
                         Destination.SignIn
@@ -57,7 +52,7 @@ class MainActivityViewModel(
                 }
                 delay(300)
                 _splashCondition.value = false
-                Log.e(TAG, "splashVal: ended ${_splashCondition.value}", )
+                Log.e(TAG, "splashVal: ended ${_splashCondition.value}")
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.example.shoppieeclient.data.auth.remote.api
 
-import com.example.shoppieeclient.data.auth.remote.dto.auth.ValidUserResponseDto
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signin.SignInResponseDto
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signin.SingInRequestDto
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signup.SignUpRequestDto
@@ -8,7 +7,6 @@ import com.example.shoppieeclient.data.auth.remote.dto.auth.signup.SignUpRespons
 import com.example.shoppieeclient.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -29,13 +27,6 @@ class ShoppieApiService(
         return client.post("${Constants.SHOPPIEE_URL}/signin") {
             contentType(ContentType.Application.Json)
             setBody(signInRequestDto)
-        }.body()
-    }
-
-    suspend fun isTokenValid(token: String): ValidUserResponseDto {
-        return client.post("${Constants.SHOPPIEE_URL}/isTokenValid") {
-            contentType(ContentType.Application.Json)
-            header("Authorization", "Bearer $token")
         }.body()
     }
 }
