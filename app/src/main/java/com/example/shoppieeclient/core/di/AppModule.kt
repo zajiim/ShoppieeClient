@@ -27,6 +27,9 @@ import com.example.shoppieeclient.presentation.auth.signin.SignInViewModel
 import com.example.shoppieeclient.presentation.auth.signup.SignUpViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -35,12 +38,15 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
 
+
+    //Unauthorized HttpClient
     single {
         HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -61,11 +67,42 @@ val appModule = module {
         }
     }
 
+    //Authorized HttpClient
+    single {
+        HttpClient(CIO) {
+            install(ContentNegotiation) {
+                json(Json {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                })
+            }
+            install(Auth) {
+                bearer {
+                    loadTokens {
+                        val token = get<ReadAppTokenUseCase>().invoke().firstOrNull()
+                        token?.let {
+                            BearerTokens(token, "")
+                        }
+                    }
+                }
+            }
+            install(Logging) {
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        println("Ktor Log(Authorized): $message")
+                    }
+                }
+                level = LogLevel.ALL
+            }
+        }
+    }
+
     single<LocalUserManager> { LocalUserManagerImpl(get()) }
     single { SaveOnBoardingUseCase(get()) }
     single { ReadOnBoardingUseCase(get()) }
     single { SaveTokenUseCase(get()) }
-    single { ReadAppTokenUseCase(get())}
+    single { ReadAppTokenUseCase(get()) }
 
     single { ValidateUserNameUseCase() }
     single { ValidateEmailUseCase() }
@@ -79,7 +116,8 @@ val appModule = module {
     single<NetworkConnectivityObserver> {
         NetworkConnectivityObserverImpl(
             context = get(),
-            scope = get())
+            scope = get()
+        )
     }
 
     // Provide ShoppieApiService
@@ -88,29 +126,39 @@ val appModule = module {
     // Provide Repository
     single<ShoppieRepo> { ShoppieeRepoImpl(get()) }
 
-    single { SignupValidationsUseCase(
-        validateUserName = get(),
-        validateEmail = get(),
-        validatePassword = get(),
-        validateConfirmPassword = get()
-    ) }
+    single {
+        SignupValidationsUseCase(
+            validateUserName = get(),
+            validateEmail = get(),
+            validatePassword = get(),
+            validateConfirmPassword = get()
+        )
+    }
 
-    single { SignInValidationsUseCases(
-        validateEmail = get(),
-        validatePassword = get()
-    ) }
+    single {
+        SignInValidationsUseCases(
+            validateEmail = get(),
+            validatePassword = get()
+        )
+    }
 
-    single { ForgotPasswordValidationUseCase(
-        validateEmail = get()
-    ) }
+    single {
+        ForgotPasswordValidationUseCase(
+            validateEmail = get()
+        )
+    }
 
-    single { SignUpUseCase(
-        repository = get()
-    ) }
+    single {
+        SignUpUseCase(
+            repository = get()
+        )
+    }
 
-    single { SignInUseCase(
-        repository = get()
-    ) }
+    single {
+        SignInUseCase(
+            repository = get()
+        )
+    }
 
 
 
