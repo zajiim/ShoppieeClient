@@ -2,22 +2,28 @@ package com.example.shoppieeclient.presentation.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityObserver
-import com.example.shoppieeclient.presentation.auth.forget_password.ForgotPasswordScreen
 import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnboardingScreen
-import com.example.shoppieeclient.presentation.auth.signin.SignInScreen
-import com.example.shoppieeclient.presentation.auth.signup.SignUpScreen
-import com.example.shoppieeclient.presentation.home.HomeScreen
+import com.example.shoppieeclient.presentation.home.bottom_nav_bar.ShoppieeBottomNavBar
+import com.example.shoppieeclient.presentation.navigation.auth.authNavGraph
+import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
+import com.example.shoppieeclient.presentation.navigation.main.homeNavGraph
 import org.koin.androidx.compose.koinViewModel
-import org.koin.java.KoinJavaComponent.inject
+
+
+private const val TAG = "ShoppieNavGraph"
 
 @Composable
 fun ShoppieNavGraph(
@@ -25,75 +31,58 @@ fun ShoppieNavGraph(
     mainActivityViewModel: MainActivityViewModel = koinViewModel(),
     connectivityObserver: NetworkConnectivityObserver
 ) {
-//    val startDestination by mainActivityViewModel.startDestination.collectAsState()
     val startDestination = mainActivityViewModel.startDestination
-    NavHost(navController = navController, startDestination = startDestination, enterTransition = {
-        slideIntoContainer(
-            AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(600)
-        )
-    }, exitTransition = {
-        slideOutOfContainer(
-            AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(600)
-        )
-    }, popEnterTransition = {
-        slideIntoContainer(
-            AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(600)
-        )
-    }, popExitTransition = {
-        slideOutOfContainer(
-            AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(600)
-        )
-    }) {
-        composable<Destination.Onboarding> {
-            val onBoardingViewModel: OnBoardingViewModel = koinViewModel()
-            OnboardingScreen(isLoading = onBoardingViewModel.onBoardingState.isLoading,
-                event = onBoardingViewModel::onEvent,
-                navigateToAuth = { navController.navigate(Destination.SignIn) })
-        }
 
-        composable<Destination.SignIn> {
-            SignInScreen(
-                onForgotPasswordClicked = {
-                navController.navigate(Destination.Forgot)
-            },
-                onSignUpClicked = {
-                navController.navigate(Destination.SignUp) {
-                    popUpTo(Destination.SignIn) { inclusive = false }
-                }
-            },
-                onSignInSuccessful = {
-                    navController.navigate(Destination.Home) {
-                        popUpTo(Destination.SignIn) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-                },
-                connectivityObserver = connectivityObserver
-            )
-        }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val mainDestinations = listOf(
+        Destination.Home,
+        Destination.Favorites,
+        Destination.Cart,
+        Destination.Notifications,
+        Destination.Profile
+    )
 
-        composable<Destination.SignUp> {
-            SignUpScreen(onSignInClicked = {
-//                    navController.navigateUp()
-                navController.navigate(Destination.SignIn) {
-                    launchSingleTop = true
-                    popUpTo(Destination.SignUp) { inclusive = true }
-                }
-            }, onBackClicked = {
-                navController.navigateUp()
+    Scaffold(bottomBar = {
+        if (mainDestinations.any { destination ->
+            currentDestination?.hasRoute(destination::class) == true
             })
-        }
+        ShoppieeBottomNavBar(navController)
+    }) { padding ->
+        NavHost(navController = navController,
+            startDestination = startDestination,
+            modifier = Modifier.padding(padding),
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(600)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(600)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(600)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(600)
+                )
+            }) {
+            composable<Graphs.OnBoarding> {
+                val onBoardingViewModel: OnBoardingViewModel = koinViewModel()
+                OnboardingScreen(isLoading = onBoardingViewModel.onBoardingState.isLoading,
+                    event = onBoardingViewModel::onEvent,
+                    navigateToAuth = { navController.navigate(Graphs.Auth) })
+            }
 
-        composable<Destination.Forgot> {
-            ForgotPasswordScreen(onBackClicked = {
-                navController.navigateUp()
-            })
-        }
+            authNavGraph(navController, connectivityObserver)
 
-        composable<Destination.Home> {
-            HomeScreen()
+            homeNavGraph(navController)
         }
-
     }
 }
+

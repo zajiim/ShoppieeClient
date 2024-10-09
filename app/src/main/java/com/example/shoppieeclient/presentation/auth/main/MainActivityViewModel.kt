@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.GraphicsContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.ReadOnBoardingUseCase
 import com.example.shoppieeclient.presentation.navigation.Destination
+import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,9 +26,7 @@ class MainActivityViewModel(
     private val _splashCondition = MutableStateFlow(true)
     val splashCondition = _splashCondition.asStateFlow()
 
-    //    private val _startDestination = MutableStateFlow<Destination>(Destination.Onboarding)
-//    val startDestination = _startDestination.asStateFlow()
-    var startDestination by mutableStateOf<Destination>(Destination.Onboarding)
+    var startDestination by mutableStateOf<Graphs>(Graphs.OnBoarding)
         private set
 
     init {
@@ -36,19 +36,18 @@ class MainActivityViewModel(
             readOnBoardingUseCase().collect { onBoardingValue ->
                 Log.e(TAG, "onboarding value ==> $onBoardingValue")
                 if (onBoardingValue) {
-//                    _startDestination.value = Destination.Onboarding
-                    startDestination = Destination.Onboarding
+                    startDestination = Graphs.OnBoarding
+//                    startDestination = Destination.Onboarding
                 } else {
-//                    _startDestination.value = Destination.SignIn
-//                    startDestination = Destination.SignIn
                     val token = readAppTokenUseCase().firstOrNull()
 
                     startDestination = if (token.isNullOrEmpty().not()) {
-                        Destination.Home
+                        Graphs.Home
+//                        Destination.Home
                     } else {
-                        Destination.SignIn
+                        Graphs.Auth
+//                        Destination.SignIn
                     }
-//                    startDestination = Destination.Home
                 }
                 delay(300)
                 _splashCondition.value = false

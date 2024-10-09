@@ -2,22 +2,26 @@ package com.example.shoppieeclient.presentation.navigation
 
 import kotlinx.serialization.Serializable
 
+
 @Serializable
-sealed class Destination {
+sealed class Destination() {
+    // Auth
     @Serializable
-    data object Onboarding : Destination()
+    object SignIn : Destination()
+    @Serializable
+    object SignUp : Destination()
+    @Serializable
+    object Forgot : Destination()
 
+    // Main
     @Serializable
-    data object SignIn : Destination()
-
+    object Home : Destination()
     @Serializable
-    data object SignUp : Destination()
-
+    object Notifications : Destination()
     @Serializable
-    data object Forgot : Destination()
-
+    object Cart : Destination()
     @Serializable
-    data object Home : Destination()
+    object Favorites : Destination()
+    @Serializable
+    object Profile : Destination()
 }
-
-
