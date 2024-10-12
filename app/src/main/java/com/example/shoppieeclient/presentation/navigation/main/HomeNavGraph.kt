@@ -4,8 +4,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.example.shoppieeclient.presentation.home.HomeScreen
 import com.example.shoppieeclient.presentation.home.cart.CartScreen
+import com.example.shoppieeclient.presentation.home.details.DetailsScreen
 import com.example.shoppieeclient.presentation.home.favorites.FavoriesScreen
 import com.example.shoppieeclient.presentation.home.notifications.NotificationsScreen
 import com.example.shoppieeclient.presentation.home.profile.ProfileScreen
@@ -20,8 +22,20 @@ fun NavGraphBuilder.homeNavGraph(
         startDestination = Destination.Home
     ) {
         composable<Destination.Home> {
-            HomeScreen()
+            HomeScreen(onNavigateToDetails = {
+                navController.navigate(
+                    Destination.Details(
+                        id = 1, name = "sajim"
+                    )
+                )
+            })
         }
+
+        composable<Destination.Details> { backStackEntry ->
+            val user = backStackEntry.toRoute<Destination.Details>()
+            DetailsScreen(userDetails = user)
+        }
+
         composable<Destination.Favorites> {
             FavoriesScreen()
         }

@@ -16,7 +16,9 @@ import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityOb
 import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnboardingScreen
+import com.example.shoppieeclient.presentation.home.bottom_nav_bar.CustomBottomNavBar
 import com.example.shoppieeclient.presentation.home.bottom_nav_bar.ShoppieeBottomNavBar
+import com.example.shoppieeclient.presentation.home.bottom_nav_bar.listRoutes
 import com.example.shoppieeclient.presentation.navigation.auth.authNavGraph
 import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
 import com.example.shoppieeclient.presentation.navigation.main.homeNavGraph
@@ -45,9 +47,13 @@ fun ShoppieNavGraph(
 
     Scaffold(bottomBar = {
         if (mainDestinations.any { destination ->
-            currentDestination?.hasRoute(destination::class) == true
+                currentDestination?.hasRoute(destination::class) == true
             })
-        ShoppieeBottomNavBar(navController)
+            CustomBottomNavBar(
+                navController = navController,
+                items = listRoutes
+                )
+//            ShoppieeBottomNavBar(navController)
     }) { padding ->
         NavHost(navController = navController,
             startDestination = startDestination,

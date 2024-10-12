@@ -35,8 +35,9 @@ fun ShoppieeBottomNavBar(
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
         bottomBarItems.forEach { screen ->
-            val isSelected =
-                currentDestination?.hierarchy?.any { item -> item.hasRoute(screen.destination::class) } == true
+//            val isSelected =
+//                currentDestination?.hierarchy?.any { item -> item.hasRoute(screen.destination::class) } == true
+            val isSelected = currentDestination?.hierarchy?.any { item -> item == screen.destination } == true
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {

@@ -24,4 +24,7 @@ sealed class Destination() {
     object Favorites : Destination()
     @Serializable
     object Profile : Destination()
+
+    @Serializable
+    data class Details(val id: Int, val name: String) : Destination()
 }
