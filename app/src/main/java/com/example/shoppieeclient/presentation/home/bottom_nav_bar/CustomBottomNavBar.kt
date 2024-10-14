@@ -10,26 +10,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.navigation.Destination
-import com.example.shoppieeclient.ui.theme.Primary
+import com.example.shoppieeclient.ui.theme.SelectedColor
+import com.example.shoppieeclient.ui.theme.UnSelectedColor
 
 @Composable
 fun CustomBottomNavBar(
@@ -41,10 +44,10 @@ fun CustomBottomNavBar(
     Box {
         IconButton(
             modifier = Modifier
-                .padding(top = 20.dp)
+                .padding(top = 32.dp)
                 .size(64.dp)
                 .clip(CircleShape)
-                .background(Primary)
+                .background(SelectedColor)
                 .padding(16.dp)
                 .align(Alignment.TopCenter),
             onClick = {
@@ -57,7 +60,8 @@ fun CustomBottomNavBar(
                 }
             }) {
             Icon(
-                imageVector = Icons.Default.ShoppingCart,
+                tint = Color.White,
+                painter = painterResource(R.drawable.ic_cart),
                 contentDescription = "Cart"
             )
         }
@@ -68,6 +72,7 @@ fun CustomBottomNavBar(
                 .safeDrawingPadding()
                 .fillMaxWidth()
                 .height(106.dp)
+//                .clip(CustomBottomNavigationShape())
                 .clip(CustomNavBarShape())
                 .background(Color.White)
         ) {
@@ -84,13 +89,18 @@ fun CustomBottomNavBar(
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
                 items.forEach { screen ->
-                    val isSelected =
-                        currentDestination?.hierarchy?.any { item -> item == screen.destination } == true
+//                    val isSelected =
+//                        currentDestination?.hierarchy?.any { item -> item == screen.destination } == true
+                    val isSelected = currentDestination?.hierarchy?.any { item -> item.hasRoute(screen.destination::class) } == true
                     NavigationBarItem(
                         selected = isSelected,
                         icon = {
-                            (screen.selectedIcon ?: screen.unSelectedIcon)?.let {
-                                Icon(it, contentDescription = screen.title)
+                            screen.icon?.let {
+                                Icon(
+                                    painter = painterResource(id = it),
+                                    contentDescription = screen.title,
+                                    tint = if (isSelected) SelectedColor else UnSelectedColor
+                                )
                             }
                         },
                         onClick = {
@@ -101,7 +111,13 @@ fun CustomBottomNavBar(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = SelectedColor,
+                            unselectedIconColor = UnSelectedColor,
+                            indicatorColor = Color.Transparent
+                        )
+
                     )
                 }
 

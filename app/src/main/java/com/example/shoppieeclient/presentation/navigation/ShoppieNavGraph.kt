@@ -1,12 +1,11 @@
 package com.example.shoppieeclient.presentation.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -17,7 +16,6 @@ import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnboardingScreen
 import com.example.shoppieeclient.presentation.home.bottom_nav_bar.CustomBottomNavBar
-import com.example.shoppieeclient.presentation.home.bottom_nav_bar.ShoppieeBottomNavBar
 import com.example.shoppieeclient.presentation.home.bottom_nav_bar.listRoutes
 import com.example.shoppieeclient.presentation.navigation.auth.authNavGraph
 import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
@@ -27,6 +25,7 @@ import org.koin.androidx.compose.koinViewModel
 
 private const val TAG = "ShoppieNavGraph"
 
+@SuppressLint("RestrictedApi", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ShoppieNavGraph(
     navController: NavHostController,
@@ -54,10 +53,10 @@ fun ShoppieNavGraph(
                 items = listRoutes
                 )
 //            ShoppieeBottomNavBar(navController)
-    }) { padding ->
+    }) {
         NavHost(navController = navController,
             startDestination = startDestination,
-            modifier = Modifier.padding(padding),
+
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(600)

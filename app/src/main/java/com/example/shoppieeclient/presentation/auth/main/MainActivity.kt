@@ -3,32 +3,21 @@ package com.example.shoppieeclient.presentation.auth.main
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeGesturesPadding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
-import com.example.shoppieeclient.domain.common.model.NetworkStatus
 import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityObserver
-import com.example.shoppieeclient.presentation.common.components.NetworkStatusBar
 import com.example.shoppieeclient.presentation.navigation.ShoppieNavGraph
 import com.example.shoppieeclient.ui.theme.ShoppieeClientTheme
-import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.example.shoppieeclient.R
 
 private const val TAG = "MainActivity"
 
@@ -41,7 +30,16 @@ class MainActivity : ComponentActivity() {
             Log.e(TAG, "onCreate: value ===> ${mainActivityViewModel.splashCondition.value}")
             mainActivityViewModel.splashCondition.value
         }
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(
+                scrim = ContextCompat.getColor(this, R.color.primary),
+                darkScrim = ContextCompat.getColor(this, R.color.primary)
+            ),
+            navigationBarStyle = SystemBarStyle.light(
+                scrim = ContextCompat.getColor(this, R.color.primary),
+                darkScrim = ContextCompat.getColor(this, R.color.primary)
+            )
+        )
         setContent {
 //            val status by connectivityObserver.networkStatus.collectAsState()
 //            var showMessageBar by rememberSaveable { mutableStateOf(false) }
