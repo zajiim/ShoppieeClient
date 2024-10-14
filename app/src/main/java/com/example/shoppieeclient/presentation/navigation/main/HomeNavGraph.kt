@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
-import com.example.shoppieeclient.presentation.home.HomeScreen
+import com.example.shoppieeclient.presentation.home.home.HomeScreen
 import com.example.shoppieeclient.presentation.home.cart.CartScreen
 import com.example.shoppieeclient.presentation.home.details.DetailsScreen
 import com.example.shoppieeclient.presentation.home.favorites.FavoriesScreen

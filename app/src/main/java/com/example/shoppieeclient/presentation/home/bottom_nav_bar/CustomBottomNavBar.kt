@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.presentation.home.bottom_nav_bar
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -7,7 +8,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.safeGesturesPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -34,6 +37,7 @@ import com.example.shoppieeclient.presentation.navigation.Destination
 import com.example.shoppieeclient.ui.theme.SelectedColor
 import com.example.shoppieeclient.ui.theme.UnSelectedColor
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun CustomBottomNavBar(
     navController: NavHostController,
@@ -44,11 +48,10 @@ fun CustomBottomNavBar(
     Box {
         IconButton(
             modifier = Modifier
-                .padding(top = 32.dp)
+                .padding(top = 24.dp)
                 .size(64.dp)
                 .clip(CircleShape)
                 .background(SelectedColor)
-                .padding(16.dp)
                 .align(Alignment.TopCenter),
             onClick = {
                 navController.navigate(Destination.Cart) {
@@ -69,7 +72,7 @@ fun CustomBottomNavBar(
 
         Box(
             modifier = modifier
-                .safeDrawingPadding()
+                .safeGesturesPadding()
                 .fillMaxWidth()
                 .height(106.dp)
 //                .clip(CustomBottomNavigationShape())
@@ -91,6 +94,7 @@ fun CustomBottomNavBar(
                 items.forEach { screen ->
 //                    val isSelected =
 //                        currentDestination?.hierarchy?.any { item -> item == screen.destination } == true
+
                     val isSelected = currentDestination?.hierarchy?.any { item -> item.hasRoute(screen.destination::class) } == true
                     NavigationBarItem(
                         selected = isSelected,
