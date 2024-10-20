@@ -31,28 +31,6 @@ fun ShoppieNavGraph(
 ) {
     val startDestination = mainActivityViewModel.startDestination
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-    val mainDestinations = listOf(
-        Destination.Home,
-        Destination.Favorites,
-        Destination.Cart,
-        Destination.Notifications,
-        Destination.Profile
-    )
-
-//    Scaffold(
-//        bottomBar = {
-//        if (mainDestinations.any { destination ->
-//                currentDestination?.hasRoute(destination::class) == true
-//            })
-//            CustomBottomNavBar(
-//                navController = navController,
-//                items = listRoutes
-//                )
-////            ShoppieeBottomNavBar(navController)
-//    }
-//    ) {
     CustomShoppieeScaffold(
         navController = navController
     ) {

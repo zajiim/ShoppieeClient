@@ -26,7 +26,11 @@ import coil.compose.AsyncImage
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.home.home.components.CustomSuggestionChip
 import com.example.shoppieeclient.presentation.home.home.components.CustomTopAppBar
+import com.example.shoppieeclient.ui.LocalIsMenuOpen
+import com.example.shoppieeclient.ui.LocalToggleMenu
 import com.example.shoppieeclient.utils.searchKeys
+
+private const val TAG = "HomeScreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -39,13 +43,13 @@ fun HomeScreen(
         mutableStateOf("")
     }
     var selectedChip by remember { mutableStateOf(searchKeys.keys.first()) }
+    val toggleMenu = LocalToggleMenu.current
+    val isMenuOpen = LocalIsMenuOpen.current
 
     LazyColumn {
         item {
             CustomTopAppBar(title = "Store Location", subTitle = "New Delhi", trailingIcon = {
-                IconButton(onClick = {
-
-                }) {
+                IconButton(onClick = toggleMenu) {
                     AsyncImage(R.drawable.ic_menu_home, contentDescription = null)
                 }
             }, leadingIcon = {
@@ -89,7 +93,5 @@ fun HomeScreen(
                 }
             }
         }
-
-        
     }
 }

@@ -14,6 +14,7 @@ import com.example.shoppieeclient.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.NoRouteToHostException
 
 private const val TAG = "SignInViewModel"
 class SignInViewModel(
@@ -76,6 +77,7 @@ class SignInViewModel(
                             )
                         }
                         is Resource.Error -> {
+                            Log.e(TAG, "Resource exception $result", )
                             signInFormState = signInFormState.copy(
                                 isLoading = false,
                                 isSignInSuccessful = false,
@@ -85,12 +87,15 @@ class SignInViewModel(
                         }
                     }
                 } catch (e: Exception) {
+                    Log.e(TAG, "common exception: $e", )
                     signInFormState = signInFormState.copy(
                         isLoading = false,
                         isSignInSuccessful = false,
                         alertDialog = result.message,
                         alertButtonString = "Go back"
                     )
+                } catch (e: NoRouteToHostException) {
+                    Log.e(TAG, "errorr: $e", )
                 }
             }
         }
