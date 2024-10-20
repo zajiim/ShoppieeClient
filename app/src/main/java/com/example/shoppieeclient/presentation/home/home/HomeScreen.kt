@@ -1,9 +1,12 @@
 package com.example.shoppieeclient.presentation.home.home
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,7 +24,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.shoppieeclient.R
+import com.example.shoppieeclient.presentation.home.home.components.CustomSuggestionChip
 import com.example.shoppieeclient.presentation.home.home.components.CustomTopAppBar
+import com.example.shoppieeclient.utils.searchKeys
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -33,33 +38,28 @@ fun HomeScreen(
     var query by remember {
         mutableStateOf("")
     }
+    var selectedChip by remember { mutableStateOf(searchKeys.keys.first()) }
+
     LazyColumn {
         item {
-            CustomTopAppBar(
-                title = "Store Location",
-                subTitle = "New Delhi",
-                trailingIcon = {
-                    IconButton(onClick = {
+            CustomTopAppBar(title = "Store Location", subTitle = "New Delhi", trailingIcon = {
+                IconButton(onClick = {
 
-                    }) {
-                        AsyncImage(R.drawable.ic_menu_home, contentDescription = null)
-                    }
-                },
-                leadingIcon = {
-                    IconButton(onClick = {
-
-                    }) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_cart),
-                            contentDescription = null
-                        )
-                    }
+                }) {
+                    AsyncImage(R.drawable.ic_menu_home, contentDescription = null)
                 }
-            )
+            }, leadingIcon = {
+                IconButton(onClick = {
+
+                }) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_cart), contentDescription = null
+                    )
+                }
+            })
         }
         item {
-            SearchBar(
-                modifier = Modifier.padding(top = 16.dp),
+            SearchBar(modifier = Modifier.padding(top = 16.dp),
                 query = query,
                 onQueryChange = { query = it },
                 placeholder = { Text(text = "Looking for shoes?") },
@@ -71,8 +71,25 @@ fun HomeScreen(
                 onSearch = {},
                 active = false,
                 onActiveChange = {},
-                content = {}
-            )
+                content = {})
         }
+        item {
+            LazyRow(
+                contentPadding = PaddingValues(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(searchKeys.toList()) { (brandName, brandIcon) ->
+                    CustomSuggestionChip(brand = brandName,
+                        iconResId = brandIcon,
+                        isExpanded = selectedChip == brandName,
+                        onClick = {
+                            selectedChip = brandName
+                        })
+
+                }
+            }
+        }
+
+        
     }
 }

@@ -31,53 +31,19 @@ class MainActivity : ComponentActivity() {
             mainActivityViewModel.splashCondition.value
         }
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(
-                scrim = ContextCompat.getColor(this, R.color.primary),
-                darkScrim = ContextCompat.getColor(this, R.color.primary)
-            ),
-            navigationBarStyle = SystemBarStyle.light(
-                scrim = ContextCompat.getColor(this, R.color.primary),
-                darkScrim = ContextCompat.getColor(this, R.color.primary)
-            )
+//            statusBarStyle = SystemBarStyle.light(
+//                scrim = ContextCompat.getColor(this, R.color.primary),
+//                darkScrim = ContextCompat.getColor(this, R.color.primary)
+//            ),
+//            navigationBarStyle = SystemBarStyle.light(
+//                scrim = ContextCompat.getColor(this, R.color.primary),
+//                darkScrim = ContextCompat.getColor(this, R.color.primary)
+//            )
         )
         setContent {
-//            val status by connectivityObserver.networkStatus.collectAsState()
-//            var showMessageBar by rememberSaveable { mutableStateOf(false) }
-//            var message by rememberSaveable { mutableStateOf("") }
-//            var backgroundColor by remember { mutableStateOf(Color.Red) }
-
-//            LaunchedEffect(key1 = status) {
-//                when (status) {
-//                    NetworkStatus.Connected -> {
-//                        message = "Connected To Internet"
-//                        backgroundColor = Color.Green
-//                        delay(timeMillis = 2000)
-//                        showMessageBar = false
-//                    }
-//
-//                    NetworkStatus.Disconnected -> {
-//                        showMessageBar = true
-//                        message = "No Internet Connection"
-//                        backgroundColor = Color.Red
-//                    }
-//                }
-//            }
-
-
             ShoppieeClientTheme {
-//                val snackBarHostState = remember { SnackbarHostState() }
-
                 Scaffold(
-//                    snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
                     modifier = Modifier.fillMaxSize(),
-//                    bottomBar = {
-//                        NetworkStatusBar(
-//                            modifier = Modifier.safeGesturesPadding(),
-//                            showMessageBar = showMessageBar,
-//                            message = message,
-//                            backgroundColor = backgroundColor
-//                        )
-//                    }
                 ) { innerPadding ->
                     val navController = rememberNavController()
                     ShoppieNavGraph(

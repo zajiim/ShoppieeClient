@@ -3,10 +3,8 @@ package com.example.shoppieeclient.presentation.navigation
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,8 +13,7 @@ import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityOb
 import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnboardingScreen
-import com.example.shoppieeclient.presentation.home.bottom_nav_bar.CustomBottomNavBar
-import com.example.shoppieeclient.presentation.home.bottom_nav_bar.listRoutes
+import com.example.shoppieeclient.presentation.home.components.CustomShoppieeScaffold
 import com.example.shoppieeclient.presentation.navigation.auth.authNavGraph
 import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
 import com.example.shoppieeclient.presentation.navigation.main.homeNavGraph
@@ -44,35 +41,36 @@ fun ShoppieNavGraph(
         Destination.Profile
     )
 
-    Scaffold(bottomBar = {
-        if (mainDestinations.any { destination ->
-                currentDestination?.hasRoute(destination::class) == true
-            })
-            CustomBottomNavBar(
-                navController = navController,
-                items = listRoutes
-                )
-//            ShoppieeBottomNavBar(navController)
-    }) {
-        NavHost(navController = navController,
-            startDestination = startDestination,
+//    Scaffold(
+//        bottomBar = {
+//        if (mainDestinations.any { destination ->
+//                currentDestination?.hasRoute(destination::class) == true
+//            })
+//            CustomBottomNavBar(
+//                navController = navController,
+//                items = listRoutes
+//                )
+////            ShoppieeBottomNavBar(navController)
+//    }
+//    ) {
+    CustomShoppieeScaffold(
+        navController = navController
+    ) {
+        NavHost(navController = navController, startDestination = startDestination,
 
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(600)
                 )
-            },
-            exitTransition = {
+            }, exitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(600)
                 )
-            },
-            popEnterTransition = {
+            }, popEnterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(600)
                 )
-            },
-            popExitTransition = {
+            }, popExitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(600)
                 )
