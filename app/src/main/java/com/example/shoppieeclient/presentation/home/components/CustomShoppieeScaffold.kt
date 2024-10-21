@@ -18,8 +18,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -62,7 +65,7 @@ import com.example.shoppieeclient.ui.theme.ScaffoldTextColorFaded
 @Composable
 fun CustomShoppieeScaffold(
     navController: NavHostController,
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
     val displayMetrics = context.resources.displayMetrics
@@ -76,35 +79,36 @@ fun CustomShoppieeScaffold(
     )
     CompositionLocalProvider(
         LocalIsMenuOpen provides isMenuOpen,
-        LocalToggleMenu provides {isMenuOpen = !isMenuOpen}
+        LocalToggleMenu provides { isMenuOpen = !isMenuOpen }
     ) {
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        SideMenu(
-            alpha = animatedProgress, onNavigate = {
-                isMenuOpen = false
-                navController.navigate(it)
-            }, width = width
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            SideMenu(
+                alpha = animatedProgress, onNavigate = {
+                    isMenuOpen = false
+                    navController.navigate(it)
+                }, width = width
+            )
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .scale(1f - 0.26f * animatedProgress)
-                .offset(
-                    x = (width * 0.6f * animatedProgress), y = (height * 0.06f * animatedProgress)
-                )
-                .rotate(-6.62f * animatedProgress)
-                .clip(shape = RoundedCornerShape(25.dp * animatedProgress))
-        ) {
-            MainContent(
-                navController = navController,
-                content = content,
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .scale(1f - 0.26f * animatedProgress)
+                    .offset(
+                        x = (width * 0.6f * animatedProgress),
+                        y = (height * 0.06f * animatedProgress)
+                    )
+                    .rotate(-6.62f * animatedProgress)
+                    .clip(shape = RoundedCornerShape(25.dp * animatedProgress))
+            ) {
+                MainContent(
+                    navController = navController,
+                    content = content,
 //                isMenuOpen = isMenuOpen,
 //                onToggleMenu = { isMenuOpen = !isMenuOpen }
-            )
+                )
+            }
         }
-    }
 
     }
 
@@ -112,19 +116,18 @@ fun CustomShoppieeScaffold(
 }
 
 
-@SuppressLint("RestrictedApi")
+@SuppressLint("RestrictedApi", "UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContent(
     navController: NavHostController,
-    content: @Composable (PaddingValues) -> Unit,
+    content: @Composable () -> Unit,
 //    isMenuOpen: Boolean,
 //    onToggleMenu: () -> Unit
 ) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-//    val showTopAppBar = currentDestination?.hasRoute(Destination.Home::class)
     val mainDestinations = listOf(
         Destination.Home,
         Destination.Favorites,
@@ -151,9 +154,8 @@ fun MainContent(
                     navController = navController, items = listRoutes
                 )
             }
-        }) { innerPadding ->
-
-            content(innerPadding)
+        }) {
+        content()
 
     }
 }
@@ -166,6 +168,7 @@ fun SideMenu(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .background(ScaffoldBgColor)
             .padding(horizontal = 20.dp)
             .graphicsLayer(alpha = alpha)
@@ -183,18 +186,19 @@ fun SideMenu(
         Text(
             text = "Hey, 👋",
             color = ScaffoldTextColorFaded,
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.titleSmall
         )
         Spacer(Modifier.height(6.dp))
         Text(
             text = "Alisson Becker",
             color = Color.White,
-            style = MaterialTheme.typography.headlineLarge
+            style = MaterialTheme.typography.bodyMedium
         )
         Spacer(Modifier.height(50.dp))
 
         listRoutes.forEach { item ->
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable {
                 onNavigate(item.destination)
             }) {
                 IconButton(onClick = { }) {
@@ -221,7 +225,7 @@ fun SideMenu(
             Modifier
                 .height(2.dp)
                 .background(ScaffoldTextColorFaded)
-                .width(width * 0.25f)
+                .width(width * 0.4f)
         )
         Spacer(Modifier.height(50.dp))
 

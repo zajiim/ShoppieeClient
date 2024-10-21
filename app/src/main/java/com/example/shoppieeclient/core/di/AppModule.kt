@@ -25,6 +25,7 @@ import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewModel
 import com.example.shoppieeclient.presentation.auth.signin.SignInViewModel
 import com.example.shoppieeclient.presentation.auth.signup.SignUpViewModel
+import com.example.shoppieeclient.presentation.home.home.HomeViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.auth.Auth
@@ -167,4 +168,5 @@ val appModule = module {
     viewModel<SignUpViewModel> { SignUpViewModel(get(), get()) }
     viewModel<SignInViewModel> { SignInViewModel(get(), get(), get()) }
     viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }
+    viewModel<HomeViewModel>{ HomeViewModel() }
 }

@@ -3,6 +3,8 @@ package com.example.shoppieeclient.presentation.home.home
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -29,6 +31,10 @@ import com.example.shoppieeclient.presentation.home.home.components.CustomTopApp
 import com.example.shoppieeclient.ui.LocalIsMenuOpen
 import com.example.shoppieeclient.ui.LocalToggleMenu
 import com.example.shoppieeclient.utils.searchKeys
+import org.koin.androidx.compose.koinViewModel
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+
 
 private const val TAG = "HomeScreen"
 
@@ -36,19 +42,20 @@ private const val TAG = "HomeScreen"
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
+    homeViewModel: HomeViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
     onNavigateToDetails: () -> Unit,
 ) {
-    var query by remember {
-        mutableStateOf("")
-    }
-    var selectedChip by remember { mutableStateOf(searchKeys.keys.first()) }
     val toggleMenu = LocalToggleMenu.current
     val isMenuOpen = LocalIsMenuOpen.current
+    val state = homeViewModel.uiState
 
-    LazyColumn {
+    LazyColumn(
+        modifier = modifier.fillMaxSize().padding(horizontal = 20.dp),
+        userScrollEnabled = !isMenuOpen
+    ) {
         item {
-            CustomTopAppBar(title = "Store Location", subTitle = "New Delhi", trailingIcon = {
+            CustomTopAppBar(title = "Store Location", subTitle = state.storeLocation, trailingIcon = {
                 IconButton(onClick = toggleMenu) {
                     AsyncImage(R.drawable.ic_menu_home, contentDescription = null)
                 }
@@ -63,9 +70,10 @@ fun HomeScreen(
             })
         }
         item {
-            SearchBar(modifier = Modifier.padding(top = 16.dp),
-                query = query,
-                onQueryChange = { query = it },
+            SearchBar(
+                modifier = Modifier.fillMaxWidth(),
+                query = state.query,
+                onQueryChange = { homeViewModel.onEvent(HomeEvents.OnQueryChange(it)) },
                 placeholder = { Text(text = "Looking for shoes?") },
                 leadingIcon = {
                     Icon(
@@ -80,14 +88,18 @@ fun HomeScreen(
         item {
             LazyRow(
                 contentPadding = PaddingValues(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                userScrollEnabled = !isMenuOpen
             ) {
-                items(searchKeys.toList()) { (brandName, brandIcon) ->
-                    CustomSuggestionChip(brand = brandName,
+                items(state.brandsList) { (brandName, brandIcon) ->
+                    CustomSuggestionChip(
+                        brand = brandName,
                         iconResId = brandIcon,
-                        isExpanded = selectedChip == brandName,
+                        isExpanded = state.selectedChip == brandName,
                         onClick = {
-                            selectedChip = brandName
+                            if (!isMenuOpen) {
+                                homeViewModel.onEvent(HomeEvents.OnChipSelected(brandName))
+                            }
                         })
 
                 }

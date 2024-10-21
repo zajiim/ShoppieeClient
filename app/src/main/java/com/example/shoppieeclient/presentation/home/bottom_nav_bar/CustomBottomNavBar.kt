@@ -4,9 +4,15 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -23,9 +29,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -44,11 +52,16 @@ fun CustomBottomNavBar(
     modifier: Modifier = Modifier,
     items: List<BottomBarScreen>
 ) {
+    val context = LocalContext.current
+    val window = (context as? android.app.Activity)?.window
+    window?.let {
+        WindowCompat.setDecorFitsSystemWindows(it, false)
+    }
+    val bottomBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Box {
         IconButton(
             modifier = Modifier
-                .padding(top = 24.dp)
                 .size(64.dp)
                 .clip(CircleShape)
                 .background(SelectedColor)
@@ -72,11 +85,11 @@ fun CustomBottomNavBar(
 
         Box(
             modifier = modifier
-                .safeGesturesPadding()
+                .padding(bottom = bottomBarHeight)
                 .fillMaxWidth()
                 .height(106.dp)
-//                .clip(CustomBottomNavigationShape())
-                .clip(CustomNavBarShape())
+                .clip(CustomBottomNavigationShape())
+//                .clip(CustomNavBarShape())
                 .background(Color.White)
         ) {
 
@@ -108,12 +121,20 @@ fun CustomBottomNavBar(
                             }
                         },
                         onClick = {
-                            navController.navigate(screen.destination) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                            if (screen.destination == Destination.Home) {
+                                navController.navigate(Destination.Home) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        inclusive = true
+                                    }
                                 }
-                                launchSingleTop = true
-                                restoreState = true
+                            } else {
+                                navController.navigate(screen.destination) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         },
                         colors = NavigationBarItemDefaults.colors(
