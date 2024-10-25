@@ -3,8 +3,10 @@ package com.example.shoppieeclient.presentation.home.home
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -17,10 +19,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -28,12 +26,10 @@ import coil.compose.AsyncImage
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.home.home.components.CustomSuggestionChip
 import com.example.shoppieeclient.presentation.home.home.components.CustomTopAppBar
+import com.example.shoppieeclient.presentation.home.home.components.ShoppieeShoesItem
 import com.example.shoppieeclient.ui.LocalIsMenuOpen
 import com.example.shoppieeclient.ui.LocalToggleMenu
-import com.example.shoppieeclient.utils.searchKeys
 import org.koin.androidx.compose.koinViewModel
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 
 
 private const val TAG = "HomeScreen"
@@ -51,11 +47,15 @@ fun HomeScreen(
     val state = homeViewModel.uiState
 
     LazyColumn(
-        modifier = modifier.fillMaxSize().padding(horizontal = 20.dp),
+        modifier = modifier.fillMaxSize(),
         userScrollEnabled = !isMenuOpen
     ) {
         item {
-            CustomTopAppBar(title = "Store Location", subTitle = state.storeLocation, trailingIcon = {
+            CustomTopAppBar(
+                modifier = modifier,
+                title = "Store Location",
+                subTitle = state.storeLocation,
+                trailingIcon = {
                 IconButton(onClick = toggleMenu) {
                     AsyncImage(R.drawable.ic_menu_home, contentDescription = null)
                 }
@@ -71,7 +71,7 @@ fun HomeScreen(
         }
         item {
             SearchBar(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                 query = state.query,
                 onQueryChange = { homeViewModel.onEvent(HomeEvents.OnQueryChange(it)) },
                 placeholder = { Text(text = "Looking for shoes?") },
@@ -87,7 +87,7 @@ fun HomeScreen(
         }
         item {
             LazyRow(
-                contentPadding = PaddingValues(10.dp),
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 userScrollEnabled = !isMenuOpen
             ) {
@@ -103,6 +103,17 @@ fun HomeScreen(
                         })
 
                 }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            state.homeItemsList?.popularItemsModel?.let {
+                ShoppieeShoesItem(
+                    leadingTitle = "Popular items",
+                    trailingTitle = "See more",
+                    isLoading = state.isLoading,
+                    shoeItems = it
+                )
             }
         }
     }

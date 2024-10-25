@@ -1,15 +1,19 @@
 package com.example.shoppieeclient.core.di
 
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
+import com.example.shoppieeclient.data.auth.remote.api.ShoppieeHomeApiService
+import com.example.shoppieeclient.data.auth.repository.ShoppieeHomeRepoImpl
 import com.example.shoppieeclient.data.auth.repository.ShoppieeRepoImpl
 import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObserverImpl
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
+import com.example.shoppieeclient.domain.auth.repository.home.ShoppieeHomeRepo
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.signup.SignUpUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.home.GetHomeApiUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.ReadOnBoardingUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.SaveOnBoardingUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.auth.ValidateConfirmPasswordUseCase
@@ -109,7 +113,6 @@ val appModule = module {
     single { ValidateEmailUseCase() }
     single { ValidatePasswordUseCase() }
     single { ValidateConfirmPasswordUseCase() }
-
     // Network connectivity
     single { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
 
@@ -123,9 +126,11 @@ val appModule = module {
 
     // Provide ShoppieApiService
     single { ShoppieApiService(get()) }
+    single { ShoppieeHomeApiService(get()) }
 
     // Provide Repository
     single<ShoppieRepo> { ShoppieeRepoImpl(get()) }
+    single<ShoppieeHomeRepo> { ShoppieeHomeRepoImpl(get()) }
 
     single {
         SignupValidationsUseCase(
@@ -161,6 +166,12 @@ val appModule = module {
         )
     }
 
+    single {
+        GetHomeApiUseCase(
+            shoppieeHomeRepo = get()
+        )
+    }
+
 
 
     viewModel<OnBoardingViewModel> { OnBoardingViewModel(get()) }
@@ -168,5 +179,5 @@ val appModule = module {
     viewModel<SignUpViewModel> { SignUpViewModel(get(), get()) }
     viewModel<SignInViewModel> { SignInViewModel(get(), get(), get()) }
     viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }
-    viewModel<HomeViewModel>{ HomeViewModel() }
+    viewModel<HomeViewModel>{ HomeViewModel(getHomeApiUseCase = get()) }
 }

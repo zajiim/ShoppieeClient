@@ -22,13 +22,17 @@ import coil.compose.AsyncImage
 import com.example.shoppieeclient.ui.theme.Primary
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.alpha
+import com.example.shoppieeclient.ui.theme.PrimaryBlue
 
 @Composable
 fun CustomSuggestionChip(
-    brand: String, iconResId: Int, isExpanded: Boolean, onClick: () -> Unit
+    brand: String,
+    iconResId: Int,
+    isExpanded: Boolean,
+    onClick: () -> Unit
 ) {
     val backgroundColor by animateColorAsState(
-        targetValue = if (isExpanded) Primary else Color.White,
+        targetValue = if (isExpanded) PrimaryBlue else Color.White,
         label = "",
     )
 
