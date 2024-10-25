@@ -1,8 +1,8 @@
-package com.example.shoppieeclient.data.auth.remote.mapper.home
+package com.example.shoppieeclient.data.home.remote.mapper.home
 
-import com.example.shoppieeclient.data.auth.remote.dto.home.HomeResponseDto
-import com.example.shoppieeclient.data.auth.remote.dto.home.ProductDto
-import com.example.shoppieeclient.data.auth.remote.dto.home.ResultDto
+import com.example.shoppieeclient.data.home.remote.dto.home.HomeResponseDto
+import com.example.shoppieeclient.data.home.remote.dto.home.ProductDto
+import com.example.shoppieeclient.data.home.remote.dto.home.ResultDto
 import com.example.shoppieeclient.domain.auth.models.home.HomeProductModel
 import com.example.shoppieeclient.domain.auth.models.home.HomeResultModel
 

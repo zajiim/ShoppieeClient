@@ -1,8 +1,8 @@
-package com.example.shoppieeclient.data.auth.repository
+package com.example.shoppieeclient.data.home.repository
 
 import android.util.Log
-import com.example.shoppieeclient.data.auth.remote.api.ShoppieeHomeApiService
-import com.example.shoppieeclient.data.auth.remote.mapper.home.toHomeResultModel
+import com.example.shoppieeclient.data.home.remote.api.ShoppieeHomeApiService
+import com.example.shoppieeclient.data.home.remote.mapper.home.toHomeResultModel
 import com.example.shoppieeclient.domain.auth.models.home.HomeResultModel
 import com.example.shoppieeclient.domain.auth.repository.home.ShoppieeHomeRepo
 import com.example.shoppieeclient.utils.Resource

@@ -1,6 +1,6 @@
-package com.example.shoppieeclient.data.auth.remote.api
+package com.example.shoppieeclient.data.home.remote.api
 
-import com.example.shoppieeclient.data.auth.remote.dto.home.HomeResponseDto
+import com.example.shoppieeclient.data.home.remote.dto.home.HomeResponseDto
 import com.example.shoppieeclient.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

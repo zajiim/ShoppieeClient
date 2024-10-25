@@ -1,8 +1,8 @@
 package com.example.shoppieeclient.core.di
 
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
-import com.example.shoppieeclient.data.auth.remote.api.ShoppieeHomeApiService
-import com.example.shoppieeclient.data.auth.repository.ShoppieeHomeRepoImpl
+import com.example.shoppieeclient.data.home.remote.api.ShoppieeHomeApiService
+import com.example.shoppieeclient.data.home.repository.ShoppieeHomeRepoImpl
 import com.example.shoppieeclient.data.auth.repository.ShoppieeRepoImpl
 import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObserverImpl
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
