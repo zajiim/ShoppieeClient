@@ -55,21 +55,24 @@ class HomeViewModel(
                     is Resource.Error -> {
                         uiState = uiState.copy(
                             homeItemsList = null,
-                            isLoading = false
+                            isLoading = false,
+                            homeError = result.message
                         )
                     }
 
                     is Resource.Loading -> {
                         uiState = uiState.copy(
                             homeItemsList = null,
-                            isLoading = true
+                            isLoading = true,
+                            homeError = null
                         )
                     }
 
                     is Resource.Success -> {
                         uiState = uiState.copy(
                             homeItemsList = result.data,
-                            isLoading = false
+                            isLoading = false,
+                            homeError = null
                         )
                     }
                 }

@@ -23,51 +23,55 @@ fun ShoppieeShoesItem(
     modifier: Modifier = Modifier,
     leadingTitle: String,
     trailingTitle: String,
-    shoeItems: List<HomeProductModel>,
+    shoeItems: List<HomeProductModel>?,
     isLoading: Boolean,
+    userScrollable: Boolean
 //    onItemClick: (String) -> Unit,
 ) {
     Column(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = leadingTitle,
-                style = MaterialTheme.typography.bodyMedium.copy(color = TitleColor)
-            )
-            Text(
-                text = trailingTitle,
-                style = MaterialTheme.typography.bodySmall.copy(color = Primary)
-            )
-        }
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(horizontal = 20.dp)
-        ) {
-            if (isLoading) {
-                items(3) {
-                    ShoeCard(
-                        isLoading = true
-                    )
+        if (!shoeItems.isNullOrEmpty()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = leadingTitle,
+                    style = MaterialTheme.typography.bodyMedium.copy(color = TitleColor)
+                )
+                Text(
+                    text = trailingTitle,
+                    style = MaterialTheme.typography.bodySmall.copy(color = Primary)
+                )
+            }
+
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(horizontal = 20.dp),
+                userScrollEnabled = userScrollable
+            ) {
+                if (isLoading) {
+                    items(3) {
+                        ShoeCard(
+                            isLoading = true
+                        )
+                    }
+                } else {
+                    items(shoeItems) { shoe ->
+                        ShoeCard(
+                            shoe = shoe,
+                            isLoading = false,
+                            onClick = { }
+
+                        )
+
+                    }
+
                 }
-            } else {
-                items(shoeItems) { shoe ->
-                    ShoeCard(
-                        shoe = shoe,
-                        isLoading = false,
-                        onClick = { }
-
-                    )
-
-                }
-
             }
         }
     }
-
 }

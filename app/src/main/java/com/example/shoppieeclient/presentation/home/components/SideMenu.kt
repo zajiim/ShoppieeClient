@@ -75,7 +75,7 @@ fun SideMenu(
                 modifier = Modifier.clickable {
                     onNavigate(item.destination)
                 }) {
-                IconButton(onClick = { }) {
+                IconButton(onClick = { onNavigate(item.destination) }) {
                     when {
                         item.title == "Cart" -> Icon(
                             painter = painterResource(id = R.drawable.ic_cart),

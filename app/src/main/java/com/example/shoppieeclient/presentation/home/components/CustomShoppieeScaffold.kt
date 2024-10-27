@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -43,6 +44,7 @@ fun CustomShoppieeScaffold(
         animationSpec = tween(durationMillis = 500),
         label = "collapse animation"
     )
+    val interactionSource = remember { MutableInteractionSource() }
     CompositionLocalProvider(
         LocalIsMenuOpen provides isMenuOpen,
         LocalToggleMenu provides { isMenuOpen = !isMenuOpen }
@@ -66,7 +68,10 @@ fun CustomShoppieeScaffold(
                     )
                     .rotate(-6.62f * animatedProgress)
                     .clip(shape = RoundedCornerShape(25.dp * animatedProgress))
-                    .clickable {
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null
+                    ) {
                         if (isMenuOpen) {
                             isMenuOpen = false
                         }

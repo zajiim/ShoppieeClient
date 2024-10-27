@@ -11,4 +11,5 @@ data class HomeStates(
     val storeLocation: String = "New Delhi",
     val brandsList: List<Pair<String, Int>> = emptyList(),
     val homeItemsList: HomeResultModel? = null,
+    val homeError: String? = null
 )

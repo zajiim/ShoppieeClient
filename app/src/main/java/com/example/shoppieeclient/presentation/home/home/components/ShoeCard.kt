@@ -45,7 +45,7 @@ fun ShoeCard(
     Box(
         modifier = Modifier.width(220.dp).height(220.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
+            .background(White)
             .clickable{onClick()}
     ) {
         if (isLoading) {
