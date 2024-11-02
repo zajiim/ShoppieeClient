@@ -2,6 +2,7 @@ package com.example.shoppieeclient.presentation.home.home
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,112 +43,109 @@ private const val TAG = "HomeScreen"
 fun HomeScreen(
     homeViewModel: HomeViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
-    onNavigateToDetails: () -> Unit,
+    onNavigateToDetails: (String) -> Unit,
 ) {
     val toggleMenu = LocalToggleMenu.current
     val isMenuOpen = LocalIsMenuOpen.current
     val state = homeViewModel.uiState
 
-
-    if (state.homeError != null) {
-        CustomNoInternet(
-            modifier = modifier.fillMaxSize(),
-            message = state.homeError,
-        )
-    } else {
-        LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            userScrollEnabled = !isMenuOpen
-        ) {
-            item {
-                CustomTopAppBar(
-                    modifier = modifier,
-                    title = "Store Location",
-                    subTitle = state.storeLocation,
-                    trailingIcon = {
-                        IconButton(onClick = toggleMenu) {
-                            AsyncImage(R.drawable.ic_menu_home, contentDescription = null)
-                        }
-                    }, leadingIcon = {
-                        IconButton(onClick = {
-
-                        }) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_cart),
-                                contentDescription = null
-                            )
-                        }
-                    })
-            }
-            item {
-                SearchBar(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-                    query = state.query,
-                    onQueryChange = { homeViewModel.onEvent(HomeEvents.OnQueryChange(it)) },
-                    placeholder = { Text(text = "Looking for shoes?") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search, contentDescription = "search"
-                        )
-                    },
-                    onSearch = {},
-                    active = false,
-                    onActiveChange = {},
-                    content = {})
-            }
-            item {
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    userScrollEnabled = !isMenuOpen
-                ) {
-                    items(state.brandsList) { (brandName, brandIcon) ->
-                        CustomSuggestionChip(
-                            brand = brandName,
-                            iconResId = brandIcon,
-                            isExpanded = state.selectedChip == brandName,
-                            onClick = {
-                                if (!isMenuOpen) {
-                                    homeViewModel.onEvent(HomeEvents.OnChipSelected(brandName))
-                                }
-                            })
-
+    LazyColumn(
+        modifier = modifier.fillMaxSize(), userScrollEnabled = !isMenuOpen
+    ) {
+        item {
+            CustomTopAppBar(modifier = modifier,
+                title = "Store Location",
+                subTitle = state.storeLocation,
+                trailingIcon = {
+                    IconButton(onClick = toggleMenu) {
+                        AsyncImage(R.drawable.ic_menu_home, contentDescription = null)
                     }
-                }
+                },
+                leadingIcon = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_cart), contentDescription = null
+                        )
+                    }
+                })
+        }
+        item {
+            if (state.homeError != null) {
+                CustomNoInternet(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 20.dp),
+                    message = state.homeError,
+                )
+            } else {
+                Column {
+                    SearchBar(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                        query = state.query,
+                        onQueryChange = { homeViewModel.onEvent(HomeEvents.OnQueryChange(it)) },
+                        placeholder = { Text(text = "Looking for shoes?") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search, contentDescription = "search"
+                            )
+                        },
+                        onSearch = {},
+                        active = false,
+                        onActiveChange = {},
+                        content = {})
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    LazyRow(
+                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        userScrollEnabled = !isMenuOpen
+                    ) {
+                        items(state.brandsList) { (brandName, brandIcon) ->
+                            CustomSuggestionChip(brand = brandName,
+                                iconResId = brandIcon,
+                                isExpanded = state.selectedChip == brandName,
+                                onClick = {
+                                    if (!isMenuOpen) {
+                                        homeViewModel.onEvent(HomeEvents.OnChipSelected(brandName))
+                                    }
+                                })
+                        }
+                    }
 
-                state.homeItemsList?.popularItemsModel?.let {
-                    ShoppieeShoesItem(
-                        leadingTitle = "Popular items",
-                        trailingTitle = "See more",
-                        isLoading = state.isLoading,
-                        shoeItems = it,
-                        userScrollable = !isMenuOpen
-                    )
-                }
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
-                state.homeItemsList?.newArrivalItemsModel?.let {
-                    NewArrivalsItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        leadingTitle = "New Arrivals",
-                        trailingTitle = "See more",
-                        isLoading = state.isLoading,
-                        shoes = it,
-                        userScrollable = !isMenuOpen
-                    )
-                }
-                Spacer(modifier = Modifier.height(56.dp))
+                    state.homeItemsList?.popularItemsModel?.let {
+                        ShoppieeShoesItem(leadingTitle = "Popular items",
+                            trailingTitle = "See more",
+                            isLoading = state.isLoading,
+                            shoeItems = it,
+                            userScrollable = !isMenuOpen,
+                            onItemClick = { itemId -> onNavigateToDetails(itemId) })
+                    }
 
-                state.homeItemsList?.popularItemsModel?.let {
-                    ShoppieeShoesItem(
-                        leadingTitle = "Popular items",
-                        trailingTitle = "See more",
-                        isLoading = state.isLoading,
-                        shoeItems = it,
-                        userScrollable = !isMenuOpen
-                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    state.homeItemsList?.newArrivalItemsModel?.let {
+                        NewArrivalsItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            leadingTitle = "New Arrivals",
+                            trailingTitle = "See more",
+                            isLoading = state.isLoading,
+                            shoes = it,
+                            userScrollable = !isMenuOpen
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(56.dp))
+
+                    state.homeItemsList?.popularItemsModel?.let {
+                        ShoppieeShoesItem(leadingTitle = "Popular items",
+                            trailingTitle = "See more",
+                            isLoading = state.isLoading,
+                            shoeItems = it,
+                            userScrollable = !isMenuOpen,
+                            onItemClick = { itemId -> onNavigateToDetails(itemId) })
+                    }
                 }
             }
         }

@@ -3,6 +3,8 @@ package com.example.shoppieeclient.data.home.repository
 import android.util.Log
 import com.example.shoppieeclient.data.home.remote.api.ShoppieeHomeApiService
 import com.example.shoppieeclient.data.home.remote.mapper.home.toHomeResultModel
+import com.example.shoppieeclient.data.home.remote.mapper.home.toProductDetailsModel
+import com.example.shoppieeclient.domain.auth.models.home.HomeProductModel
 import com.example.shoppieeclient.domain.auth.models.home.HomeResultModel
 import com.example.shoppieeclient.domain.auth.repository.home.ShoppieeHomeRepo
 import com.example.shoppieeclient.utils.Resource
@@ -49,4 +51,34 @@ class ShoppieeHomeRepoImpl(
         }.catch { e ->
             emit(Resource.Error(e.localizedMessage ?: "Unexpected error occurred"))
         }.flowOn(Dispatchers.IO)
+
+    override fun fetchProductDetails(productId: String): Flow<Resource<HomeProductModel>> = flow{
+
+        try {
+            emit(Resource.Loading())
+            val productDetailsResponse = shoppieeHomeApi.fetchProductDetails(productId)
+            Log.e(TAG, "fetchDetailResponse==>: $productDetailsResponse")
+            val result = productDetailsResponse.result
+
+            if (productDetailsResponse.status == 200 && result != null) {
+                val productDetailsModel = result.toProductDetailsModel()
+                emit(Resource.Success(productDetailsModel))
+            } else {
+                emit(Resource.Error(productDetailsResponse.message))
+            }
+
+        } catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+    }.catch { e ->
+        emit(Resource.Error(e.message ?: "Unexpected error occurred"))
+    }.flowOn(Dispatchers.IO)
 }

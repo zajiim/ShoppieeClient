@@ -7,4 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ShoppieeHomeRepo {
     fun getBrandsData(category: String): Flow<Resource<HomeResultModel>>
+
+    fun fetchProductDetails(productId: String): Flow<Resource<HomeProductModel>>
 }

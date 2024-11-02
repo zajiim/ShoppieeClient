@@ -14,6 +14,7 @@ import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveTokenUs
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.signup.SignUpUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.home.GetHomeApiUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.home.details.GetProductDetailsUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.ReadOnBoardingUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.SaveOnBoardingUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.auth.ValidateConfirmPasswordUseCase
@@ -29,6 +30,7 @@ import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewModel
 import com.example.shoppieeclient.presentation.auth.signin.SignInViewModel
 import com.example.shoppieeclient.presentation.auth.signup.SignUpViewModel
+import com.example.shoppieeclient.presentation.home.common.details.DetailsViewModel
 import com.example.shoppieeclient.presentation.home.home.HomeViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -172,6 +174,12 @@ val appModule = module {
         )
     }
 
+    single {
+        GetProductDetailsUseCase(
+            shoppieeHomeRepo = get()
+        )
+    }
+
 
 
     viewModel<OnBoardingViewModel> { OnBoardingViewModel(get()) }
@@ -180,4 +188,5 @@ val appModule = module {
     viewModel<SignInViewModel> { SignInViewModel(get(), get(), get()) }
     viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }
     viewModel<HomeViewModel>{ HomeViewModel(getHomeApiUseCase = get()) }
+    viewModel<DetailsViewModel>{ DetailsViewModel(fetchDetailsUseCase = get()) }
 }

@@ -1,6 +1,7 @@
 package com.example.shoppieeclient.data.home.remote.api
 
 import com.example.shoppieeclient.data.home.remote.dto.home.HomeResponseDto
+import com.example.shoppieeclient.data.home.remote.dto.home.ProductDetailsResponseDto
 import com.example.shoppieeclient.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -17,6 +18,14 @@ class ShoppieeHomeApiService(
                 parameters.append("brand", brand)
             }
             contentType(ContentType.Application.Json)
+        }.body()
+    }
+
+    suspend fun fetchProductDetails(productId: String): ProductDetailsResponseDto {
+        return client.get("${Constants.SHOPPIEE_URL}/details") {
+            url {
+                parameters.append("productId", productId)
+            }
         }.body()
     }
 }

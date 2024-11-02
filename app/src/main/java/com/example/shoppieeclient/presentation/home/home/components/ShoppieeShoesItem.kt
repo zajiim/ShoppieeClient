@@ -25,8 +25,8 @@ fun ShoppieeShoesItem(
     trailingTitle: String,
     shoeItems: List<HomeProductModel>?,
     isLoading: Boolean,
-    userScrollable: Boolean
-//    onItemClick: (String) -> Unit,
+    userScrollable: Boolean,
+    onItemClick: (String) -> Unit,
 ) {
     Column(modifier = modifier) {
         if (!shoeItems.isNullOrEmpty()) {
@@ -64,7 +64,7 @@ fun ShoppieeShoesItem(
                         ShoeCard(
                             shoe = shoe,
                             isLoading = false,
-                            onClick = { }
+                            onClick = { onItemClick(shoe.productId)}
 
                         )
 
