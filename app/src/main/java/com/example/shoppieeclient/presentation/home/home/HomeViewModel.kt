@@ -47,7 +47,6 @@ class HomeViewModel(
         }
     }
 
-
     private fun fetchHomeApiItems(brand: String) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
             getHomeApiUseCase(brand).collect { result ->

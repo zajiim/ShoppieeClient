@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.shoppieeclient.ui.LocalIsMenuOpen
@@ -52,10 +53,19 @@ fun CustomShoppieeScaffold(
 
         Box(modifier = Modifier.fillMaxSize()) {
             SideMenu(
-                alpha = animatedProgress, onNavigate = {
+                alpha = animatedProgress,
+                onNavigate =  { destination ->
+                    navController.navigate(destination) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                     isMenuOpen = false
-                    navController.navigate(it)
-                }, width = width,
+
+                },
+                width = width,
             )
 
             Box(

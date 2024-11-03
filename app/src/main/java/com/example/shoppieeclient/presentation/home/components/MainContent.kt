@@ -41,27 +41,26 @@ fun MainContent(
     )
     val isMenuOpen = LocalIsMenuOpen.current
     val toggleMenu = LocalToggleMenu.current
-    Scaffold(
-        bottomBar = {
-            if (mainDestinations.any { destination ->
-                    currentDestination?.hasRoute(destination::class) == true
-                }) {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    CustomBottomNavBar(
-                        navController = navController, items = listRoutes
-                    )
+    Scaffold(bottomBar = {
+        if (mainDestinations.any { destination ->
+                currentDestination?.hasRoute(destination::class) == true
+            }) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                CustomBottomNavBar(
+                    navController = navController, items = listRoutes
+                )
 
-                    if (isMenuOpen) {
-                        Box(
-                            modifier = Modifier.matchParentSize()
-                                .clickable {
-                                    toggleMenu()
-                                }.background(Color.Transparent)
-                        )
-                    }
+                if (isMenuOpen) {
+                    Box(modifier = Modifier
+                        .matchParentSize()
+                        .clickable {
+                            toggleMenu()
+                        }
+                        .background(Color.Transparent))
                 }
             }
-        }) {
+        }
+    }) {
         content()
 
     }

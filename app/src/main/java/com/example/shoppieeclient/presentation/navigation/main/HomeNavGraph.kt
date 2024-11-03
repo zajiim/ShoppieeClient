@@ -22,7 +22,8 @@ fun NavGraphBuilder.homeNavGraph(
         startDestination = Destination.Home
     ) {
         composable<Destination.Home> {
-            HomeScreen(onNavigateToDetails = {
+            HomeScreen(
+                onNavigateToDetails = {
                 navController.navigate(
                     Destination.Details(
                         id = 1, name = "sajim"

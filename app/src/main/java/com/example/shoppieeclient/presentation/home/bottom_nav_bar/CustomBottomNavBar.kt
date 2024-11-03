@@ -68,9 +68,9 @@ fun CustomBottomNavBar(
                 .align(Alignment.TopCenter),
             onClick = {
                 navController.navigate(Destination.Cart) {
-                    popUpTo<Destination>(Destination.Home){
-                        saveState = true
-                    }
+//                    popUpTo<Destination>(Destination.Home){
+//                        saveState = true
+//                    }
                     launchSingleTop = true
                     restoreState = true
                 }
@@ -121,21 +121,30 @@ fun CustomBottomNavBar(
                             }
                         },
                         onClick = {
-                            if (screen.destination == Destination.Home) {
-                                navController.navigate(Destination.Home) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        inclusive = true
-                                    }
+
+                            navController.navigate(screen.destination) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
                                 }
-                            } else {
-                                navController.navigate(screen.destination) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
+
+//                            if (screen.destination == Destination.Home) {
+//                                navController.navigate(Destination.Home) {
+//                                    popUpTo(navController.graph.findStartDestination().id) {
+//                                        inclusive = true
+//                                    }
+//                                }
+//                            } else {
+//                                navController.navigate(screen.destination) {
+//                                    popUpTo(navController.graph.findStartDestination().id) {
+//                                        saveState = true
+//                                    }
+//                                    launchSingleTop = true
+//                                    restoreState = true
+//                                }
+//                            }
                         },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = SelectedColor,

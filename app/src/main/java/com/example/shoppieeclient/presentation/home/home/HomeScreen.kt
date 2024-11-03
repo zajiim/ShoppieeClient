@@ -1,6 +1,5 @@
 package com.example.shoppieeclient.presentation.home.home
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,7 +37,6 @@ import org.koin.androidx.compose.koinViewModel
 private const val TAG = "HomeScreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = koinViewModel(),
