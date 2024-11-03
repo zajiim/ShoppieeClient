@@ -68,9 +68,9 @@ fun CustomBottomNavBar(
                 .align(Alignment.TopCenter),
             onClick = {
                 navController.navigate(Destination.Cart) {
-//                    popUpTo<Destination>(Destination.Home){
-//                        saveState = true
-//                    }
+                    popUpTo<Destination>(Destination.Home){
+                        saveState = true
+                    }
                     launchSingleTop = true
                     restoreState = true
                 }
@@ -121,7 +121,6 @@ fun CustomBottomNavBar(
                             }
                         },
                         onClick = {
-
                             navController.navigate(screen.destination) {
                                 popUpTo(navController.graph.findStartDestination().id) {
                                     saveState = true
