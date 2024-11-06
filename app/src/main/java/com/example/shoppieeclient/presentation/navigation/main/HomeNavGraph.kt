@@ -8,11 +8,13 @@ import androidx.navigation.toRoute
 import com.example.shoppieeclient.presentation.home.home.HomeScreen
 import com.example.shoppieeclient.presentation.home.cart.CartScreen
 import com.example.shoppieeclient.presentation.home.details.DetailsScreen
+import com.example.shoppieeclient.presentation.home.details.DetailsViewModel
 import com.example.shoppieeclient.presentation.home.favorites.FavoriesScreen
 import com.example.shoppieeclient.presentation.home.notifications.NotificationsScreen
 import com.example.shoppieeclient.presentation.home.profile.ProfileScreen
 import com.example.shoppieeclient.presentation.navigation.Destination
 import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
+import org.koin.androidx.compose.koinViewModel
 
 
 fun NavGraphBuilder.homeNavGraph(
@@ -26,7 +28,7 @@ fun NavGraphBuilder.homeNavGraph(
                 onNavigateToDetails = {
                 navController.navigate(
                     Destination.Details(
-                        id = 1, name = "sajim"
+                        id = it
                     )
                 )
             })
@@ -34,7 +36,10 @@ fun NavGraphBuilder.homeNavGraph(
 
         composable<Destination.Details> { backStackEntry ->
             val user = backStackEntry.toRoute<Destination.Details>()
-            DetailsScreen(userDetails = user)
+            val viewModel: DetailsViewModel = koinViewModel()
+            DetailsScreen(
+                viewModel = viewModel
+            )
         }
 
         composable<Destination.Favorites> {

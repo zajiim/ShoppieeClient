@@ -65,9 +65,7 @@ fun ShoppieeShoesItem(
                             shoe = shoe,
                             isLoading = false,
                             onClick = { onItemClick(shoe.productId)}
-
                         )
-
                     }
 
                 }

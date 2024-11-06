@@ -26,5 +26,5 @@ sealed class Destination() {
     object Profile : Destination()
 
     @Serializable
-    data class Details(val id: Int, val name: String) : Destination()
+    data class Details(val id: String) : Destination()
 }

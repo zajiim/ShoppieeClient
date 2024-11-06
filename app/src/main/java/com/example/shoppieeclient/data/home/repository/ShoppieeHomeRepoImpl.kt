@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.shoppieeclient.data.home.remote.api.ShoppieeHomeApiService
 import com.example.shoppieeclient.data.home.remote.mapper.home.toHomeResultModel
 import com.example.shoppieeclient.data.home.remote.mapper.home.toProductDetailsModel
+import com.example.shoppieeclient.domain.auth.models.home.DetailsProductModel
 import com.example.shoppieeclient.domain.auth.models.home.HomeProductModel
 import com.example.shoppieeclient.domain.auth.models.home.HomeResultModel
 import com.example.shoppieeclient.domain.auth.repository.home.ShoppieeHomeRepo
@@ -52,16 +53,18 @@ class ShoppieeHomeRepoImpl(
             emit(Resource.Error(e.localizedMessage ?: "Unexpected error occurred"))
         }.flowOn(Dispatchers.IO)
 
-    override fun fetchProductDetails(productId: String): Flow<Resource<HomeProductModel>> = flow{
+    override fun fetchProductDetails(productId: String): Flow<Resource<DetailsProductModel>> = flow{
 
         try {
             emit(Resource.Loading())
             val productDetailsResponse = shoppieeHomeApi.fetchProductDetails(productId)
             Log.e(TAG, "fetchDetailResponse==>: $productDetailsResponse")
             val result = productDetailsResponse.result
-
+            Log.e(TAG, "fetchProductDetails before: $result", )
             if (productDetailsResponse.status == 200 && result != null) {
-                val productDetailsModel = result.toProductDetailsModel()
+                Log.e(TAG, "fetchProductDetails: $result", )
+                val productDetailsModel = result.product?.toProductDetailsModel()
+                Log.e(TAG, "fetchProductDetails after mapping: $productDetailsModel", )
                 emit(Resource.Success(productDetailsModel))
             } else {
                 emit(Resource.Error(productDetailsResponse.message))
