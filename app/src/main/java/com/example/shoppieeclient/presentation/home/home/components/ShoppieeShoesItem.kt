@@ -1,5 +1,8 @@
 package com.example.shoppieeclient.presentation.home.home.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,6 +21,7 @@ import com.example.shoppieeclient.domain.auth.models.home.HomeProductModel
 import com.example.shoppieeclient.ui.theme.Primary
 import com.example.shoppieeclient.ui.theme.TitleColor
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ShoppieeShoesItem(
     modifier: Modifier = Modifier,
@@ -27,6 +31,8 @@ fun ShoppieeShoesItem(
     isLoading: Boolean,
     userScrollable: Boolean,
     onItemClick: (String) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     Column(modifier = modifier) {
         if (!shoeItems.isNullOrEmpty()) {
@@ -56,7 +62,9 @@ fun ShoppieeShoesItem(
                 if (isLoading) {
                     items(3) {
                         ShoeCard(
-                            isLoading = true
+                            isLoading = true,
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope
                         )
                     }
                 } else {
@@ -64,7 +72,9 @@ fun ShoppieeShoesItem(
                         ShoeCard(
                             shoe = shoe,
                             isLoading = false,
-                            onClick = { onItemClick(shoe.productId)}
+                            onClick = { onItemClick(shoe.productId)},
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope
                         )
                     }
 

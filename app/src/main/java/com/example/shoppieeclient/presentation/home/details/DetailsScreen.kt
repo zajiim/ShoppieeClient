@@ -3,6 +3,9 @@ package com.example.shoppieeclient.presentation.home.details
 import android.R.attr.maxLines
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -68,13 +71,15 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "DetailsScreen"
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun DetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: DetailsViewModel,
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
     onNavigateClick: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
 
     val uiState = viewModel.uiState
@@ -89,185 +94,192 @@ fun DetailsScreen(
         viewModel.onEvent(DetailsEvent.SelectImage(pagerState.currentPage))
     }
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(BackGroundColor)
-    ) {
-        Column(
-            modifier = Modifier
+    with(sharedTransitionScope) {
+        Box(
+            modifier = modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .background(BackGroundColor)
         ) {
-            if (uiState.isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .shimmerEffect()
-                )
-            } else {
-                product?.images?.let { images ->
-                    HorizontalPager(
-                        state = pagerState,
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (uiState.isLoading) {
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp)
-                    ) { page ->
-                        ProductImage(
-                            modifier = Modifier,
-                            imageUrl = images[page],
-                        )
+                            .shimmerEffect()
+                    )
+                } else {
+                    product?.images?.let { images ->
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(300.dp)
+                        ) { page ->
+                            ProductImage(
+                                modifier = Modifier,
+                                imageUrl = images[page],
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                        }
                     }
                 }
-            }
 
-            product?.category?.let {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.titleSmall.copy(color = PrimaryBlue),
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
+                product?.category?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.titleSmall.copy(color = PrimaryBlue),
+                        modifier = Modifier
+                            .sharedElement(
+                                state = rememberSharedContentState(key = it),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            ).padding(horizontal = 16.dp)
+                    )
+                }
 
-            product?.name?.let {
+                product?.name?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+
+                product?.price?.let {
+                    Text(
+                        text = it.toString(),
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+
+
+                product?.description?.let {
+                    Text(text = it,
+                        style = TextStyle(
+                            color = SubTitleColor,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Normal
+                        ),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = if (uiState.isTextExpanded) Int.MAX_VALUE else 3,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .animateContentSize()
+                            .clickable { viewModel.onEvent(DetailsEvent.ToggleDescription) })
+                }
+
                 Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodyLarge.copy(
+                    text = "Gallery", style = TextStyle(
                         color = Color.Black,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold
                     ),
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
-            }
 
-            product?.price?.let {
-                Text(
-                    text = it.toString(),
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
+                LazyRow(
+                    modifier = Modifier.height(80.dp)
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 16.dp)
+                ) {
 
-
-            product?.description?.let {
-                Text(text = it,
-                    style = TextStyle(
-                        color = SubTitleColor,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Normal
-                    ),
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = if (uiState.isTextExpanded) Int.MAX_VALUE else 3,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .animateContentSize()
-                        .clickable { viewModel.onEvent(DetailsEvent.ToggleDescription) })
-            }
-
-            Text(
-                text = "Gallery", style = TextStyle(
-                    color = Color.Black,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold
-                ),
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            LazyRow(
-                modifier = Modifier.height(80.dp)
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 16.dp)
-            ) {
-
-                product?.images?.let { images ->
-                    itemsIndexed(images) { index, item ->
-                        ThumbnailImage(
-                            imageUrl = item,
-                            isSelected = uiState.selectedIndex == index,
-                            onClick = {
-                                viewModel.onEvent(DetailsEvent.SelectImage(index))
-                                scope.launch {
-                                    pagerState.animateScrollToPage(index, animationSpec = tween(durationMillis = 500))
+                    product?.images?.let { images ->
+                        itemsIndexed(images) { index, item ->
+                            ThumbnailImage(
+                                imageUrl = item,
+                                isSelected = uiState.selectedIndex == index,
+                                onClick = {
+                                    viewModel.onEvent(DetailsEvent.SelectImage(index))
+                                    scope.launch {
+                                        pagerState.animateScrollToPage(index, animationSpec = tween(durationMillis = 500))
+                                    }
                                 }
-                            }
+                            )
+                        }
+                    }
+
+                }
+
+                CustomSizeSection(
+                    modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                    selectedRegion = uiState.selectedRegion,
+                    selectedIndex = uiState.selectedSizeIndex,
+                    onRegionSelected = {
+                        viewModel.onEvent(DetailsEvent.SelectRegion(it))
+                    },
+                    onSizeSelected = { size, index ->
+                        viewModel.onEvent(DetailsEvent.SelectSize(size, index))
+                    }
+                )
+                Spacer(modifier = Modifier.height(160.dp))
+
+            }
+
+
+            CustomNavigationTopAppBar(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                title = uiState.details?.name.toString(),
+                navigationIcon = {
+                    IconButton(
+                        onClick = onNavigateClick,
+                        modifier = Modifier.wrapContentSize().clip(CircleShape).background(Color.White)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = "Go back"
                         )
                     }
-                }
-
-            }
-
-            CustomSizeSection(
-                modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-                selectedRegion = uiState.selectedRegion,
-                selectedIndex = uiState.selectedSizeIndex,
-                onRegionSelected = {
-                     viewModel.onEvent(DetailsEvent.SelectRegion(it))
                 },
-                onSizeSelected = { size, index ->
-                    viewModel.onEvent(DetailsEvent.SelectSize(size, index))
-                }
+                actions = {
+                    IconButton(
+                        onClick = { },
+                        modifier = Modifier.wrapContentSize().clip(CircleShape).background(Color.White)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.FavoriteBorder,
+                            contentDescription = "Favorite icon"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior
             )
-            Spacer(modifier = Modifier.height(160.dp))
-
-        }
 
 
-        CustomNavigationTopAppBar(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            title = uiState.details?.name.toString(),
-            navigationIcon = {
-                IconButton(
-                    onClick = onNavigateClick,
-                    modifier = Modifier.wrapContentSize().clip(CircleShape).background(Color.White)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Go back"
-                    )
-                }
-            },
-            actions = {
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier.wrapContentSize().clip(CircleShape).background(Color.White)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder,
-                        contentDescription = "Favorite icon"
-                    )
-                }
-            },
-            scrollBehavior = scrollBehavior
-        )
-
-
-        AddCartBottomSection(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .wrapContentSize(Alignment.BottomCenter),
-            price = product?.price.toString(),
-            selectedRegion = uiState.selectedRegion,
-            selectedSize = uiState.selectedSize,
+            AddCartBottomSection(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .wrapContentSize(Alignment.BottomCenter),
+                price = product?.price.toString(),
+                selectedRegion = uiState.selectedRegion,
+                selectedSize = uiState.selectedSize,
 //            onAddToCartClick = { region, size ->
 //                selectedRegion = region
 //                selectedSize = size
 //                viewModel.onAddToCartClick(productDetailsState.data?.id.toString())
 //            }
-        )
+            )
 
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f)),
-                contentAlignment = Alignment.Center
-            ) {
-                CustomLineProgressIndicator(color = MaterialTheme.colorScheme.primary)
+            if (uiState.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CustomLineProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                }
             }
-        }
 
+        }
     }
 
 }

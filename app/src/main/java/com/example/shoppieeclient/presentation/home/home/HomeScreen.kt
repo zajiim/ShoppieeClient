@@ -1,5 +1,8 @@
 package com.example.shoppieeclient.presentation.home.home
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,12 +42,14 @@ import org.koin.androidx.compose.koinViewModel
 
 private const val TAG = "HomeScreen"
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
     onNavigateToDetails: (String) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     val toggleMenu = LocalToggleMenu.current
     val isMenuOpen = LocalIsMenuOpen.current
@@ -122,7 +127,10 @@ fun HomeScreen(
                             isLoading = state.isLoading,
                             shoeItems = it,
                             userScrollable = !isMenuOpen,
-                            onItemClick = { itemId -> onNavigateToDetails(itemId) })
+                            onItemClick = { itemId -> onNavigateToDetails(itemId) },
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -140,14 +148,14 @@ fun HomeScreen(
 
                     Spacer(modifier = Modifier.height(56.dp))
 
-                    state.homeItemsList?.popularItemsModel?.let {
-                        ShoppieeShoesItem(leadingTitle = "Popular items",
-                            trailingTitle = "See more",
-                            isLoading = state.isLoading,
-                            shoeItems = it,
-                            userScrollable = !isMenuOpen,
-                            onItemClick = { itemId -> onNavigateToDetails(itemId) })
-                    }
+//                    state.homeItemsList?.popularItemsModel?.let {
+//                        ShoppieeShoesItem(leadingTitle = "Popular items",
+//                            trailingTitle = "See more",
+//                            isLoading = state.isLoading,
+//                            shoeItems = it,
+//                            userScrollable = !isMenuOpen,
+//                            onItemClick = { itemId -> onNavigateToDetails(itemId) })
+//                    }
                 }
             }
         }

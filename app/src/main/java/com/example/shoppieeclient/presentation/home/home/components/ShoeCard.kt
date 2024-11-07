@@ -1,5 +1,8 @@
 package com.example.shoppieeclient.presentation.home.home.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,81 +39,95 @@ import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import com.example.shoppieeclient.ui.theme.TitleColor
 import com.example.shoppieeclient.utils.shimmerEffect
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ShoeCard(
     shoe: HomeProductModel ?= null,
     isLoading: Boolean,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
-    Box(
-        modifier = Modifier.width(220.dp).height(220.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(White)
-            .clickable{onClick()}
-    ) {
-        if (isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Gray.copy(alpha = 0.1f))
-                    .shimmerEffect()
-            )
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-
-                AsyncImage(
+    with(sharedTransitionScope) {
+        Box(
+            modifier = Modifier.width(220.dp).height(220.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(White)
+                .clickable{onClick()}
+        ) {
+            if (isLoading) {
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(137.dp),
-                    model = shoe?.images?.getOrNull(0)?: "default_image_url_here",
-                    contentDescription = shoe?.name,
-                    contentScale = ContentScale.Crop
+                        .fillMaxSize()
+                        .background(Color.Gray.copy(alpha = 0.1f))
+                        .shimmerEffect()
                 )
-
-                Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = "Best Seller",
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = PrimaryBlue
-                    )
-                )
-
-                Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = shoe?.name ?: "",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = TitleColor
-                    )
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
+
+                    AsyncImage(
+                        modifier = Modifier
+                            .sharedElement(
+                                state = rememberSharedContentState(key = shoe?.images?.getOrNull(0).toString()),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                            .fillMaxWidth()
+                            .height(137.dp),
+                        model = shoe?.images?.getOrNull(0)?: "default_image_url_here",
+                        contentDescription = shoe?.name,
+                        contentScale = ContentScale.Crop
+                    )
+
                     Text(
                         modifier = Modifier.padding(start = 8.dp),
-                        text = "$${shoe?.price}"
+                        text = "Best Seller",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = PrimaryBlue
+                        )
                     )
-                    Box(
+
+                    Text(
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .clip(RoundedCornerShape(topStart = 16.dp))
-                            .background(PrimaryBlue)
-                    ) {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Add to cart",
-                                tint = White
+                            .sharedElement(
+                                state = rememberSharedContentState(key = shoe?.name.toString()),
+                                animatedVisibilityScope = animatedVisibilityScope
                             )
+                            .padding(start = 8.dp),
+                        text = shoe?.name ?: "",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = TitleColor
+                        )
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(start = 8.dp),
+                            text = "$${shoe?.price}"
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .clip(RoundedCornerShape(topStart = 16.dp))
+                                .background(PrimaryBlue)
+                        ) {
+                            IconButton(onClick = { /*TODO*/ }) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "Add to cart",
+                                    tint = White
+                                )
+                            }
                         }
                     }
                 }
