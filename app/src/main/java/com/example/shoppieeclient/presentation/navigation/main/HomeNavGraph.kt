@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.presentation.navigation.main
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -17,6 +18,7 @@ import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
 import org.koin.androidx.compose.koinViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.homeNavGraph(
     navController: NavHostController
 ) {
@@ -38,7 +40,8 @@ fun NavGraphBuilder.homeNavGraph(
             val user = backStackEntry.toRoute<Destination.Details>()
             val viewModel: DetailsViewModel = koinViewModel()
             DetailsScreen(
-                viewModel = viewModel
+                viewModel = viewModel,
+                onNavigateClick = { navController.navigateUp() }
             )
         }
 

@@ -27,7 +27,7 @@ fun CustomTopAppBar(
 ) {
 
     CenterAlignedTopAppBar(
-        modifier = modifier.padding(horizontal = 20.dp),
+        modifier = modifier,
         title = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(

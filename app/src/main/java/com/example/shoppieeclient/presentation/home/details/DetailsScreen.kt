@@ -13,19 +13,30 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,27 +45,36 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
+import com.example.shoppieeclient.presentation.home.details.components.AddCartBottomSection
+import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
 import com.example.shoppieeclient.presentation.home.details.components.CustomSizeSection
 import com.example.shoppieeclient.presentation.home.details.components.ProductImage
 import com.example.shoppieeclient.presentation.home.details.components.ThumbnailImage
 import com.example.shoppieeclient.ui.theme.BackGroundColor
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import com.example.shoppieeclient.ui.theme.SubTitleColor
+import com.example.shoppieeclient.utils.shimmerEffect
 import kotlinx.coroutines.launch
 
 private const val TAG = "DetailsScreen"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
     modifier: Modifier = Modifier,
-    viewModel: DetailsViewModel
+    viewModel: DetailsViewModel,
+    scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+    onNavigateClick: () -> Unit,
 ) {
 
     val uiState = viewModel.uiState
@@ -180,8 +200,63 @@ fun DetailsScreen(
                     viewModel.onEvent(DetailsEvent.SelectSize(size, index))
                 }
             )
+            Spacer(modifier = Modifier.height(160.dp))
+
+        }
 
 
+        CustomNavigationTopAppBar(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            title = uiState.details?.name.toString(),
+            navigationIcon = {
+                IconButton(
+                    onClick = onNavigateClick,
+                    modifier = Modifier.wrapContentSize().clip(CircleShape).background(Color.White)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = "Go back"
+                    )
+                }
+            },
+            actions = {
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier.wrapContentSize().clip(CircleShape).background(Color.White)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.FavoriteBorder,
+                        contentDescription = "Favorite icon"
+                    )
+                }
+            },
+            scrollBehavior = scrollBehavior
+        )
+
+
+        AddCartBottomSection(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .wrapContentSize(Alignment.BottomCenter),
+            price = product?.price.toString(),
+            selectedRegion = uiState.selectedRegion,
+            selectedSize = uiState.selectedSize,
+//            onAddToCartClick = { region, size ->
+//                selectedRegion = region
+//                selectedSize = size
+//                viewModel.onAddToCartClick(productDetailsState.data?.id.toString())
+//            }
+        )
+
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CustomLineProgressIndicator(color = MaterialTheme.colorScheme.primary)
+            }
         }
 
     }
