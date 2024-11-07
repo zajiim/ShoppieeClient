@@ -62,5 +62,5 @@ fun Modifier.shimmerEffect() = composed {
             repeatMode = RepeatMode.Reverse
         ), label = ""
     ).value
-    background(color = PrimaryBlue.copy(alpha = alpha))
+    background(color = Color.Gray.copy(alpha = alpha))
 }

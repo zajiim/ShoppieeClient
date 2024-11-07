@@ -100,17 +100,26 @@ fun DetailsScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            product?.images?.let { images ->
-                HorizontalPager(
-                    state = pagerState,
+            if (uiState.isLoading) {
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(300.dp)
-                ) { page ->
-                    ProductImage(
-                        modifier = Modifier,
-                        imageUrl = images[page],
-                    )
+                        .shimmerEffect()
+                )
+            } else {
+                product?.images?.let { images ->
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                    ) { page ->
+                        ProductImage(
+                            modifier = Modifier,
+                            imageUrl = images[page],
+                        )
+                    }
                 }
             }
 
