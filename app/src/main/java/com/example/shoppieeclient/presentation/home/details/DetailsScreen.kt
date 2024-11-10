@@ -134,11 +134,7 @@ fun DetailsScreen(
                     Text(
                         text = it,
                         style = MaterialTheme.typography.titleSmall.copy(color = PrimaryBlue),
-                        modifier = Modifier
-                            .sharedElement(
-                                state = rememberSharedContentState(key = it),
-                                animatedVisibilityScope = animatedVisibilityScope
-                            ).padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
 
@@ -149,7 +145,10 @@ fun DetailsScreen(
                             color = Color.Black,
                             fontWeight = FontWeight.Bold
                         ),
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.sharedElement(
+                            state = rememberSharedContentState(key = it),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        ).padding(horizontal = 16.dp)
                     )
                 }
 
