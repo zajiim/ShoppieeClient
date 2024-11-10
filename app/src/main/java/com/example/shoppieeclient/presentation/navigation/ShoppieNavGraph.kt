@@ -7,6 +7,7 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.tween
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,6 +20,7 @@ import com.example.shoppieeclient.presentation.navigation.auth.authNavGraph
 import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
 import com.example.shoppieeclient.presentation.navigation.main.homeNavGraph
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.runtime.getValue
 
 
 private const val TAG = "ShoppieNavGraph"
@@ -33,9 +35,13 @@ fun ShoppieNavGraph(
     connectivityObserver: NetworkConnectivityObserver
 ) {
     val startDestination = mainActivityViewModel.startDestination
+    val userName by mainActivityViewModel.userName.collectAsState()
+    val userProfileImage by mainActivityViewModel.userProfileImage.collectAsState()
 
     CustomShoppieeScaffold(
-        navController = navController
+        navController = navController,
+        userName = userName,
+        userProfileImage = userProfileImage,
     ) {
         SharedTransitionLayout {
             NavHost(navController = navController,

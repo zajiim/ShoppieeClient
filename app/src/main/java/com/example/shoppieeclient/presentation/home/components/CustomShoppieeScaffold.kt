@@ -28,12 +28,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.shoppieeclient.ui.LocalIsMenuOpen
 import com.example.shoppieeclient.ui.LocalToggleMenu
+import okhttp3.internal.userAgent
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "RestrictedApi")
 @Composable
 fun CustomShoppieeScaffold(
     navController: NavHostController,
-    content: @Composable () -> Unit
+    userName: String?,
+    userProfileImage: String?,
+    content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
     val displayMetrics = context.resources.displayMetrics
@@ -66,6 +69,8 @@ fun CustomShoppieeScaffold(
 
                 },
                 width = width,
+                userName = userName,
+                userProfileImage = userProfileImage
             )
 
             Box(
@@ -104,5 +109,10 @@ fun CustomShoppieeScaffold(
 @Preview
 @Composable
 private fun PreviewCustomScaffold() {
-    CustomShoppieeScaffold(navController = rememberNavController(), content = {})
+    CustomShoppieeScaffold(
+        navController = rememberNavController(),
+        userName = "John Doe",
+        userProfileImage = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg",
+        content = {}
+    )
 }

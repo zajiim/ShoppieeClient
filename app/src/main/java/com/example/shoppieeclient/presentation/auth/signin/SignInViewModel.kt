@@ -7,9 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveTokenUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveUserDetailsUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signin.SignInValidationsUseCases
-import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.SignupValidationsUseCase
 import com.example.shoppieeclient.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,7 +20,8 @@ private const val TAG = "SignInViewModel"
 class SignInViewModel(
     private val signInValidationsUseCase: SignInValidationsUseCases,
     private val signInUseCase: SignInUseCase,
-    private val saveTokenUseCase: SaveTokenUseCase
+    private val saveTokenUseCase: SaveTokenUseCase,
+    private val saveUserDetailsUseCase: SaveUserDetailsUseCase
 ): ViewModel() {
 
     var signInFormState by mutableStateOf(SignInState())
@@ -66,9 +67,18 @@ class SignInViewModel(
                         }
                         is Resource.Success -> {
                             Log.e(TAG, "signInUser token: ${result.data?.token}")
-                            result.data?.token?.let { token ->
-                                saveTokenUseCase(token)
+//                            result.data?.token?.let { token ->
+//                                saveTokenUseCase(token)
+//                            }
+
+                            result.data?.let{ data ->
+                                data.token.let { token ->
+                                    saveTokenUseCase(token)
+                                }
+                                saveUserDetailsUseCase(data.name, data.profileImage)
+
                             }
+
                             signInFormState = signInFormState.copy(
                                 isLoading = false,
                                 isSignInSuccessful = true,

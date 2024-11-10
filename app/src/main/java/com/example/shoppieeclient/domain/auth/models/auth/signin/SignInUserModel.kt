@@ -7,7 +7,8 @@ data class SignInUserModel(
     val email: String,
     val userType: String,
     val cartItems: List<ProductModel>,
-    val token: String
+    val token: String,
+    val profileImage: String,
 )
 data class ProductModel(
     val productId: String,

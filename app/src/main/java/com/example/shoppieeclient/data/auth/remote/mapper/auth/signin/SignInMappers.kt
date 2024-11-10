@@ -13,7 +13,8 @@ fun SignInUserData.toSignInUserModel(): SignInUserModel {
         email = email,
         userType = type,
         cartItems = cart.map { it.toProductModel() },
-        token = token
+        token = token,
+        profileImage = profileImage
     )
 }
 

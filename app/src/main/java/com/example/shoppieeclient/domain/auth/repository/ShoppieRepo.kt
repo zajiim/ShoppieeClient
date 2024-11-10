@@ -5,7 +5,7 @@ import com.example.shoppieeclient.domain.auth.models.auth.signup.SignUpUserModel
 import com.example.shoppieeclient.utils.Resource
 import kotlinx.coroutines.flow.Flow
 
-interface ShoppieRepo {
+interface  ShoppieRepo {
     fun signUp(
         name: String,
         email: String,

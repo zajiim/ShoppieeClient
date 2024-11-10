@@ -112,7 +112,11 @@ fun ShoeCard(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            modifier = Modifier.padding(start = 8.dp),
+                            modifier = Modifier
+                                .sharedElement(
+                                    state = rememberSharedContentState(key = shoe?.price.toString()),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                ).padding(start = 8.dp),
                             text = "$${shoe?.price}"
                         )
                         Box(

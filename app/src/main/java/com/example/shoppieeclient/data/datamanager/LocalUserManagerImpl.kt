@@ -39,6 +39,26 @@ class LocalUserManagerImpl(
         }
     }
 
+    override suspend fun saveUserDetails(name: String, profileImage: String) {
+        context.datastore.edit { prefs ->
+            prefs[PreferencesKeys.USER_NAME] = name
+            prefs[PreferencesKeys.USER_IMAGE] = profileImage
+        }
+    }
+
+    override fun readUserImage(): Flow<String?> {
+        return context.datastore.data.map { prefs ->
+            prefs[PreferencesKeys.USER_IMAGE] ?: ""
+        }
+    }
+
+    override fun readUserName(): Flow<String?> {
+        return context.datastore.data.map { prefs ->
+            prefs[PreferencesKeys.USER_NAME] ?: ""
+        }
+    }
+
+
 }
 
 private val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = Constants.DATASTORE_NAME)
@@ -47,4 +67,6 @@ private val Context.datastore: DataStore<Preferences> by preferencesDataStore(na
 private object PreferencesKeys {
     val ONBOARDING_VALUE = booleanPreferencesKey(Constants.DATASTORE_ONBOARDING_KEY)
     val TOKEN = stringPreferencesKey(Constants.DATASTORE_TOKEN_KEY)
+    val USER_NAME = stringPreferencesKey(Constants.USER_NAME)
+    val USER_IMAGE = stringPreferencesKey(Constants.USER_IMAGE)
 }

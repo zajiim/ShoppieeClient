@@ -260,6 +260,8 @@ fun DetailsScreen(
                 price = product?.price.toString(),
                 selectedRegion = uiState.selectedRegion,
                 selectedSize = uiState.selectedSize,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope
 //            onAddToCartClick = { region, size ->
 //                selectedRegion = region
 //                selectedSize = size

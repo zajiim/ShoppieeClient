@@ -37,7 +37,11 @@ import com.example.shoppieeclient.ui.theme.ScaffoldTextColorFaded
 
 @Composable
 fun SideMenu(
-    alpha: Float, onNavigate: (Destination) -> Unit, width: Dp
+    alpha: Float,
+    onNavigate: (Destination) -> Unit,
+    width: Dp,
+    userName: String?,
+    userProfileImage: String?,
 ) {
     Column(
         modifier = Modifier
@@ -64,7 +68,7 @@ fun SideMenu(
         )
         Spacer(Modifier.height(6.dp))
         Text(
-            text = "Alisson Becker",
+            text = userName ?: "",
             color = Color.White,
             style = MaterialTheme.typography.bodyMedium
         )

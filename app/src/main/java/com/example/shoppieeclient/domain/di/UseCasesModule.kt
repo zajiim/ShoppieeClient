@@ -1,7 +1,10 @@
 package com.example.shoppieeclient.domain.di
 
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadProfileImageUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadUsernameUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveTokenUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveUserDetailsUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.signup.SignUpUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.home.GetHomeApiUseCase
@@ -22,6 +25,9 @@ val useCasesModule = module {
     single { ReadOnBoardingUseCase(get()) }
     single { SaveTokenUseCase(get()) }
     single { ReadAppTokenUseCase(get()) }
+    single { SaveUserDetailsUseCase(get()) }
+    single { ReadUsernameUseCase(get()) }
+    single { ReadProfileImageUseCase(get()) }
 
     single { ValidateUserNameUseCase() }
     single { ValidateEmailUseCase() }
@@ -38,8 +44,7 @@ val useCasesModule = module {
 
     single {
         SignInValidationsUseCases(
-            validateEmail = get(),
-            validatePassword = get()
+            validateEmail = get(), validatePassword = get()
         )
     }
 

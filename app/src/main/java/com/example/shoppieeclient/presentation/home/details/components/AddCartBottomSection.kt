@@ -1,5 +1,8 @@
 package com.example.shoppieeclient.presentation.home.details.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,56 +28,65 @@ import androidx.compose.ui.unit.sp
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import com.example.shoppieeclient.ui.theme.SubTitleColor
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun AddCartBottomSection(
     modifier: Modifier = Modifier,
     price: String?,
     selectedRegion: String,
     selectedSize: Int,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 //    onAddToCartClick: (String, Int) -> Unit,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .safeDrawingPadding()
-            .height(100.dp)
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            .background(Color.White),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.Center
+    with(sharedTransitionScope) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .safeDrawingPadding()
+                .height(100.dp)
+                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                .background(Color.White),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = "Price", style = TextStyle(
-                    fontSize = 18.sp,
-                    color = SubTitleColor,
-                    fontWeight = FontWeight.Normal
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Price", style = TextStyle(
+                        fontSize = 18.sp,
+                        color = SubTitleColor,
+                        fontWeight = FontWeight.Normal
+                    )
                 )
-            )
 
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "₹${price}", style = TextStyle(
-                    fontSize = 18.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    modifier = Modifier.sharedElement(
+                        state = rememberSharedContentState(key = price.toString()),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    ),
+                    text = "₹${price}", style = TextStyle(
+                        fontSize = 18.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
+            }
+            CustomButton(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                text = "Add To Cart",
+                backgroundColor = PrimaryBlue,
+                contentColor = Color.White,
+                onButtonClicked = {
+//                onAddToCartClick(selectedRegion, selectedSize)
+                },
+                isLoading = false
             )
         }
-        CustomButton(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = "Add To Cart",
-            backgroundColor = PrimaryBlue,
-            contentColor = Color.White,
-            onButtonClicked = {
-//                onAddToCartClick(selectedRegion, selectedSize)
-            },
-            isLoading = false
-        )
     }
 }

@@ -22,7 +22,8 @@ data class SignInUserData(
     val email: String,
     val type: String,
     val cart: List<Product>,
-    val token: String
+    val token: String,
+    val profileImage: String,
 )
 
 @Serializable
