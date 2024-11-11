@@ -15,10 +15,11 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 class ShoppieeHomeApiService(
-    private val client: HttpClient
+    private val unauthorizedHttpClient: HttpClient,
+    private val authorizedHttpClient: HttpClient
 ) {
     suspend fun getBrandProductsData(brand: String): HomeResponseDto {
-        return client.get("${Constants.SHOPPIEE_URL}/popularBrand") {
+        return unauthorizedHttpClient.get("${Constants.SHOPPIEE_URL}/popularBrand") {
             url {
                 parameters.append("brand", brand)
             }
@@ -27,7 +28,7 @@ class ShoppieeHomeApiService(
     }
 
     suspend fun fetchProductDetails(productId: String): DetailsResponseDto {
-        return client.get("${Constants.SHOPPIEE_URL}/details") {
+        return unauthorizedHttpClient.get("${Constants.SHOPPIEE_URL}/details") {
             url {
                 parameters.append("productId", productId)
             }
@@ -35,7 +36,7 @@ class ShoppieeHomeApiService(
     }
 
     suspend fun addToCart(addToCartRequestDto: AddToCartRequestDto): AddToCartResponseDto {
-        return client.post("${Constants.SHOPPIEE_URL}/add-to-cart") {
+        return authorizedHttpClient.post("${Constants.SHOPPIEE_URL}/add-to-cart") {
             contentType(ContentType.Application.Json)
             setBody(addToCartRequestDto)
         }.body()

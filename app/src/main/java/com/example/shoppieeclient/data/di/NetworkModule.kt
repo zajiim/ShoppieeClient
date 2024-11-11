@@ -26,11 +26,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val networkModule = module {
     //Unauthorized HttpClient
-    single {
+    single(named("UnauthorizedHttpClient")) {
         HttpClient(CIO) {
             install(ContentNegotiation) {
                 json(Json {
@@ -51,7 +52,7 @@ val networkModule = module {
     }
 
     //Authorized HttpClient
-    single {
+    single(named("AuthorizedHttpClient")) {
         HttpClient(CIO) {
             install(ContentNegotiation) {
                 json(Json {
@@ -96,7 +97,7 @@ val networkModule = module {
 
     // Provide ShoppieApiService
     single { ShoppieApiService(get()) }
-    single { ShoppieeHomeApiService(get()) }
+    single { ShoppieeHomeApiService(get(named("UnauthorizedHttpClient")), get(named("AuthorizedHttpClient"))) }
 
 
 
