@@ -11,5 +11,6 @@ data class DetailsState(
     val selectedIndex: Int = 0,
     val selectedRegion: String = "EU",
     val selectedSize: Int = 0,
-    val selectedSizeIndex: Int = 0
+    val selectedSizeIndex: Int = 0,
+    val isAddedToCart: Boolean = false,
 )

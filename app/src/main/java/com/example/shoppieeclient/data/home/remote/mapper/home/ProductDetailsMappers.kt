@@ -14,5 +14,6 @@ fun DetailsProductDto.toProductDetailsModel(): DetailsProductModel {
         price = this.price,
         category = this.category,
         images = this.images,
+        inCart = this.inCart,
     )
 }

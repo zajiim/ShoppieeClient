@@ -8,6 +8,7 @@ import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveUserDet
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.signup.SignUpUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.home.GetHomeApiUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.home.details.AddToCartUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.home.details.GetProductDetailsUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.ReadOnBoardingUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.onboarding.SaveOnBoardingUseCase
@@ -74,6 +75,11 @@ val useCasesModule = module {
 
     single {
         GetProductDetailsUseCase(
+            shoppieeHomeRepo = get()
+        )
+    }
+    single {
+        AddToCartUseCase(
             shoppieeHomeRepo = get()
         )
     }

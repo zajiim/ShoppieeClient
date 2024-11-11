@@ -8,5 +8,6 @@ data class DetailsProductModel(
     val quantity: Int,
     val price: Double,
     val category: String,
-    val images: List<String>
+    val images: List<String>,
+    val inCart: Boolean
 )

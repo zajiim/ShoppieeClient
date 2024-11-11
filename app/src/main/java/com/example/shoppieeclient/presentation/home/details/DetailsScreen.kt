@@ -1,16 +1,11 @@
 package com.example.shoppieeclient.presentation.home.details
 
-import android.R.attr.maxLines
 import android.util.Log
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,12 +37,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -145,10 +135,12 @@ fun DetailsScreen(
                             color = Color.Black,
                             fontWeight = FontWeight.Bold
                         ),
-                        modifier = Modifier.sharedElement(
-                            state = rememberSharedContentState(key = it),
-                            animatedVisibilityScope = animatedVisibilityScope
-                        ).padding(horizontal = 16.dp)
+                        modifier = Modifier
+                            .sharedElement(
+                                state = rememberSharedContentState(key = it),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                            .padding(horizontal = 16.dp)
                     )
                 }
 
@@ -186,7 +178,8 @@ fun DetailsScreen(
                 )
 
                 LazyRow(
-                    modifier = Modifier.height(80.dp)
+                    modifier = Modifier
+                        .height(80.dp)
                         .fillMaxWidth()
                         .padding(vertical = 8.dp, horizontal = 16.dp)
                 ) {
@@ -199,7 +192,10 @@ fun DetailsScreen(
                                 onClick = {
                                     viewModel.onEvent(DetailsEvent.SelectImage(index))
                                     scope.launch {
-                                        pagerState.animateScrollToPage(index, animationSpec = tween(durationMillis = 500))
+                                        pagerState.animateScrollToPage(
+                                            index,
+                                            animationSpec = tween(durationMillis = 500)
+                                        )
                                     }
                                 }
                             )
@@ -209,7 +205,9 @@ fun DetailsScreen(
                 }
 
                 CustomSizeSection(
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
                     selectedRegion = uiState.selectedRegion,
                     selectedIndex = uiState.selectedSizeIndex,
                     onRegionSelected = {
@@ -225,12 +223,17 @@ fun DetailsScreen(
 
 
             CustomNavigationTopAppBar(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 title = uiState.details?.name.toString(),
                 navigationIcon = {
                     IconButton(
                         onClick = onNavigateClick,
-                        modifier = Modifier.wrapContentSize().clip(CircleShape).background(Color.White)
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .clip(CircleShape)
+                            .background(Color.White)
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -241,7 +244,10 @@ fun DetailsScreen(
                 actions = {
                     IconButton(
                         onClick = { },
-                        modifier = Modifier.wrapContentSize().clip(CircleShape).background(Color.White)
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .clip(CircleShape)
+                            .background(Color.White)
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.FavoriteBorder,
@@ -261,12 +267,14 @@ fun DetailsScreen(
                 selectedRegion = uiState.selectedRegion,
                 selectedSize = uiState.selectedSize,
                 sharedTransitionScope = sharedTransitionScope,
-                animatedVisibilityScope = animatedVisibilityScope
-//            onAddToCartClick = { region, size ->
-//                selectedRegion = region
-//                selectedSize = size
-//                viewModel.onAddToCartClick(productDetailsState.data?.id.toString())
-//            }
+                animatedVisibilityScope = animatedVisibilityScope,
+                isInCart = uiState.isAddedToCart,
+                productId = product?.productId.toString(),
+
+                onAddToCartClick = { productId, productSize, selectedRegion ->
+                    Log.e(TAG, "DetailsScreen: pid: $productId, psize= $productSize ", )
+                    viewModel.onEvent(DetailsEvent.AddToCart(productId,productSize, selectedRegion))
+                }
             )
 
             if (uiState.isLoading) {

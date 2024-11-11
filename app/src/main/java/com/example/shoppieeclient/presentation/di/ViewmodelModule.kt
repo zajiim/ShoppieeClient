@@ -19,6 +19,6 @@ val viewmodelModule = module {
     viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }
     viewModel<HomeViewModel>{ HomeViewModel(getHomeApiUseCase = get()) }
     viewModel<DetailsViewModel>{ (savedStateHandle: SavedStateHandle) ->
-        DetailsViewModel(fetchDetailsUseCase = get(), savedStateHandle = savedStateHandle) }
+        DetailsViewModel(fetchDetailsUseCase = get(), addToCartUseCase = get(), savedStateHandle = savedStateHandle) }
 
 }

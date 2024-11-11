@@ -6,4 +6,5 @@ sealed class DetailsEvent {
     data class SelectImage(val index: Int) : DetailsEvent()
     data class SelectRegion(val region: String): DetailsEvent()
     data class SelectSize(val size: Int, val index: Int): DetailsEvent()
+    data class AddToCart(val productId: String, val selectedRegion: String, val selectedSize: Int) : DetailsEvent()
 }

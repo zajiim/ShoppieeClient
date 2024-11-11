@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shoppieeclient.domain.auth.use_cases.home.details.AddToCartUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.home.details.GetProductDetailsUseCase
 import com.example.shoppieeclient.utils.Resource
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +18,7 @@ import kotlinx.coroutines.withContext
 private const val TAG = "DetailsViewModel"
 class DetailsViewModel(
     private val fetchDetailsUseCase: GetProductDetailsUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 //    val productId: String = checkNotNull(savedStateHandle["id"])
@@ -61,6 +63,37 @@ class DetailsViewModel(
             is DetailsEvent.SelectSize -> {
                 uiState = uiState.copy(selectedSize = event.size, selectedSizeIndex = event.index)
             }
+
+            is DetailsEvent.AddToCart -> {
+                addToCart(event.productId, event.selectedRegion, event.selectedSize)
+            }
+        }
+    }
+
+    private fun addToCart(productId: String, selectedRegion: String, selectedSize: Int) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            uiState = uiState.copy(isLoading = true)
+            addToCartUseCase(productId).collect { result ->
+                when(result) {
+                    is Resource.Error -> {
+                        uiState = uiState.copy(
+                            isLoading = false,
+                            error = result.message,
+                            isAddedToCart = false
+                        )
+                    }
+                    is Resource.Loading -> {
+                        uiState = uiState.copy(isLoading = true)
+                    }
+                    is Resource.Success -> {
+                        uiState = uiState.copy(
+                            isLoading = false,
+                            error = result.message,
+                            isAddedToCart = true
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -84,7 +117,7 @@ class DetailsViewModel(
                         uiState = uiState.copy(
                             isLoading = false,
                             error = null,
-                            details = result.data
+                            details = result.data,
                         )
                     }
                 }

@@ -2,8 +2,11 @@ package com.example.shoppieeclient.data.home.repository
 
 import android.util.Log
 import com.example.shoppieeclient.data.home.remote.api.ShoppieeHomeApiService
+import com.example.shoppieeclient.data.home.remote.dto.details.AddToCartRequestDto
+import com.example.shoppieeclient.data.home.remote.mapper.home.toAddToCartResultModel
 import com.example.shoppieeclient.data.home.remote.mapper.home.toHomeResultModel
 import com.example.shoppieeclient.data.home.remote.mapper.home.toProductDetailsModel
+import com.example.shoppieeclient.domain.auth.models.home.AddToCartResultModel
 import com.example.shoppieeclient.domain.auth.models.home.DetailsProductModel
 import com.example.shoppieeclient.domain.auth.models.home.HomeProductModel
 import com.example.shoppieeclient.domain.auth.models.home.HomeResultModel
@@ -71,6 +74,38 @@ class ShoppieeHomeRepoImpl(
             }
 
         } catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+    }.catch { e ->
+        emit(Resource.Error(e.message ?: "Unexpected error occurred"))
+    }.flowOn(Dispatchers.IO)
+
+    override fun addToCart(productId: String): Flow<Resource<AddToCartResultModel>> = flow {
+        try {
+            emit(Resource.Loading())
+            val addToCartRequest = AddToCartRequestDto(
+                id = productId
+            )
+            val addToCartResponse = shoppieeHomeApi.addToCart(addToCartRequest)
+            Log.e(TAG, "addToCartResponse==>: $addToCartResponse")
+            val result = addToCartResponse.result
+            if (addToCartResponse.status == 200 && result != null) {
+                val addToCartResultModel = result.toAddToCartResultModel()
+                emit(Resource.Success(addToCartResultModel))
+            } else {
+                emit(Resource.Error(addToCartResponse.message))
+            }
+
+
+        }  catch (e: ClientRequestException) {
             emit(Resource.Error(e.message))
         } catch (e: ServerResponseException) {
             emit(Resource.Error(e.message))

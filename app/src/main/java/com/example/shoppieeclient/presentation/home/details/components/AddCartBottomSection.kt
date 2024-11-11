@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.safeGesturesPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,8 +35,10 @@ fun AddCartBottomSection(
     selectedRegion: String,
     selectedSize: Int,
     sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope
-//    onAddToCartClick: (String, Int) -> Unit,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    onAddToCartClick: (String, String, Int) -> Unit,
+    productId: String,
+    isInCart: Boolean
 ) {
     with(sharedTransitionScope) {
         Row(
@@ -79,11 +80,11 @@ fun AddCartBottomSection(
             }
             CustomButton(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                text = "Add To Cart",
+                text = if (isInCart) "Added To Cart" else "Add to cart",
                 backgroundColor = PrimaryBlue,
                 contentColor = Color.White,
                 onButtonClicked = {
-//                onAddToCartClick(selectedRegion, selectedSize)
+                    onAddToCartClick(productId, selectedRegion, selectedSize)
                 },
                 isLoading = false
             )
