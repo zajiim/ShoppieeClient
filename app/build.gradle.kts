@@ -82,6 +82,8 @@ dependencies {
     implementation(libs.ktor.client.cio)
     //Lottie
     implementation(libs.lottie.compose)
+    //Paging-3
+    implementation(libs.androidx.paging.compose)
 
 
     testImplementation(libs.junit)

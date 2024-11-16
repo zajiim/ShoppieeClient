@@ -59,7 +59,11 @@ fun NavGraphBuilder.homeNavGraph(
                 FavoriesScreen()
             }
             composable<Destination.Cart> {
-                CartScreen()
+                CartScreen(
+                    onNavigateClick = {
+                        navController.navigateUp()
+                    }
+                )
             }
             composable<Destination.Notifications> {
                 NotificationsScreen()

@@ -6,6 +6,7 @@ import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewModel
 import com.example.shoppieeclient.presentation.auth.signin.SignInViewModel
 import com.example.shoppieeclient.presentation.auth.signup.SignUpViewModel
+import com.example.shoppieeclient.presentation.home.cart.CartViewModel
 import com.example.shoppieeclient.presentation.home.details.DetailsViewModel
 import com.example.shoppieeclient.presentation.home.home.HomeViewModel
 import org.koin.core.module.dsl.viewModel
@@ -19,6 +20,8 @@ val viewmodelModule = module {
     viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }
     viewModel<HomeViewModel>{ HomeViewModel(getHomeApiUseCase = get()) }
     viewModel<DetailsViewModel>{ (savedStateHandle: SavedStateHandle) ->
-        DetailsViewModel(fetchDetailsUseCase = get(), addToCartUseCase = get(), savedStateHandle = savedStateHandle) }
+        DetailsViewModel(fetchDetailsUseCase = get(), addToCartUseCase = get(), savedStateHandle = savedStateHandle)
+    }
+    viewModel<CartViewModel> { CartViewModel(getCartUseCase = get()) }
 
 }

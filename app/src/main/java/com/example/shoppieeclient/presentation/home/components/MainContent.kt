@@ -35,7 +35,6 @@ fun MainContent(
     val mainDestinations = listOf(
         Destination.Home,
         Destination.Favorites,
-        Destination.Cart,
         Destination.Notifications,
         Destination.Profile
     )

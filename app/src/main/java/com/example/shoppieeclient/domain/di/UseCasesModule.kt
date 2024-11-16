@@ -19,6 +19,7 @@ import com.example.shoppieeclient.domain.auth.use_cases.validations.auth.Validat
 import com.example.shoppieeclient.domain.auth.use_cases.validations.forgot_password.ForgotPasswordValidationUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signin.SignInValidationsUseCases
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.SignupValidationsUseCase
+import com.example.shoppieeclient.domain.cart.use_cases.GetCartUseCase
 import org.koin.dsl.module
 
 val useCasesModule = module {
@@ -81,6 +82,11 @@ val useCasesModule = module {
     single {
         AddToCartUseCase(
             shoppieeHomeRepo = get()
+        )
+    }
+    single {
+        GetCartUseCase(
+            shoppieCartRepo = get()
         )
     }
 }
