@@ -54,7 +54,9 @@ fun CustomCartCard(
                 style = MaterialTheme.typography.titleSmall
             )
 
-            CustomItemCounter()
+            CustomItemCounter(
+                count = cartItem.cartItemCount
+            )
         }
         Spacer(modifier = Modifier.weight(1f))
 

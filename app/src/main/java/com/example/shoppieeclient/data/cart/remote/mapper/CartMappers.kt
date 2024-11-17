@@ -35,6 +35,7 @@ fun CartProductDto.toCartProducts(): CartProductModel {
         price = this.price,
         category = this.category,
         images = this.images,
-        inCart = this.inCart
+        inCart = this.inCart,
+        cartItemCount = this.cartItemCount
     )
 }

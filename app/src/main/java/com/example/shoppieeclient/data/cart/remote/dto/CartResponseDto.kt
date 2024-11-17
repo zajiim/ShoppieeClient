@@ -36,5 +36,6 @@ data class CartProductDto(
     val price: Double,
     val category: String,
     val images: List<String>,
-    val inCart: Boolean
+    val inCart: Boolean,
+    val cartItemCount: Int
 )

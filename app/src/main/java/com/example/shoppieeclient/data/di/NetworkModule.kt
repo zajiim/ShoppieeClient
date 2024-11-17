@@ -98,7 +98,7 @@ val networkModule = module {
     }
 
     // Provide ShoppieApiService
-    single { ShoppieApiService(get()) }
+    single { ShoppieApiService(get(named("UnauthorizedHttpClient"))) }
     single { ShoppieeHomeApiService(get(named("UnauthorizedHttpClient")), get(named("AuthorizedHttpClient"))) }
     single { ShoppieCartApiService(get(named("AuthorizedHttpClient"))) }
 

@@ -15,12 +15,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.shoppieeclient.presentation.home.cart.components.CustomCartCardList
+import com.example.shoppieeclient.presentation.home.cart.components.CustomCheckOutCard
 import com.example.shoppieeclient.presentation.home.common.EmptyScreen
 import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
 import com.example.shoppieeclient.ui.theme.BackGroundColor
@@ -34,13 +40,16 @@ fun CartScreen(
     onNavigateClick: () -> Unit,
 ) {
     val cartItems = cartViewModel.cartItems.collectAsLazyPagingItems()
+    val checkoutCardHeight = remember { mutableStateOf(0) }
 
-
-    Box(modifier = modifier
+    Box(
+        modifier = modifier
         .fillMaxSize()
-        .background(BackGroundColor)) {
+        .background(BackGroundColor)
+    ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(bottom = with(LocalDensity.current) {checkoutCardHeight.value.toDp()})
         ) {
             CustomNavigationTopAppBar(
                 modifier = Modifier
@@ -67,15 +76,27 @@ fun CartScreen(
                 cartItems = cartItems
             )
 
-            if (cartItems.itemCount == 0) {
-                EmptyScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    title = "Cart is empty",
-                    subtitle = "Go shopping"
-                )
-            }
+
+
+
+        }
+        CustomCheckOutCard(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .wrapContentSize(Alignment.BottomCenter)
+                .onGloballyPositioned { layoutCoordinates ->
+                    checkoutCardHeight.value = layoutCoordinates.size.height
+                }
+        )
+
+        if (cartItems.itemCount == 0) {
+            EmptyScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                title = "Cart is empty",
+                subtitle = "Go shopping"
+            )
         }
 
 

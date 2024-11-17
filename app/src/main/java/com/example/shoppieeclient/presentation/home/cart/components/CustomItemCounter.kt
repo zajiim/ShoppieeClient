@@ -23,10 +23,8 @@ import com.example.shoppieeclient.R
 @Composable
 fun CustomItemCounter(
     modifier: Modifier = Modifier,
+    count: Int
 ) {
-    val count by remember {
-        mutableIntStateOf(1)
-    }
 
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Card(
