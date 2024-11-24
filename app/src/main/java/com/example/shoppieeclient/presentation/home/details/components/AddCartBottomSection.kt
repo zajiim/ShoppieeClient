@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.presentation.home.details.components
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import com.example.shoppieeclient.ui.theme.SubTitleColor
 
+private const val TAG = "AddCartBottomSection"
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun AddCartBottomSection(
@@ -84,6 +86,7 @@ fun AddCartBottomSection(
                 backgroundColor = PrimaryBlue,
                 contentColor = Color.White,
                 onButtonClicked = {
+                    Log.e(TAG, "AddCartBottomSection: $productId, region = $selectedRegion, size = $selectedSize", )
                     onAddToCartClick(productId, selectedRegion, selectedSize)
                 },
                 isLoading = false

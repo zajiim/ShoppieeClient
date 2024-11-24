@@ -8,4 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ShoppieCartRepo {
     fun getCartData(page: Int, limit: Int): Flow<PagingData<CartProductModel>>
+
+//    fun addToCart()
 }

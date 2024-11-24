@@ -66,7 +66,7 @@ fun CustomCartCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "L", style = TextStyle(
+                text = cartItem.size, style = TextStyle(
                     fontSize = 16.sp, color = Color.Black
                 )
             )

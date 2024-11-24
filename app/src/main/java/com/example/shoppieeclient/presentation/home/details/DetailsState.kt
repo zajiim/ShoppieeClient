@@ -10,7 +10,7 @@ data class DetailsState(
     val isTextExpanded: Boolean = false,
     val selectedIndex: Int = 0,
     val selectedRegion: String = "EU",
-    val selectedSize: Int = 0,
+    val selectedSize: Int = 38,
     val selectedSizeIndex: Int = 0,
     val isAddedToCart: Boolean = false,
 )

@@ -1,7 +1,12 @@
 package com.example.shoppieeclient.presentation.home.cart
 
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import com.example.shoppieeclient.domain.cart.models.CartProductModel
+import kotlinx.coroutines.flow.Flow
+
 data class CartStates(
     val isLoading: Boolean = false,
     val error: String? = null,
-    val itemCount: Int = 0,
+    val cartItems: Flow<PagingData<CartProductModel>>? = null,
 )

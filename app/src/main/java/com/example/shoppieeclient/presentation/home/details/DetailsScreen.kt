@@ -75,7 +75,6 @@ fun DetailsScreen(
     val uiState = viewModel.uiState
     val product = uiState.details
     val scope = rememberCoroutineScope()
-    Log.d(TAG, "DetailsScreen: product name == ${product?.name}")
 
 
     val pagerState = rememberPagerState(pageCount = { product?.images?.size ?: 1 })
@@ -204,17 +203,37 @@ fun DetailsScreen(
 
                 }
 
-                CustomSizeSection(
+                Log.e(TAG, "DetailsScreen: ${uiState.selectedRegion}", )
+                /*CustomSizeSection(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight(),
                     selectedRegion = uiState.selectedRegion,
                     selectedIndex = uiState.selectedSizeIndex,
                     onRegionSelected = {
+                        Log.e(TAG, "DetailsScreen inside: $it", )
                         viewModel.onEvent(DetailsEvent.SelectRegion(it))
                     },
                     onSizeSelected = { size, index ->
                         viewModel.onEvent(DetailsEvent.SelectSize(size, index))
+                    }
+                )*/
+
+
+
+                CustomSizeSection(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    selectedRegion = uiState.selectedRegion,
+                    selectedSize = uiState.selectedSize,
+                    onRegionSelected = {
+                        Log.e(TAG, "DetailsScreen region: $it", )
+                        viewModel.onEvent(DetailsEvent.SelectRegion(it))
+                    },
+                    onSizeSelected = {
+                        Log.e(TAG, "DetailsScreen size: $it", )
+                        viewModel.onEvent(DetailsEvent.SelectSize(it))
                     }
                 )
                 Spacer(modifier = Modifier.height(160.dp))
@@ -270,10 +289,9 @@ fun DetailsScreen(
                 animatedVisibilityScope = animatedVisibilityScope,
                 isInCart = uiState.isAddedToCart,
                 productId = product?.productId.toString(),
-
-                onAddToCartClick = { productId, productSize, selectedRegion ->
-                    Log.e(TAG, "DetailsScreen: pid: $productId, psize= $productSize ", )
-                    viewModel.onEvent(DetailsEvent.AddToCart(productId,productSize, selectedRegion))
+                onAddToCartClick = { productId, selectedRegion, productSize ->
+                    Log.e(TAG, "DetailsScreen: pid: $productId, psize= $productSize, region = $selectedRegion ", )
+                    viewModel.onEvent(DetailsEvent.AddToCart(productId, selectedRegion, productSize))
                 }
             )
 

@@ -88,16 +88,19 @@ class ShoppieeHomeRepoImpl(
         emit(Resource.Error(e.message ?: "Unexpected error occurred"))
     }.flowOn(Dispatchers.IO)
 
-    override fun addToCart(productId: String): Flow<Resource<AddToCartResultModel>> = flow {
+    override fun addToCart(productId: String, selectedRegion: String, selectedSize: Int): Flow<Resource<AddToCartResultModel>> = flow {
         try {
             emit(Resource.Loading())
             val addToCartRequest = AddToCartRequestDto(
-                id = productId
+                id = productId,
+                region = selectedRegion,
+                size = selectedSize
             )
+            Log.e(TAG, "addToCartRequest==>: $addToCartRequest")
             val addToCartResponse = shoppieeHomeApi.addToCart(addToCartRequest)
-            Log.e(TAG, "addToCartResponse==>: $addToCartResponse")
             val result = addToCartResponse.result
-            if (addToCartResponse.status == 200 && result != null) {
+            Log.e(TAG, "addToCartRequest==>: $result")
+            if (addToCartResponse.status == 200) {
                 val addToCartResultModel = result.toAddToCartResultModel()
                 emit(Resource.Success(addToCartResultModel))
             } else {

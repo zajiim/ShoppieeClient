@@ -14,8 +14,9 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +26,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
 import com.example.shoppieeclient.presentation.home.cart.components.CustomCartCardList
 import com.example.shoppieeclient.presentation.home.cart.components.CustomCheckOutCard
 import com.example.shoppieeclient.presentation.home.common.EmptyScreen
@@ -39,57 +41,34 @@ fun CartScreen(
     cartViewModel: CartViewModel = koinViewModel(),
     onNavigateClick: () -> Unit,
 ) {
-    val cartItems = cartViewModel.cartItems.collectAsLazyPagingItems()
-    val checkoutCardHeight = remember { mutableStateOf(0) }
+//    val cartItems = cartViewModel.cartItems.collectAsLazyPagingItems()
+    val checkoutCardHeight = remember { mutableIntStateOf(0) }
+    val uiState = cartViewModel.uiState
+    val cartItems = uiState.cartItems?.collectAsLazyPagingItems()
+//    val isLoading = cartItems.loadState.refresh is LoadState.Loading
 
     Box(
         modifier = modifier
-        .fillMaxSize()
-        .background(BackGroundColor)
+            .fillMaxSize()
+            .background(BackGroundColor)
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.padding(bottom = with(LocalDensity.current) {checkoutCardHeight.value.toDp()})
-        ) {
-            CustomNavigationTopAppBar(
+
+        if (uiState.isLoading) {
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                title = "My Cart",
-                navigationIcon = {
-                    IconButton(
-                        onClick = onNavigateClick,
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .clip(CircleShape)
-                            .background(Color.White)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = "Go back"
-                        )
-                    }
-                }
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CustomLineProgressIndicator(color = MaterialTheme.colorScheme.primary)
+            }
+        } else if (uiState.error != null) {
+            EmptyScreen(
+                title = "Error",
+                subtitle = uiState.error,
+                modifier = Modifier.fillMaxSize()
             )
-            CustomCartCardList(
-                modifier = Modifier,
-                cartItems = cartItems
-            )
-
-
-
-
-        }
-        CustomCheckOutCard(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .wrapContentSize(Alignment.BottomCenter)
-                .onGloballyPositioned { layoutCoordinates ->
-                    checkoutCardHeight.value = layoutCoordinates.size.height
-                }
-        )
-
-        if (cartItems.itemCount == 0) {
+        } else if (cartItems != null && cartItems.itemCount == 0) {
             EmptyScreen(
                 modifier = Modifier
                     .fillMaxSize()
@@ -97,7 +76,45 @@ fun CartScreen(
                 title = "Cart is empty",
                 subtitle = "Go shopping"
             )
+        } else {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.padding(bottom = with(LocalDensity.current) { checkoutCardHeight.value.toDp() })
+            ) {
+                CustomNavigationTopAppBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    title = "My Cart",
+                    navigationIcon = {
+                        IconButton(
+                            onClick = onNavigateClick,
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .clip(CircleShape)
+                                .background(Color.White)
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = "Go back"
+                            )
+                        }
+                    }
+                )
+                CustomCartCardList(
+                    modifier = Modifier,
+                    cartItems = cartItems
+                )
+            }
         }
+        CustomCheckOutCard(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .wrapContentSize(Alignment.BottomCenter)
+                .onGloballyPositioned { layoutCoordinates ->
+                    checkoutCardHeight.intValue = layoutCoordinates.size.height
+                }
+        )
 
 
     }

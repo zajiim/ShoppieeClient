@@ -12,5 +12,5 @@ interface ShoppieeHomeRepo {
 
     fun fetchProductDetails(productId: String): Flow<Resource<DetailsProductModel>>
 
-    fun addToCart(productId: String): Flow<Resource<AddToCartResultModel>>
+    fun addToCart(productId: String, selectedRegion: String, selectedSize: Int): Flow<Resource<AddToCartResultModel>>
 }

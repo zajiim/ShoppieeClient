@@ -13,15 +13,15 @@ import com.example.shoppieeclient.domain.cart.models.CartProductModel
 @Composable
 fun CustomCartCardList(
     modifier: Modifier = Modifier,
-    cartItems: LazyPagingItems<CartProductModel>
+    cartItems: LazyPagingItems<CartProductModel>?
     ) {
 
     LazyColumn(
         modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
-        items(cartItems.itemCount) { cartItem ->
-            val cart = cartItems[cartItem]
+        items(cartItems?.itemCount ?: 0) { cartItem ->
+            val cart = cartItems?.get(cartItem)
             if (cart != null) {
                 CustomCartCard(cartItem = cart)
             }

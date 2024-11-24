@@ -4,5 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AddToCartRequestDto(
-    val id: String
+    val id: String,
+    val region: String ,
+    val size: Int
 )

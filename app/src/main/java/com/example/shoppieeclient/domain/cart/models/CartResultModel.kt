@@ -25,5 +25,6 @@ data class CartProductModel(
     val category: String,
     val images: List<String>,
     val inCart: Boolean,
-    val cartItemCount: Int
+    val cartItemCount: Int,
+    val size: String
 )

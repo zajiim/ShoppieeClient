@@ -18,7 +18,7 @@ import com.example.shoppieeclient.ui.theme.PrimaryBlue
 
 @Composable
 fun SizeButtons(
-    size: Int,
+    size: Int = 38,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {

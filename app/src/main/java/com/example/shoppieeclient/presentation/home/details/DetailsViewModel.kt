@@ -10,34 +10,19 @@ import androidx.lifecycle.viewModelScope
 import com.example.shoppieeclient.domain.auth.use_cases.home.details.AddToCartUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.home.details.GetProductDetailsUseCase
 import com.example.shoppieeclient.utils.Resource
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 private const val TAG = "DetailsViewModel"
+
 class DetailsViewModel(
     private val fetchDetailsUseCase: GetProductDetailsUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-//    val productId: String = checkNotNull(savedStateHandle["id"])
 
     var uiState by mutableStateOf(DetailsState())
         private set
-//    init {
-//        Log.d(TAG, ":prod id ===> $productId")
-//        fetchDetails(productId)
-//    }
-
-//    fun onEvent(event: DetailsEvent) {
-//        when(event) {
-//            is DetailsEvent.LoadDetails -> {
-//                fetchDetails(event.id)
-//            }
-//        }
-//    }
-
 
     init {
         val productId: String = checkNotNull(savedStateHandle["id"])
@@ -45,10 +30,11 @@ class DetailsViewModel(
     }
 
     fun onEvent(event: DetailsEvent) {
-        when(event) {
+        when (event) {
             is DetailsEvent.LoadDetails -> {
                 fetchDetails(event.id)
             }
+
             DetailsEvent.ToggleDescription -> {
                 uiState = uiState.copy(isTextExpanded = !uiState.isTextExpanded)
             }
@@ -60,70 +46,71 @@ class DetailsViewModel(
             is DetailsEvent.SelectRegion -> {
                 uiState = uiState.copy(selectedRegion = event.region)
             }
+
             is DetailsEvent.SelectSize -> {
-                uiState = uiState.copy(selectedSize = event.size, selectedSizeIndex = event.index)
+                uiState = uiState.copy(selectedSize = event.size)
             }
 
             is DetailsEvent.AddToCart -> {
+                Log.e(
+                    TAG,
+                    "onEvent: ${event.productId}, reg = ${event.selectedRegion}, size = ${event.selectedSize}",
+                )
                 addToCart(event.productId, event.selectedRegion, event.selectedSize)
             }
         }
     }
 
-    private fun addToCart(productId: String, selectedRegion: String, selectedSize: Int) = viewModelScope.launch {
-        withContext(Dispatchers.IO) {
+    private fun addToCart(productId: String, selectedRegion: String, selectedSize: Int) =
+        viewModelScope.launch {
             uiState = uiState.copy(isLoading = true)
-            addToCartUseCase(productId).collect { result ->
-                when(result) {
+            Log.e(TAG, "addToCart:jaba ..... $selectedSize, $selectedRegion", )
+            addToCartUseCase(productId, selectedRegion, selectedSize).collect { result ->
+                when (result) {
                     is Resource.Error -> {
                         uiState = uiState.copy(
-                            isLoading = false,
-                            error = result.message,
-                            isAddedToCart = false
+                            isLoading = false, error = result.message, isAddedToCart = false
                         )
                     }
+
                     is Resource.Loading -> {
                         uiState = uiState.copy(isLoading = true)
                     }
+
                     is Resource.Success -> {
                         uiState = uiState.copy(
-                            isLoading = false,
-                            error = result.message,
-                            isAddedToCart = true
+                            isLoading = false, error = result.message, isAddedToCart = true
                         )
                     }
                 }
             }
+
         }
-    }
 
     private fun fetchDetails(productId: String) = viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            uiState = uiState.copy(isLoading = true)
-            fetchDetailsUseCase(productId).collect { result ->
-                Log.d("fetchDetailsUseCase", "API result: ${result.data}")
-                when(result) {
-                    is Resource.Error -> {
-                        uiState = uiState.copy(
-                            isLoading = false,
-                            error = result.message,
-                            details = null
-                        )
-                    }
-                    is Resource.Loading -> {
-                        uiState = uiState.copy(isLoading = true)
-                    }
-                    is Resource.Success -> {
-                        uiState = uiState.copy(
-                            isLoading = false,
-                            error = null,
-                            details = result.data,
-                        )
-                    }
+        uiState = uiState.copy(isLoading = true)
+        fetchDetailsUseCase(productId).collect { result ->
+            when (result) {
+                is Resource.Error -> {
+                    uiState = uiState.copy(
+                        isLoading = false, error = result.message, details = null
+                    )
+                }
+
+                is Resource.Loading -> {
+                    uiState = uiState.copy(isLoading = true)
+                }
+
+                is Resource.Success -> {
+                    uiState = uiState.copy(
+                        isLoading = false,
+                        error = null,
+                        details = result.data,
+                    )
                 }
             }
         }
-
     }
+
 
 }

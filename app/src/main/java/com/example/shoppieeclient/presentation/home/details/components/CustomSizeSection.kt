@@ -26,10 +26,9 @@ private const val TAG = "CustomSizeSection"
 fun CustomSizeSection(
     modifier: Modifier = Modifier,
     selectedRegion: String,
-//    selectedSize: Int,
-    selectedIndex: Int,
+    selectedSize: Int,
     onRegionSelected: (String) -> Unit,
-    onSizeSelected: (Int, Int) -> Unit
+    onSizeSelected: (Int) -> Unit
 ) {
 
     Column(
@@ -89,13 +88,22 @@ fun CustomSizeSection(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(16.dp)
         ) {
-            itemsIndexed(sizes) { index, size ->
+            /*itemsIndexed(sizes) { index, size ->
                 SizeButtons(
                     size = size,
                     isSelected =  selectedIndex == index
                 ) {
                     Log.e(TAG, "section size=$size, index=$index: ", )
                     onSizeSelected(size, index)
+                }
+            }*/
+            items(sizes) { size ->
+                SizeButtons(
+                    size = size,
+                    isSelected = size == selectedSize
+                ) {
+                    Log.e(TAG, "section size=$size ", )
+                    onSizeSelected(size)
                 }
             }
 

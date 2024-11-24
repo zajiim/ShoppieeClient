@@ -59,18 +59,6 @@ fun CustomButton(
                 )
             )
         }
-
-//        if (isLoading) {
-//            CircularProgressIndicator(
-//                color = Color.White,
-//                modifier = Modifier.size(20.dp)
-//            )
-//        } else {
-//            Text(
-//                text = text,
-//                style = MaterialTheme.typography.bodyMedium
-//            )
-//        }
     }
 
 }

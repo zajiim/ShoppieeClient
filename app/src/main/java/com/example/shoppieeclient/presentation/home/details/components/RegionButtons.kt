@@ -14,7 +14,7 @@ import com.example.shoppieeclient.ui.theme.SubTitleColor
 @Composable
 fun RegionButtons(
     region: String,
-    selectedRegion: String,
+    selectedRegion: String = "EU",
     onClick: () -> Unit
 ) {
     Text(text = region,
