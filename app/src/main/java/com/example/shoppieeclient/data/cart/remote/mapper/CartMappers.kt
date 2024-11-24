@@ -3,10 +3,11 @@ package com.example.shoppieeclient.data.cart.remote.mapper
 import com.example.shoppieeclient.data.cart.remote.dto.CartItemsDto
 import com.example.shoppieeclient.data.cart.remote.dto.CartProductDto
 import com.example.shoppieeclient.data.cart.remote.dto.CartResultDto
+import com.example.shoppieeclient.data.cart.remote.dto.IncrementDecrementDeleteResultDto
 import com.example.shoppieeclient.domain.cart.models.CartProductModel
 import com.example.shoppieeclient.domain.cart.models.CartResultModel
 import com.example.shoppieeclient.domain.cart.models.CartResultResponseModel
-import kotlin.text.category
+import com.example.shoppieeclient.domain.cart.models.IncrementDecrementDeleteResultModel
 
 fun CartResultDto.toCartProductModel(): CartResultResponseModel {
     return CartResultResponseModel(
@@ -38,5 +39,12 @@ fun CartProductDto.toCartProducts(): CartProductModel {
         inCart = this.inCart,
         cartItemCount = this.cartItemCount,
         size = this.size
+    )
+}
+
+fun IncrementDecrementDeleteResultDto.toIncrementDecrementDeleteCartResultModel(): IncrementDecrementDeleteResultModel {
+    return IncrementDecrementDeleteResultModel(
+        cartCount = this.cartCount,
+        status = this.status
     )
 }

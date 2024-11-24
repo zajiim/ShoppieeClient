@@ -14,9 +14,15 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.shoppieeclient.domain.cart.models.CartProductModel
+import com.example.shoppieeclient.domain.cart.use_cases.DecrementItemUseCase
+import com.example.shoppieeclient.domain.cart.use_cases.IncrementItemUseCase
+import com.example.shoppieeclient.domain.cart.use_cases.RemoveItemUseCase
 
 class CartViewModel(
-    private val getCartUseCase: GetCartUseCase
+    private val getCartUseCase: GetCartUseCase,
+    private val incrementItemUseCase: IncrementItemUseCase,
+    private val decrementItemUseCase: DecrementItemUseCase,
+    private val removeItemUseCase: RemoveItemUseCase
 ) : ViewModel() {
 
 
@@ -47,6 +53,14 @@ class CartViewModel(
                 error = e.message
             )
             if (e is CancellationException) throw e
+        }
+    }
+    fun onEvent(events: CartEvents) {
+        when(events) {
+            CartEvents.Checkout -> Unit
+            is CartEvents.DecrementItem -> TODO()
+            is CartEvents.IncrementItem -> TODO()
+            is CartEvents.RemoveCartItem -> TODO()
         }
     }
 

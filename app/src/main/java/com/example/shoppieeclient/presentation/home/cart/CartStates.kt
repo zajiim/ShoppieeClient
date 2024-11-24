@@ -1,7 +1,6 @@
 package com.example.shoppieeclient.presentation.home.cart
 
 import androidx.paging.PagingData
-import androidx.paging.compose.LazyPagingItems
 import com.example.shoppieeclient.domain.cart.models.CartProductModel
 import kotlinx.coroutines.flow.Flow
 

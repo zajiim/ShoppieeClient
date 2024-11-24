@@ -108,7 +108,7 @@ class ShoppieeHomeRepoImpl(
             }
 
 
-        }  catch (e: ClientRequestException) {
+        } catch (e: ClientRequestException) {
             emit(Resource.Error(e.message))
         } catch (e: ServerResponseException) {
             emit(Resource.Error(e.message))

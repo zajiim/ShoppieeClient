@@ -41,11 +41,9 @@ fun CartScreen(
     cartViewModel: CartViewModel = koinViewModel(),
     onNavigateClick: () -> Unit,
 ) {
-//    val cartItems = cartViewModel.cartItems.collectAsLazyPagingItems()
     val checkoutCardHeight = remember { mutableIntStateOf(0) }
     val uiState = cartViewModel.uiState
     val cartItems = uiState.cartItems?.collectAsLazyPagingItems()
-//    val isLoading = cartItems.loadState.refresh is LoadState.Loading
 
     Box(
         modifier = modifier
