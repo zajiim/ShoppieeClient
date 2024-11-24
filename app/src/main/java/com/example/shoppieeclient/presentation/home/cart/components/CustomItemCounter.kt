@@ -23,7 +23,9 @@ import com.example.shoppieeclient.R
 @Composable
 fun CustomItemCounter(
     modifier: Modifier = Modifier,
-    count: Int
+    count: Int,
+    onIncrement: () -> Unit,
+    onDecrement: () -> Unit,
 ) {
 
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -38,7 +40,8 @@ fun CustomItemCounter(
                 painter = painterResource(id = R.drawable.ic_minus),
                 contentDescription = "decrement",
                 modifier = Modifier.clickable {
-                    count.plus(1)
+                    onDecrement()
+//                    count.plus(1)
                 }
             )
         }
@@ -57,7 +60,8 @@ fun CustomItemCounter(
                 colorFilter = ColorFilter.tint(Color.White),
                 contentDescription = "increment",
                 modifier = Modifier.clickable {
-                    count.minus(1)
+                    onIncrement()
+//                    count.minus(1)
                 }
             )
         }

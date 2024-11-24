@@ -30,52 +30,65 @@ import com.example.shoppieeclient.domain.cart.models.CartProductModel
 @Composable
 fun CustomCartCard(
     modifier: Modifier = Modifier,
-    cartItem: CartProductModel
+    cartItem: CartProductModel,
+    onIncrement: (String, String) -> Unit,
+    onDecrement: (String) -> Unit,
+    onDelete: (String) -> Unit,
+    isLoading: Boolean
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth()
-            .height(80.dp)
-    ) {
-        AsyncImage(
-            modifier = Modifier.fillMaxHeight().clip(RoundedCornerShape(12.dp)),
-            model = cartItem.images[0],
-            contentDescription = cartItem.name,
-            contentScale = ContentScale.FillHeight
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(
-            modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween
+    if (isLoading) {
+        CustomShimmer(modifier.fillMaxWidth()
+            .height(80.dp))
+    } else {
+        Row(
+            modifier = modifier.fillMaxWidth()
+                .height(80.dp)
         ) {
-            Text(text = cartItem.name,
-                style = MaterialTheme.typography.titleMedium
+            AsyncImage(
+                modifier = Modifier.fillMaxHeight().clip(RoundedCornerShape(12.dp)),
+                model = cartItem.images[0],
+                contentDescription = cartItem.name,
+                contentScale = ContentScale.FillHeight
             )
-            Text(text = cartItem.price.toString(),
-                style = MaterialTheme.typography.titleSmall
-            )
-
-            CustomItemCounter(
-                count = cartItem.cartItemCount
-            )
-        }
-        Spacer(modifier = Modifier.weight(1f))
-
-        Column(
-            modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = cartItem.size, style = TextStyle(
-                    fontSize = 16.sp, color = Color.Black
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = cartItem.name,
+                    style = MaterialTheme.typography.titleMedium
                 )
-            )
-
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = "Delete product"
+                Text(
+                    text = cartItem.price.toString(),
+                    style = MaterialTheme.typography.titleSmall
                 )
+
+                CustomItemCounter(
+                    count = cartItem.cartItemCount,
+                    onIncrement = { onIncrement(cartItem.productId, cartItem.size) },
+                    onDecrement = { onDecrement(cartItem.productId) },
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = cartItem.size, style = TextStyle(
+                        fontSize = 16.sp, color = Color.Black
+                    )
+                )
+
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = "Delete product"
+                    )
+                }
             }
         }
     }

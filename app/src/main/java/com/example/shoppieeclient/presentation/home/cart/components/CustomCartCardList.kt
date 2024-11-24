@@ -13,7 +13,11 @@ import com.example.shoppieeclient.domain.cart.models.CartProductModel
 @Composable
 fun CustomCartCardList(
     modifier: Modifier = Modifier,
-    cartItems: LazyPagingItems<CartProductModel>?
+    cartItems: LazyPagingItems<CartProductModel>?,
+    onIncrement: (String, String) -> Unit,
+    onDecrement: (String) -> Unit,
+    onDelete: (String) -> Unit,
+    isLoading: Boolean
     ) {
 
     LazyColumn(
@@ -23,7 +27,13 @@ fun CustomCartCardList(
         items(cartItems?.itemCount ?: 0) { cartItem ->
             val cart = cartItems?.get(cartItem)
             if (cart != null) {
-                CustomCartCard(cartItem = cart)
+                CustomCartCard(
+                    cartItem = cart,
+                    onIncrement = onIncrement,
+                    onDecrement = onDecrement,
+                    onDelete = onDelete,
+                    isLoading = isLoading
+                )
             }
 
         }

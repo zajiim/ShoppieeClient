@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
 import com.example.shoppieeclient.presentation.home.cart.components.CustomCartCardList
@@ -44,6 +45,7 @@ fun CartScreen(
     val checkoutCardHeight = remember { mutableIntStateOf(0) }
     val uiState = cartViewModel.uiState
     val cartItems = uiState.cartItems?.collectAsLazyPagingItems()
+    val isPagingLoading = cartItems?.loadState?.refresh is LoadState.Loading
 
     Box(
         modifier = modifier
@@ -51,7 +53,7 @@ fun CartScreen(
             .background(BackGroundColor)
     ) {
 
-        if (uiState.isLoading) {
+        if (uiState.isLoading || isPagingLoading) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -66,7 +68,7 @@ fun CartScreen(
                 subtitle = uiState.error,
                 modifier = Modifier.fillMaxSize()
             )
-        } else if (cartItems != null && cartItems.itemCount == 0) {
+        } else if (cartItems?.itemCount == 0) {
             EmptyScreen(
                 modifier = Modifier
                     .fillMaxSize()
@@ -79,10 +81,9 @@ fun CartScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.padding(bottom = with(LocalDensity.current) { checkoutCardHeight.value.toDp() })
             ) {
-                CustomNavigationTopAppBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                CustomNavigationTopAppBar(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                     title = "My Cart",
                     navigationIcon = {
                         IconButton(
@@ -97,25 +98,30 @@ fun CartScreen(
                                 contentDescription = "Go back"
                             )
                         }
-                    }
-                )
+                    })
                 CustomCartCardList(
                     modifier = Modifier,
-                    cartItems = cartItems
+                    cartItems = cartItems,
+                    onIncrement = { id, size ->
+                        cartViewModel.onEvent(CartEvents.IncrementItem(id, size))
+                    },
+                    onDecrement = { id ->
+                        cartViewModel.onEvent(CartEvents.DecrementItem(id))
+                    },
+                    onDelete = { id ->
+                        cartViewModel.onEvent(CartEvents.RemoveCartItem(id))
+                    },
+                    isLoading = uiState.isItemLoading
                 )
             }
+            CustomCheckOutCard(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .wrapContentSize(Alignment.BottomCenter)
+                    .onGloballyPositioned { layoutCoordinates ->
+                        checkoutCardHeight.intValue = layoutCoordinates.size.height
+                    }
+            )
         }
-        CustomCheckOutCard(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .wrapContentSize(Alignment.BottomCenter)
-                .onGloballyPositioned { layoutCoordinates ->
-                    checkoutCardHeight.intValue = layoutCoordinates.size.height
-                }
-        )
-
-
     }
-
-
 }

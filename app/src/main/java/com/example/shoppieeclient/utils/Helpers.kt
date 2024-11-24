@@ -13,5 +13,3 @@ fun isEmailValid(email: String): Boolean {
 fun isPasswordValid(password: String): Boolean {
     return password.any {it.isDigit()} && password.any {it.isLetter()}
 }
-
-
