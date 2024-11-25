@@ -5,9 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -33,6 +37,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
+import com.example.shoppieeclient.presentation.common.components.CustomToast
 import com.example.shoppieeclient.presentation.home.cart.components.CustomCartCardList
 import com.example.shoppieeclient.presentation.home.cart.components.CustomCheckOutCard
 import com.example.shoppieeclient.presentation.home.common.EmptyScreen
@@ -51,6 +56,8 @@ fun CartScreen(
     val checkoutCardHeight = remember { mutableIntStateOf(0) }
     val uiState = cartViewModel.uiState
     val cartItems = uiState.cartItems?.collectAsLazyPagingItems()
+    val bottomBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
 
     Box(
         modifier = modifier
@@ -123,7 +130,8 @@ fun CartScreen(
                         onDelete = { id ->
                             cartViewModel.onEvent(CartEvents.RemoveCartItem(id))
                         },
-                        isLoading = uiState.isItemLoading
+                        isLoading = uiState.isItemLoading,
+                        showToast = {cartViewModel.showToast()}
                     )
                 }
                 CustomCheckOutCard(
@@ -132,7 +140,10 @@ fun CartScreen(
                         .wrapContentSize(Alignment.BottomCenter)
                         .onGloballyPositioned { layoutCoordinates ->
                             checkoutCardHeight.intValue = layoutCoordinates.size.height
-                        }
+                        },
+                    subTotal = uiState.subTotal,
+                    platformFees = uiState.platformFees,
+                    totalCost = uiState.totalCost
                 )
             }
         }
@@ -156,6 +167,13 @@ fun CartScreen(
                         Text("No")
                     }
                 }
+            )
+        }
+
+        if (uiState.showToast) {
+            CustomToast(
+                modifier = modifier.align(Alignment.BottomCenter).padding(bottom = bottomBarHeight),
+                message = "No more products available"
             )
         }
     }

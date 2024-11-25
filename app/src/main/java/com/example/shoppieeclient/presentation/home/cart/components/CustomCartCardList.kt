@@ -17,7 +17,8 @@ fun CustomCartCardList(
     onIncrement: (String, String) -> Unit,
     onDecrement: (String) -> Unit,
     onDelete: (String) -> Unit,
-    isLoading: Boolean
+    isLoading: Boolean,
+    showToast: () -> Unit
     ) {
 
     LazyColumn(
@@ -32,7 +33,8 @@ fun CustomCartCardList(
                     onIncrement = onIncrement,
                     onDecrement = onDecrement,
                     isLoading = isLoading,
-                    onDelete = onDelete
+                    onDelete = onDelete,
+                    showToast = showToast
                 )
             }
 

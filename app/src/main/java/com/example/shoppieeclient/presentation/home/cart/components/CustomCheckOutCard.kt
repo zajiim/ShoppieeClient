@@ -32,7 +32,10 @@ import kotlin.io.path.Path
 
 @Composable
 fun CustomCheckOutCard(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    subTotal: Double,
+    platformFees: Double,
+    totalCost: Double
 ) {
     val safeBottomBarPaddingVal = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     Box(
@@ -51,7 +54,7 @@ fun CustomCheckOutCard(
         ) {
             CustomTotalRow(
                 titleText = "Subtotal",
-                valueText = "$1250.00",
+                valueText = subTotal.toString(),
                 titleColor = Color.LightGray,
                 valueColor = Color.Black
             )
@@ -59,7 +62,7 @@ fun CustomCheckOutCard(
 
             CustomTotalRow(
                 titleText = "Platform fees",
-                valueText = "$12.00",
+                valueText = platformFees.toString(),
                 titleColor = Color.LightGray,
                 valueColor = Color.Black
             )
@@ -82,7 +85,7 @@ fun CustomCheckOutCard(
 
             CustomTotalRow(
                 titleText = "Total Cost",
-                valueText = "$1262.00",
+                valueText = totalCost.toString(),
                 titleColor = Color.Black,
                 valueColor = Color.Black
             )

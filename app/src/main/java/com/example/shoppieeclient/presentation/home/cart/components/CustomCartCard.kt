@@ -34,7 +34,8 @@ fun CustomCartCard(
     onIncrement: (String, String) -> Unit,
     onDecrement: (String) -> Unit,
     isLoading: Boolean,
-    onDelete: (String) -> Unit
+    onDelete: (String) -> Unit,
+    showToast: () -> Unit
 ) {
     if (isLoading) {
         CustomShimmer(modifier.fillMaxWidth()
@@ -66,8 +67,11 @@ fun CustomCartCard(
 
                 CustomItemCounter(
                     count = cartItem.cartItemCount,
+                    totalItemCount = cartItem.quantity,
                     onIncrement = { onIncrement(cartItem.productId, cartItem.size) },
                     onDecrement = { onDecrement(cartItem.productId) },
+                    onDelete = { onDelete(cartItem.productId) },
+                    showToast = showToast
                 )
             }
             Spacer(modifier = Modifier.weight(1f))

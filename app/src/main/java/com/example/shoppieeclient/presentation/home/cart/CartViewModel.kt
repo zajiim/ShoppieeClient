@@ -6,23 +6,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.LoadState
 import androidx.paging.cachedIn
-import androidx.paging.compose.LazyPagingItems
-import com.example.shoppieeclient.domain.cart.use_cases.GetCartUseCase
-import com.example.shoppieeclient.utils.Constants
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import kotlin.coroutines.cancellation.CancellationException
-import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.map
-import com.example.shoppieeclient.domain.cart.models.CartProductModel
 import com.example.shoppieeclient.domain.cart.use_cases.DecrementItemUseCase
+import com.example.shoppieeclient.domain.cart.use_cases.GetCartUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.IncrementItemUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.RemoveItemUseCase
+import com.example.shoppieeclient.utils.Constants
 import com.example.shoppieeclient.utils.Resource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 class CartViewModel(
     private val getCartUseCase: GetCartUseCase,
@@ -64,7 +60,6 @@ class CartViewModel(
     }
 
 
-    @SuppressLint("CheckResult")
     private fun calculateTotals() = viewModelScope.launch {
         uiState.cartItems?.collectLatest { pagingData ->
             var subTotal = 0.0
@@ -80,14 +75,13 @@ class CartViewModel(
                 totalCost = totalCost
             )
         }
-
     }
+
     fun onEvent(events: CartEvents) {
         when(events) {
             CartEvents.Checkout -> handleCheckOut()
             is CartEvents.DecrementItem -> handleDecrementItem(events.id)
             is CartEvents.IncrementItem -> handleIncrementItem(events.id, events.size)
-//            is CartEvents.RemoveCartItem -> handleRemoveCartItem(events.id)
             is CartEvents.RemoveCartItem -> showDeleteDialog(events.id)
         }
     }
@@ -124,34 +118,6 @@ class CartViewModel(
             }
         }
     }
-
-   /* private fun handleRemoveCartItem(id: String) {
-        uiState = uiState.copy(
-            selectedItemId = id,
-            showDeleteDialog = true
-        )
-    }
-
-    fun confirmRemoveCartItem() = viewModelScope.launch {
-        uiState.selectedItemId?.let { id ->
-            removeItemUseCase(id).collect { result ->
-                when(result) {
-                    is Resource.Error -> {
-                        uiState = uiState.copy(error = result.message, isItemLoading = false)
-                    }
-                    is Resource.Loading -> {
-                        uiState = uiState.copy(isItemLoading = true)
-                    }
-                    is Resource.Success -> {
-                        uiState = uiState.copy(isItemLoading = false)
-                        fetchCartItems()
-                    }
-                }
-            }
-        }
-        uiState = uiState.copy(showDeleteDialog = false)
-    }*/
-
     private fun handleRemoveCartItem(id: String) = viewModelScope.launch{
         removeItemUseCase(id).collect { result ->
             when(result) {
@@ -188,6 +154,14 @@ class CartViewModel(
 
     private fun handleCheckOut() {
         TODO("Not yet implemented")
+    }
+
+    fun showToast() {
+        uiState = uiState.copy(showToast = true)
+        viewModelScope.launch {
+            delay(3000)
+            uiState = uiState.copy(showToast = false)
+        }
     }
 
 }

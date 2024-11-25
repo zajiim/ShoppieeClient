@@ -15,5 +15,6 @@ data class CartStates(
     val showDecrementDialog: Boolean = false,
     val selectedItemId: String? = null,
     val selectedItemSize: String? = null,
-    val isItemLoading: Boolean = false
+    val isItemLoading: Boolean = false,
+    val showToast: Boolean = false
 )
