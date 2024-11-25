@@ -33,8 +33,8 @@ fun CustomCartCard(
     cartItem: CartProductModel,
     onIncrement: (String, String) -> Unit,
     onDecrement: (String) -> Unit,
-    onDelete: (String) -> Unit,
-    isLoading: Boolean
+    isLoading: Boolean,
+    onDelete: (String) -> Unit
 ) {
     if (isLoading) {
         CustomShimmer(modifier.fillMaxWidth()
@@ -83,7 +83,7 @@ fun CustomCartCard(
                     )
                 )
 
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { onDelete(cartItem.productId) }) {
                     Icon(
                         imageVector = Icons.Outlined.Delete,
                         contentDescription = "Delete product"

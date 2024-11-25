@@ -31,8 +31,8 @@ fun CustomCartCardList(
                     cartItem = cart,
                     onIncrement = onIncrement,
                     onDecrement = onDecrement,
-                    onDelete = onDelete,
-                    isLoading = isLoading
+                    isLoading = isLoading,
+                    onDelete = onDelete
                 )
             }
 

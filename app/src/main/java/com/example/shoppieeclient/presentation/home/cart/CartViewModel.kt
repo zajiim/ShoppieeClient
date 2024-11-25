@@ -82,17 +82,30 @@ class CartViewModel(
         }
 
     }
-
-
-
-
     fun onEvent(events: CartEvents) {
         when(events) {
             CartEvents.Checkout -> handleCheckOut()
             is CartEvents.DecrementItem -> handleDecrementItem(events.id)
             is CartEvents.IncrementItem -> handleIncrementItem(events.id, events.size)
-            is CartEvents.RemoveCartItem -> handleRemoveCartItem(events.id)
+//            is CartEvents.RemoveCartItem -> handleRemoveCartItem(events.id)
+            is CartEvents.RemoveCartItem -> showDeleteDialog(events.id)
         }
+    }
+    private fun showDeleteDialog(id: String) {
+        uiState = uiState.copy(
+            showDeleteDialog = true,
+            selectedItemId = id
+        )
+    }
+
+    fun confirmDeletion() = viewModelScope.launch {
+        uiState.selectedItemId?.let { id ->
+            uiState = uiState.copy(showDeleteDialog = false)
+            handleRemoveCartItem(id)
+        }
+    }
+    fun dismissDeletionDialog() {
+        uiState = uiState.copy(showDeleteDialog = false)
     }
 
     private fun handleIncrementItem(id: String, size: String) = viewModelScope.launch {
@@ -112,9 +125,66 @@ class CartViewModel(
         }
     }
 
-    private fun handleRemoveCartItem(id: String) {}
+   /* private fun handleRemoveCartItem(id: String) {
+        uiState = uiState.copy(
+            selectedItemId = id,
+            showDeleteDialog = true
+        )
+    }
 
-    private fun handleDecrementItem(id: String) {}
+    fun confirmRemoveCartItem() = viewModelScope.launch {
+        uiState.selectedItemId?.let { id ->
+            removeItemUseCase(id).collect { result ->
+                when(result) {
+                    is Resource.Error -> {
+                        uiState = uiState.copy(error = result.message, isItemLoading = false)
+                    }
+                    is Resource.Loading -> {
+                        uiState = uiState.copy(isItemLoading = true)
+                    }
+                    is Resource.Success -> {
+                        uiState = uiState.copy(isItemLoading = false)
+                        fetchCartItems()
+                    }
+                }
+            }
+        }
+        uiState = uiState.copy(showDeleteDialog = false)
+    }*/
+
+    private fun handleRemoveCartItem(id: String) = viewModelScope.launch{
+        removeItemUseCase(id).collect { result ->
+            when(result) {
+                is Resource.Error -> {
+                    uiState = uiState.copy(error = result.message, isItemLoading = false)
+                }
+                is Resource.Loading -> {
+                    uiState = uiState.copy(isItemLoading = true)
+                }
+                is Resource.Success -> {
+                    uiState = uiState.copy(isItemLoading = false)
+                    fetchCartItems()
+                }
+            }
+        }
+    }
+
+    private fun handleDecrementItem(id: String) = viewModelScope.launch{
+        decrementItemUseCase(id).collect { result ->
+            when(result) {
+                is Resource.Error -> {
+                    uiState = uiState.copy(error = result.message, isItemLoading = false)
+                }
+                is Resource.Loading -> {
+                    uiState = uiState.copy(isItemLoading = true)
+                }
+                is Resource.Success -> {
+                    uiState = uiState.copy(isItemLoading = false)
+                    fetchCartItems()
+                }
+            }
+        }
+    }
 
     private fun handleCheckOut() {
         TODO("Not yet implemented")
