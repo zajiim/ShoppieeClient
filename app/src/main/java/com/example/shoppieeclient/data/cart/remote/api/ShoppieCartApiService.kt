@@ -2,6 +2,7 @@ package com.example.shoppieeclient.data.cart.remote.api
 
 import com.example.shoppieeclient.data.cart.remote.dto.CartResponseDto
 import com.example.shoppieeclient.data.cart.remote.dto.CartResultDto
+import com.example.shoppieeclient.data.cart.remote.dto.CartTotalResponseDto
 import com.example.shoppieeclient.data.cart.remote.dto.DecrementDeleteCartItemRequestDto
 import com.example.shoppieeclient.data.cart.remote.dto.IncrementCartItemRequestDto
 import com.example.shoppieeclient.data.cart.remote.dto.IncrementDecrementDeleteCartResponseDto
@@ -47,6 +48,12 @@ class ShoppieCartApiService(
         return authorizedHttpClient.post("${Constants.SHOPPIEE_URL}/remove-from-cart") {
             contentType(ContentType.Application.Json)
             setBody(decrementDeleteCartResponseDto)
+        }.body()
+    }
+
+    suspend fun getCartTotal(): CartTotalResponseDto {
+        return authorizedHttpClient.get("${Constants.SHOPPIEE_URL}/getCartTotal") {
+            contentType(ContentType.Application.Json)
         }.body()
     }
 

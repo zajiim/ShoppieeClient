@@ -9,11 +9,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.shoppieeclient.domain.cart.use_cases.DecrementItemUseCase
+import com.example.shoppieeclient.domain.cart.use_cases.GetCartTotalUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.GetCartUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.IncrementItemUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.RemoveItemUseCase
 import com.example.shoppieeclient.utils.Constants
 import com.example.shoppieeclient.utils.Resource
+import com.example.shoppieeclient.utils.roundToTwoDecimalPlaces
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
@@ -24,7 +26,8 @@ class CartViewModel(
     private val getCartUseCase: GetCartUseCase,
     private val incrementItemUseCase: IncrementItemUseCase,
     private val decrementItemUseCase: DecrementItemUseCase,
-    private val removeItemUseCase: RemoveItemUseCase
+    private val removeItemUseCase: RemoveItemUseCase,
+    private val getCartTotalUseCase: GetCartTotalUseCase
 ) : ViewModel() {
 
 
@@ -61,19 +64,24 @@ class CartViewModel(
 
 
     private fun calculateTotals() = viewModelScope.launch {
-        uiState.cartItems?.collectLatest { pagingData ->
-            var subTotal = 0.0
-            pagingData.map { cartItem ->
-                subTotal += cartItem.price * cartItem.cartItemCount
+        getCartTotalUseCase().collect { result ->
+            when(result) {
+                is Resource.Error -> {
+                    uiState = uiState.copy(error = result.message, isItemLoading = false)
+                }
+                is Resource.Loading -> {
+                    uiState = uiState.copy(isItemLoading = true)
+                }
+                is Resource.Success -> {
+                    val cartTotal = result.data
+                    uiState = uiState.copy(
+                        isItemLoading = false,
+                        subTotal = cartTotal?.totalPrice?.roundToTwoDecimalPlaces() ?: 0.0,
+                        platformFees = cartTotal?.platformFee?.roundToTwoDecimalPlaces() ?: 0.0,
+                        totalCost = cartTotal?.grandTotal?.roundToTwoDecimalPlaces() ?: 0.0
+                    )
+                }
             }
-            val platformFees = subTotal * 0.01
-            val totalCost = subTotal + platformFees
-
-            uiState = uiState.copy(
-                subTotal = subTotal,
-                platformFees = platformFees,
-                totalCost = totalCost
-            )
         }
     }
 

@@ -3,10 +3,12 @@ package com.example.shoppieeclient.data.cart.remote.mapper
 import com.example.shoppieeclient.data.cart.remote.dto.CartItemsDto
 import com.example.shoppieeclient.data.cart.remote.dto.CartProductDto
 import com.example.shoppieeclient.data.cart.remote.dto.CartResultDto
+import com.example.shoppieeclient.data.cart.remote.dto.CartTotalDto
 import com.example.shoppieeclient.data.cart.remote.dto.IncrementDecrementDeleteResultDto
 import com.example.shoppieeclient.domain.cart.models.CartProductModel
 import com.example.shoppieeclient.domain.cart.models.CartResultModel
 import com.example.shoppieeclient.domain.cart.models.CartResultResponseModel
+import com.example.shoppieeclient.domain.cart.models.CartTotalModel
 import com.example.shoppieeclient.domain.cart.models.IncrementDecrementDeleteResultModel
 
 fun CartResultDto.toCartProductModel(): CartResultResponseModel {
@@ -46,5 +48,14 @@ fun IncrementDecrementDeleteResultDto.toIncrementDecrementDeleteCartResultModel(
     return IncrementDecrementDeleteResultModel(
         cartCount = this.cartCount,
         status = this.status
+    )
+}
+
+
+fun CartTotalDto.toCartTotalModel(): CartTotalModel {
+    return CartTotalModel(
+        totalPrice = this.totalPrice,
+        platformFee = this.platformFee,
+        grandTotal = this.grandTotal
     )
 }

@@ -7,10 +7,10 @@ import com.example.shoppieeclient.data.cart.paging.CartsPagingSource
 import com.example.shoppieeclient.data.cart.remote.api.ShoppieCartApiService
 import com.example.shoppieeclient.data.cart.remote.dto.DecrementDeleteCartItemRequestDto
 import com.example.shoppieeclient.data.cart.remote.dto.IncrementCartItemRequestDto
+import com.example.shoppieeclient.data.cart.remote.mapper.toCartTotalModel
 import com.example.shoppieeclient.data.cart.remote.mapper.toIncrementDecrementDeleteCartResultModel
 import com.example.shoppieeclient.domain.cart.models.CartProductModel
-import com.example.shoppieeclient.domain.cart.models.CartResultModel
-import com.example.shoppieeclient.domain.cart.models.IncrementDecrementDeleteCartResponseModel
+import com.example.shoppieeclient.domain.cart.models.CartTotalModel
 import com.example.shoppieeclient.domain.cart.models.IncrementDecrementDeleteResultModel
 import com.example.shoppieeclient.domain.cart.repository.ShoppieCartRepo
 import com.example.shoppieeclient.utils.Constants
@@ -107,7 +107,7 @@ class ShoppieCartRepoImpl(
         emit(Resource.Error(e.message ?: "Unexpected error occurred"))
     }.flowOn(Dispatchers.IO)
 
-    override fun removeFromCart(productId: String): Flow<Resource<IncrementDecrementDeleteResultModel>> =flow {
+    override fun removeFromCart(productId: String): Flow<Resource<IncrementDecrementDeleteResultModel>> = flow {
         try {
             emit(Resource.Loading())
             val decrementCartRequest = DecrementDeleteCartItemRequestDto(
@@ -134,6 +134,33 @@ class ShoppieCartRepoImpl(
         } catch (e: Exception) {
             emit(Resource.Error(e.message ?: "Unknown error occurred"))
         }
+    }.catch { e ->
+        emit(Resource.Error(e.message ?: "Unexpected error occurred"))
+    }.flowOn(Dispatchers.IO)
+
+    override fun getCartTotal(): Flow<Resource<CartTotalModel>> = flow {
+        try {
+            emit(Resource.Loading())
+            val cartTotalResponse = shoppieCartApi.getCartTotal()
+
+            if (cartTotalResponse.status == 200) {
+                val cartTotal = cartTotalResponse.result.toCartTotalModel()
+                emit(Resource.Success(cartTotal))
+            } else {
+                emit(Resource.Error(cartTotalResponse.message))
+            }
+        } catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+
     }.catch { e ->
         emit(Resource.Error(e.message ?: "Unexpected error occurred"))
     }.flowOn(Dispatchers.IO)

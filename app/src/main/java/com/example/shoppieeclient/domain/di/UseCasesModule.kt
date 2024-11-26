@@ -20,6 +20,7 @@ import com.example.shoppieeclient.domain.auth.use_cases.validations.forgot_passw
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signin.SignInValidationsUseCases
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.SignupValidationsUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.DecrementItemUseCase
+import com.example.shoppieeclient.domain.cart.use_cases.GetCartTotalUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.GetCartUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.IncrementItemUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.RemoveItemUseCase
@@ -104,6 +105,12 @@ val useCasesModule = module {
     }
     single {
         RemoveItemUseCase(
+            shoppieCartRepo = get()
+        )
+    }
+
+    single {
+        GetCartTotalUseCase(
             shoppieCartRepo = get()
         )
     }

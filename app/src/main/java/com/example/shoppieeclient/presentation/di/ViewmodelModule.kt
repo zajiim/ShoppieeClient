@@ -22,6 +22,6 @@ val viewmodelModule = module {
     viewModel<DetailsViewModel>{ (savedStateHandle: SavedStateHandle) ->
         DetailsViewModel(fetchDetailsUseCase = get(), addToCartUseCase = get(), savedStateHandle = savedStateHandle)
     }
-    viewModel<CartViewModel> { CartViewModel(getCartUseCase = get(), incrementItemUseCase = get(), decrementItemUseCase = get(), removeItemUseCase = get()) }
+    viewModel<CartViewModel> { CartViewModel(getCartUseCase = get(), incrementItemUseCase = get(), decrementItemUseCase = get(), removeItemUseCase = get(), getCartTotalUseCase = get()) }
 
 }
