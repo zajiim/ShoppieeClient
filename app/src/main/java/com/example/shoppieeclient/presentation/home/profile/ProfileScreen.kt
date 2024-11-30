@@ -117,7 +117,7 @@ fun ProfileScreen(
                 profileViewModel.onEvent(ProfileEvents.ToggleBiometric(it))
             }
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         CustomAppSetting(
             title = "Enable Push Notification",
@@ -126,7 +126,7 @@ fun ProfileScreen(
                 profileViewModel.onEvent(ProfileEvents.TogglePushNotification(it))
             }
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         CustomAppSetting(
             title = "Enable Location Services",
@@ -135,7 +135,7 @@ fun ProfileScreen(
                 profileViewModel.onEvent(ProfileEvents.ToggleLocationService(it))
             }
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         CustomAppSetting(
             title = "Dark Mode",
@@ -144,7 +144,7 @@ fun ProfileScreen(
                 profileViewModel.onEvent(ProfileEvents.ToggleDarkMode(it))
             }
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
 
     }

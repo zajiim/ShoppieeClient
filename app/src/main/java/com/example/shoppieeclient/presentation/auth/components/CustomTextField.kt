@@ -25,12 +25,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.ui.theme.Primary
+import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import com.example.shoppieeclient.utils.UiText
 
 @Composable
 fun CustomTextField(
     modifier: Modifier = Modifier,
     title: String,
+    titleTextColor: Color = PrimaryBlue,
     textValue: String,
     onValueChange: (String) -> Unit,
     cursorColor: Color = Primary,
@@ -49,7 +51,7 @@ fun CustomTextField(
     ) {
         Text(
             text = title,
-            color = Primary,
+            color = titleTextColor,
             style = MaterialTheme.typography.titleSmall
         )
 
@@ -61,7 +63,9 @@ fun CustomTextField(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
-                cursorColor = cursorColor
+                cursorColor = cursorColor,
+                focusedBorderColor = PrimaryBlue,
+                unfocusedBorderColor = Color.Transparent
             ),
             shape = RoundedCornerShape(16.dp),
             placeholder = {

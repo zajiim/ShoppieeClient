@@ -23,11 +23,6 @@ fun CustomAppSetting(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = title, style = MaterialTheme.typography.bodyLarge)
-        /*Switch(
-            checked = isChecked,
-            onCheckedChange = onCheckedChange
-        )*/
-
         CustomSwitch(
             checked = isChecked,
             onCheckedChange = onCheckedChange
