@@ -10,13 +10,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.example.shoppieeclient.presentation.home.accounts.AccountsScreen
 import com.example.shoppieeclient.presentation.home.home.HomeScreen
 import com.example.shoppieeclient.presentation.home.cart.CartScreen
+import com.example.shoppieeclient.presentation.home.delete_account.DeleteAccountScreen
 import com.example.shoppieeclient.presentation.home.details.DetailsScreen
 import com.example.shoppieeclient.presentation.home.details.DetailsViewModel
 import com.example.shoppieeclient.presentation.home.favorites.FavoriesScreen
 import com.example.shoppieeclient.presentation.home.notifications.NotificationsScreen
+import com.example.shoppieeclient.presentation.home.payment.PaymentScreen
 import com.example.shoppieeclient.presentation.home.profile.ProfileScreen
+import com.example.shoppieeclient.presentation.home.shipping.ShippingScreen
 import com.example.shoppieeclient.presentation.navigation.Destination
 import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
 import org.koin.androidx.compose.koinViewModel
@@ -89,6 +93,39 @@ fun NavGraphBuilder.homeNavGraph(
                     }
                 )
             }
+
+
+        composable<Destination.Account> {
+            AccountsScreen(
+                onNavigateClick = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
+        composable<Destination.Shipping> {
+            ShippingScreen(
+                onNavigateClick = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
+        composable<Destination.Payment> {
+            PaymentScreen(
+                onNavigateClick = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
+        composable<Destination.Delete> {
+            DeleteAccountScreen(
+                onNavigateClick = {
+                    navController.navigateUp()
+                }
+            )
+        }
 
     }
 }
