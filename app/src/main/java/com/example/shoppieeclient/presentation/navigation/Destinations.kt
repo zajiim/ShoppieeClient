@@ -27,4 +27,17 @@ sealed class Destination() {
 
     @Serializable
     data class Details(val id: String) : Destination()
+
+    //Profile
+    @Serializable
+    object Account: Destination()
+
+    @Serializable
+    object Shipping: Destination()
+
+    @Serializable
+    object Payment: Destination()
+
+    @Serializable
+    object Delete: Destination()
 }

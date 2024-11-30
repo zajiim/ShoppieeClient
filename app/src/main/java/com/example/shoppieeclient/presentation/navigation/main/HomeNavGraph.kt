@@ -69,7 +69,25 @@ fun NavGraphBuilder.homeNavGraph(
                 NotificationsScreen()
             }
             composable<Destination.Profile> {
-                ProfileScreen()
+                ProfileScreen(
+                    onNavigateClick = {
+                        navController.navigateUp()
+                    },
+                    onProfileSettingsClick = {
+                        navController.navigate(Destination.Account)
+                    },
+                    onShippingAddressClick = {
+                        navController.navigate(Destination.Shipping)
+                    },
+                    onPaymentInfoClick = {
+                        navController.navigate(Destination.Payment)
+
+                    },
+                    onDeleteAccountClick = {
+                        navController.navigate(Destination.Delete)
+
+                    }
+                )
             }
 
     }
