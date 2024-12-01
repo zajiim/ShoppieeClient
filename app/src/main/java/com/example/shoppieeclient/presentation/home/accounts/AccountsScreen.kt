@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.presentation.home.accounts
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,13 +40,29 @@ import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.presentation.auth.components.CustomTextField
+import com.example.shoppieeclient.presentation.home.accounts.components.CustomImagePickerDialog
+import org.koin.androidx.compose.koinViewModel
 
+private const val TAG = "AccountsScreen"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountsScreen(
     modifier: Modifier = Modifier,
-    onNavigateClick: () -> Unit
+    onNavigateClick: () -> Unit,
+    accountsViewModel: AccountsViewModel = koinViewModel()
 ) {
+    val uiState = accountsViewModel.uiState
+
+    if (uiState.isAlertBoxOpen) {
+        Log.e(TAG, "AccountsScreen: invoked" )
+        CustomImagePickerDialog (
+            onDismiss = { accountsViewModel.onEvent(AccountsEvent.DismissDialog) },
+            onCameraClick = { accountsViewModel.onEvent(AccountsEvent.OpenCamera) },
+            onGalleryClick = { accountsViewModel.onEvent(AccountsEvent.OpenGallery) }
+        )
+    }
+
+
     Column(modifier = modifier
         .fillMaxSize()
         .padding(horizontal = 20.dp),
@@ -97,13 +114,14 @@ fun AccountsScreen(
                     .size(90.dp)
                     .clip(CircleShape)
             )
-            Box(modifier = Modifier.align(Alignment.BottomCenter)
+            Box(modifier = Modifier
+                .align(Alignment.BottomCenter)
                 .offset(y = 16.dp)
                 .size(32.dp)
                 .clip(CircleShape)
                 .background(PrimaryBlue)
                 .clickable {
-
+                    accountsViewModel.showAlertBox()
                 },
                 contentAlignment = Alignment.Center
             ) {
@@ -117,7 +135,9 @@ fun AccountsScreen(
         }
 
         Text(
-            modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 24.dp),
             text = "John Doe",
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             textAlign = TextAlign.Center
