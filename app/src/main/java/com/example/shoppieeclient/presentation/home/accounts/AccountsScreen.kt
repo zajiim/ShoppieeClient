@@ -2,8 +2,11 @@ package com.example.shoppieeclient.presentation.home.accounts
 
 import android.Manifest
 import android.app.Activity
-import android.content.pm.PackageManager
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -42,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import coil.compose.AsyncImage
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.auth.components.CustomButton
@@ -50,6 +54,12 @@ import com.example.shoppieeclient.presentation.home.accounts.components.CustomIm
 import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import org.koin.androidx.compose.koinViewModel
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 private const val TAG = "AccountsScreen"
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -61,6 +71,7 @@ fun AccountsScreen(
     accountsViewModel: AccountsViewModel = koinViewModel()
 ) {
     val ctx = LocalContext.current
+    val activity = ctx as Activity
     val uiState = accountsViewModel.uiState
 
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
@@ -85,6 +96,15 @@ fun AccountsScreen(
             }
         }
     )
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview(),
+        onResult = { bitmap ->
+            bitmap?.let {
+                val imageUri = saveBitmapToFile(ctx, bitmap)
+                accountsViewModel.updateProfileImage(imageUri.toString())
+            }
+        }
+    )
 
 
     if (uiState.isAlertBoxOpen) {
@@ -94,7 +114,9 @@ fun AccountsScreen(
             onCameraClick = {
                 Log.e(TAG, "AccountsScreen: camera clicked", )
                 if (accountsViewModel.checkCameraPermission(ctx)) {
-                    // TODO: launch camera 
+                    // TODO: launch camera
+                    cameraLauncher.launch(null)
+                    accountsViewModel.dismissAlertBox()
                 } else {
                     cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                 }
@@ -161,7 +183,8 @@ fun AccountsScreen(
             .fillMaxWidth()
         ) {
             AsyncImage(
-                model = "https://picsum.photos/200",
+//                model = "https://picsum.photos/200",
+                model = uiState.profileImageUrl.ifEmpty { "https://picsum.photos/200" },
                 contentDescription = "Profile Image",
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -240,4 +263,22 @@ fun AccountsScreen(
 
     }
 
+}
+
+
+
+fun saveBitmapToFile(context: Context, bitmap: Bitmap): Uri? {
+    return try {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = context.getExternalFilesDirs(Environment.DIRECTORY_PICTURES)?.firstOrNull()
+        val imageFile = File.createTempFile("IMG_${timeStamp}", ".jpg", storageDir)
+
+        FileOutputStream(imageFile).use { out ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+        }
+        FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", imageFile)
+    } catch (e: IOException) {
+        e.printStackTrace()
+        null
+    }
 }

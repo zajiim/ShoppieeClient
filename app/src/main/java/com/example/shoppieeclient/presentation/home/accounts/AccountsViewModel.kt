@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import android.Manifest
 import android.app.Activity
+import androidx.core.app.ActivityCompat
 
 class AccountsViewModel: ViewModel() {
     var uiState by mutableStateOf(AccountsStates())
@@ -42,6 +43,12 @@ class AccountsViewModel: ViewModel() {
         )
     }
 
+    fun dismissAlertBox() {
+        uiState = uiState.copy(
+            isAlertBoxOpen = false
+        )
+    }
+
     fun grantedCameraPermission() {
         uiState = uiState.copy(
             cameraPermissionGranted = true,
@@ -70,6 +77,32 @@ class AccountsViewModel: ViewModel() {
     }
 
 
+    fun shouldShowCameraPermissionRationale(activity: Activity): Boolean {
+        return ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.CAMERA)
+    }
 
+    fun shouldShowGalleryPermissionRationale(activity: Activity): Boolean {
+        val galleryPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_IMAGES
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+
+        }
+        return ActivityCompat.shouldShowRequestPermissionRationale(activity, galleryPermission)
+    }
+
+    fun updateProfileImage(imageUrl: String) {
+        uiState = uiState.copy(
+            profileImageUrl = imageUrl
+        )
+    }
+
+    fun setGoToCameraSettings(value: Boolean) {
+        uiState = uiState.copy(goToCameraSettings = value)
+    }
+
+    fun setGoToGallerySettings(value: Boolean) {
+        uiState = uiState.copy(goToGallerySettings = value)
+    }
 
 }
