@@ -1,9 +1,15 @@
 package com.example.shoppieeclient.presentation.home.accounts
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +24,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,21 +34,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
-import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
-import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.presentation.auth.components.CustomTextField
 import com.example.shoppieeclient.presentation.home.accounts.components.CustomImagePickerDialog
+import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
+import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import org.koin.androidx.compose.koinViewModel
 
 private const val TAG = "AccountsScreen"
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountsScreen(
@@ -51,14 +60,59 @@ fun AccountsScreen(
     onNavigateClick: () -> Unit,
     accountsViewModel: AccountsViewModel = koinViewModel()
 ) {
+    val ctx = LocalContext.current
     val uiState = accountsViewModel.uiState
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                accountsViewModel.grantedCameraPermission()
+            } else {
+                Log.e(TAG, "AccountsScreen: Camera permission denied", )
+            }
+        }
+    )
+
+    val galleryPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            Log.e(TAG, "Gallery permission launcher invoked. Is granted: $isGranted")
+            if (isGranted) {
+                accountsViewModel.grantedGalleryPermission()
+            } else {
+                Log.e(TAG, "AccountsScreen: Gallery permission denied",)
+            }
+        }
+    )
+
 
     if (uiState.isAlertBoxOpen) {
         Log.e(TAG, "AccountsScreen: invoked" )
         CustomImagePickerDialog (
             onDismiss = { accountsViewModel.onEvent(AccountsEvent.DismissDialog) },
-            onCameraClick = { accountsViewModel.onEvent(AccountsEvent.OpenCamera) },
-            onGalleryClick = { accountsViewModel.onEvent(AccountsEvent.OpenGallery) }
+            onCameraClick = {
+                Log.e(TAG, "AccountsScreen: camera clicked", )
+                if (accountsViewModel.checkCameraPermission(ctx)) {
+                    // TODO: launch camera 
+                } else {
+                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                }
+            },
+            onGalleryClick = {
+                Log.e(TAG, "AccountsScreen: gallery clicked", )
+                val galleryPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    Manifest.permission.READ_MEDIA_IMAGES
+                } else {
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                }
+                if (accountsViewModel.checkGalleryPermission(ctx)) {
+                    // TODO: launch gallery
+                } else {
+                    Log.e(TAG, "AccountsScreen: else case for gallery per", )
+                    galleryPermissionLauncher.launch(galleryPermission)
+                }
+            }
         )
     }
 
