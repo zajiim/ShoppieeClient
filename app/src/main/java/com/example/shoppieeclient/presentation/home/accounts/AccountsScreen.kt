@@ -3,10 +3,12 @@ package com.example.shoppieeclient.presentation.home.accounts
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -52,6 +54,7 @@ import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.presentation.auth.components.CustomTextField
 import com.example.shoppieeclient.presentation.home.accounts.components.CustomImagePickerDialog
+import com.example.shoppieeclient.presentation.home.accounts.components.PermissionRationaleDialogBox
 import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import org.koin.androidx.compose.koinViewModel
@@ -81,6 +84,7 @@ fun AccountsScreen(
         onResult = { bitmap ->
             bitmap?.let {
                 val imageUri = saveBitmapToFile(ctx, bitmap)
+                Log.e(TAG, "Image: $imageUri")
                 accountsViewModel.updateProfileImage(imageUri.toString())
             }
         }
@@ -104,6 +108,11 @@ fun AccountsScreen(
                 cameraLauncher.launch(null)
             } else {
                 Log.e(TAG, "AccountsScreen: Camera permission denied", )
+                if (accountsViewModel.shouldShowCameraPermissionRationale(activity)) {
+                    accountsViewModel.setGoToCameraSettings(true)
+                } else {
+                    openAppSettings(ctx)
+                }
             }
         }
     )
@@ -117,9 +126,51 @@ fun AccountsScreen(
                 galleryLauncher.launch("image/*")
             } else {
                 Log.e(TAG, "AccountsScreen: Gallery permission denied",)
+                if (accountsViewModel.shouldShowGalleryPermissionRationale(activity)) {
+                    accountsViewModel.setGoToGallerySettings(true)
+                } else {
+                    openAppSettings(ctx)
+                }
             }
         }
     )
+
+    if (uiState.goToCameraSettings) {
+        PermissionRationaleDialogBox(
+            title = "Camera Permission",
+            message = "Camera permission is required to take photos for your profile",
+            onConfirm = {
+                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                accountsViewModel.setGoToCameraSettings(false)
+            },
+            onDismiss = {
+                accountsViewModel.setGoToCameraSettings(false)
+            }
+        )
+    }
+
+
+    if (uiState.goToGallerySettings) {
+        PermissionRationaleDialogBox(
+            title = "Gallery Permission",
+            message = "Gallery permission is required to upload photos for your profile",
+            onConfirm = {
+                val galleryPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    Manifest.permission.READ_MEDIA_IMAGES
+                } else {
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                }
+                galleryPermissionLauncher.launch(galleryPermission)
+                accountsViewModel.setGoToGallerySettings(false)
+            },
+            onDismiss = {
+                accountsViewModel.setGoToGallerySettings(false)
+            }
+        )
+    }
+
+
+
 
 
 
@@ -200,7 +251,6 @@ fun AccountsScreen(
             .fillMaxWidth()
         ) {
             AsyncImage(
-//                model = "https://picsum.photos/200",
                 model = uiState.profileImageUrl.ifEmpty { "https://picsum.photos/200" },
                 contentDescription = "Profile Image",
                 contentScale = ContentScale.Crop,
@@ -283,6 +333,14 @@ fun AccountsScreen(
 
 }
 
+fun openAppSettings(context: Context) {
+    val intent = Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.fromParts("package", context.packageName, null)
+    )
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    context.startActivity(intent)
+}
 
 
 fun saveBitmapToFile(context: Context, bitmap: Bitmap): Uri? {
