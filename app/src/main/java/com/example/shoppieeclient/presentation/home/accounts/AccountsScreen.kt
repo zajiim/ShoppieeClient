@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -60,6 +61,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.contracts.contract
 
 private const val TAG = "AccountsScreen"
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -74,11 +76,32 @@ fun AccountsScreen(
     val activity = ctx as Activity
     val uiState = accountsViewModel.uiState
 
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview(),
+        onResult = { bitmap ->
+            bitmap?.let {
+                val imageUri = saveBitmapToFile(ctx, bitmap)
+                accountsViewModel.updateProfileImage(imageUri.toString())
+            }
+        }
+    )
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            uri?.let { imageUri ->
+                accountsViewModel.updateProfileImage(imageUri.toString())
+            }
+
+        }
+    )
+
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
             if (isGranted) {
                 accountsViewModel.grantedCameraPermission()
+                cameraLauncher.launch(null)
             } else {
                 Log.e(TAG, "AccountsScreen: Camera permission denied", )
             }
@@ -91,20 +114,13 @@ fun AccountsScreen(
             Log.e(TAG, "Gallery permission launcher invoked. Is granted: $isGranted")
             if (isGranted) {
                 accountsViewModel.grantedGalleryPermission()
+                galleryLauncher.launch("image/*")
             } else {
                 Log.e(TAG, "AccountsScreen: Gallery permission denied",)
             }
         }
     )
-    val cameraLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicturePreview(),
-        onResult = { bitmap ->
-            bitmap?.let {
-                val imageUri = saveBitmapToFile(ctx, bitmap)
-                accountsViewModel.updateProfileImage(imageUri.toString())
-            }
-        }
-    )
+
 
 
     if (uiState.isAlertBoxOpen) {
@@ -114,7 +130,6 @@ fun AccountsScreen(
             onCameraClick = {
                 Log.e(TAG, "AccountsScreen: camera clicked", )
                 if (accountsViewModel.checkCameraPermission(ctx)) {
-                    // TODO: launch camera
                     cameraLauncher.launch(null)
                     accountsViewModel.dismissAlertBox()
                 } else {
@@ -129,6 +144,8 @@ fun AccountsScreen(
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 }
                 if (accountsViewModel.checkGalleryPermission(ctx)) {
+                    galleryLauncher.launch("image/*")
+                    accountsViewModel.dismissAlertBox()
                     // TODO: launch gallery
                 } else {
                     Log.e(TAG, "AccountsScreen: else case for gallery per", )
@@ -186,6 +203,7 @@ fun AccountsScreen(
 //                model = "https://picsum.photos/200",
                 model = uiState.profileImageUrl.ifEmpty { "https://picsum.photos/200" },
                 contentDescription = "Profile Image",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .align(Alignment.Center)
                     .size(90.dp)
