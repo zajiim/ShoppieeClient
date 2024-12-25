@@ -32,35 +32,46 @@ class AccountsViewModel: ViewModel() {
                 uiState = uiState.copy(
                     isAlertBoxOpen = false
                 )
+            }
+            is AccountsEvent.UpdateProfileImage -> {
+                uiState = uiState.copy(
+                    profileImageUrl = event.imageUrl
+                )
+            }
 
+            AccountsEvent.GrantedCameraPermission -> {
+                uiState = uiState.copy(
+                    cameraPermissionGranted = true,
+                    isAlertBoxOpen = false
+                )
+            }
+
+            AccountsEvent.GrantedGalleryPermission -> {
+                uiState = uiState.copy(
+                    galleryPermissionGranted = true,
+                    isAlertBoxOpen = false
+                )
+            }
+
+            is AccountsEvent.GoToCameraSettings -> {
+                uiState = uiState.copy(goToCameraSettings = event.value)
+            }
+            is AccountsEvent.GoToGallerySettings -> {
+                uiState = uiState.copy(goToGallerySettings = event.value)
+            }
+
+            AccountsEvent.DismissAlertBox -> {
+                uiState = uiState.copy(
+                    isAlertBoxOpen = false
+                )
+            }
+
+            AccountsEvent.ShowAlertBox -> {
+                uiState = uiState.copy(
+                    isAlertBoxOpen = true
+                )
             }
         }
-    }
-
-    fun showAlertBox() {
-        uiState = uiState.copy(
-            isAlertBoxOpen = true
-        )
-    }
-
-    fun dismissAlertBox() {
-        uiState = uiState.copy(
-            isAlertBoxOpen = false
-        )
-    }
-
-    fun grantedCameraPermission() {
-        uiState = uiState.copy(
-            cameraPermissionGranted = true,
-            isAlertBoxOpen = false
-        )
-    }
-
-    fun grantedGalleryPermission() {
-        uiState = uiState.copy(
-            galleryPermissionGranted = true,
-            isAlertBoxOpen = false
-        )
     }
 
     fun checkCameraPermission(context: Context): Boolean {
@@ -90,19 +101,4 @@ class AccountsViewModel: ViewModel() {
         }
         return ActivityCompat.shouldShowRequestPermissionRationale(activity, galleryPermission)
     }
-
-    fun updateProfileImage(imageUrl: String) {
-        uiState = uiState.copy(
-            profileImageUrl = imageUrl
-        )
-    }
-
-    fun setGoToCameraSettings(value: Boolean) {
-        uiState = uiState.copy(goToCameraSettings = value)
-    }
-
-    fun setGoToGallerySettings(value: Boolean) {
-        uiState = uiState.copy(goToGallerySettings = value)
-    }
-
 }

@@ -46,8 +46,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import coil.compose.AsyncImage
 import com.example.shoppieeclient.R
@@ -64,7 +62,6 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.contracts.contract
 
 private const val TAG = "AccountsScreen"
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -85,7 +82,8 @@ fun AccountsScreen(
             bitmap?.let {
                 val imageUri = saveBitmapToFile(ctx, bitmap)
                 Log.e(TAG, "Image: $imageUri")
-                accountsViewModel.updateProfileImage(imageUri.toString())
+//                accountsViewModel.updateProfileImage(imageUri.toString())
+                accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = imageUri.toString()))
             }
         }
     )
@@ -94,7 +92,8 @@ fun AccountsScreen(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
             uri?.let { imageUri ->
-                accountsViewModel.updateProfileImage(imageUri.toString())
+//                accountsViewModel.updateProfileImage(imageUri.toString())
+                accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = imageUri.toString()))
             }
 
         }
@@ -104,12 +103,14 @@ fun AccountsScreen(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
             if (isGranted) {
-                accountsViewModel.grantedCameraPermission()
+//                accountsViewModel.grantedCameraPermission()
+                accountsViewModel.onEvent(AccountsEvent.GrantedCameraPermission)
                 cameraLauncher.launch(null)
             } else {
-                Log.e(TAG, "AccountsScreen: Camera permission denied", )
+                Log.e(TAG, "AccountsScreen: Camera permission denied")
                 if (accountsViewModel.shouldShowCameraPermissionRationale(activity)) {
-                    accountsViewModel.setGoToCameraSettings(true)
+//                    accountsViewModel.setGoToCameraSettings(true)
+                    accountsViewModel.onEvent(AccountsEvent.GoToCameraSettings(true))
                 } else {
                     openAppSettings(ctx)
                 }
@@ -122,12 +123,14 @@ fun AccountsScreen(
         onResult = { isGranted ->
             Log.e(TAG, "Gallery permission launcher invoked. Is granted: $isGranted")
             if (isGranted) {
-                accountsViewModel.grantedGalleryPermission()
+//                accountsViewModel.grantedGalleryPermission()
+                accountsViewModel.onEvent(AccountsEvent.GrantedGalleryPermission)
                 galleryLauncher.launch("image/*")
             } else {
-                Log.e(TAG, "AccountsScreen: Gallery permission denied",)
+                Log.e(TAG, "AccountsScreen: Gallery permission denied")
                 if (accountsViewModel.shouldShowGalleryPermissionRationale(activity)) {
-                    accountsViewModel.setGoToGallerySettings(true)
+//                    accountsViewModel.setGoToGallerySettings(true)
+                    accountsViewModel.onEvent(AccountsEvent.GoToGallerySettings(true))
                 } else {
                     openAppSettings(ctx)
                 }
@@ -141,10 +144,12 @@ fun AccountsScreen(
             message = "Camera permission is required to take photos for your profile",
             onConfirm = {
                 cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-                accountsViewModel.setGoToCameraSettings(false)
+//                accountsViewModel.setGoToCameraSettings(false)
+                accountsViewModel.onEvent(AccountsEvent.GoToCameraSettings(false))
             },
             onDismiss = {
-                accountsViewModel.setGoToCameraSettings(false)
+//                accountsViewModel.setGoToCameraSettings(false)
+                accountsViewModel.onEvent(AccountsEvent.GoToCameraSettings(false))
             }
         )
     }
@@ -161,10 +166,12 @@ fun AccountsScreen(
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 }
                 galleryPermissionLauncher.launch(galleryPermission)
-                accountsViewModel.setGoToGallerySettings(false)
+//                accountsViewModel.setGoToGallerySettings(false)
+                accountsViewModel.onEvent(AccountsEvent.GoToGallerySettings(false))
             },
             onDismiss = {
-                accountsViewModel.setGoToGallerySettings(false)
+//                accountsViewModel.setGoToGallerySettings(false)
+                accountsViewModel.onEvent(AccountsEvent.GoToGallerySettings(false))
             }
         )
     }
@@ -179,16 +186,17 @@ fun AccountsScreen(
         CustomImagePickerDialog (
             onDismiss = { accountsViewModel.onEvent(AccountsEvent.DismissDialog) },
             onCameraClick = {
-                Log.e(TAG, "AccountsScreen: camera clicked", )
+                Log.e(TAG, "AccountsScreen: camera clicked")
                 if (accountsViewModel.checkCameraPermission(ctx)) {
                     cameraLauncher.launch(null)
-                    accountsViewModel.dismissAlertBox()
+//                    accountsViewModel.dismissAlertBox()
+                    accountsViewModel.onEvent(AccountsEvent.DismissAlertBox)
                 } else {
                     cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                 }
             },
             onGalleryClick = {
-                Log.e(TAG, "AccountsScreen: gallery clicked", )
+                Log.e(TAG, "AccountsScreen: gallery clicked")
                 val galleryPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     Manifest.permission.READ_MEDIA_IMAGES
                 } else {
@@ -196,10 +204,10 @@ fun AccountsScreen(
                 }
                 if (accountsViewModel.checkGalleryPermission(ctx)) {
                     galleryLauncher.launch("image/*")
-                    accountsViewModel.dismissAlertBox()
-                    // TODO: launch gallery
+//                    accountsViewModel.dismissAlertBox()
+                    accountsViewModel.onEvent(AccountsEvent.DismissAlertBox)
                 } else {
-                    Log.e(TAG, "AccountsScreen: else case for gallery per", )
+                    Log.e(TAG, "AccountsScreen: else case for gallery per")
                     galleryPermissionLauncher.launch(galleryPermission)
                 }
             }
@@ -266,7 +274,8 @@ fun AccountsScreen(
                 .clip(CircleShape)
                 .background(PrimaryBlue)
                 .clickable {
-                    accountsViewModel.showAlertBox()
+//                    accountsViewModel.showAlertBox()
+                    accountsViewModel.onEvent(AccountsEvent.ShowAlertBox)
                 },
                 contentAlignment = Alignment.Center
             ) {
