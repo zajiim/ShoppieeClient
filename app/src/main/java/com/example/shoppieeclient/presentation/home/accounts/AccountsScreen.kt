@@ -2,13 +2,7 @@ package com.example.shoppieeclient.presentation.home.accounts
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
-import android.os.Environment
-import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -46,7 +40,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.content.FileProvider
 import coil.compose.AsyncImage
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.auth.components.CustomButton
@@ -55,13 +48,9 @@ import com.example.shoppieeclient.presentation.home.accounts.components.CustomIm
 import com.example.shoppieeclient.presentation.home.accounts.components.PermissionRationaleDialogBox
 import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
+import com.example.shoppieeclient.utils.openAppSettings
+import com.example.shoppieeclient.utils.saveBitmapToFile
 import org.koin.androidx.compose.koinViewModel
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 private const val TAG = "AccountsScreen"
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -342,28 +331,3 @@ fun AccountsScreen(
 
 }
 
-fun openAppSettings(context: Context) {
-    val intent = Intent(
-        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-        Uri.fromParts("package", context.packageName, null)
-    )
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    context.startActivity(intent)
-}
-
-
-fun saveBitmapToFile(context: Context, bitmap: Bitmap): Uri? {
-    return try {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val storageDir: File? = context.getExternalFilesDirs(Environment.DIRECTORY_PICTURES)?.firstOrNull()
-        val imageFile = File.createTempFile("IMG_${timeStamp}", ".jpg", storageDir)
-
-        FileOutputStream(imageFile).use { out ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-        }
-        FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", imageFile)
-    } catch (e: IOException) {
-        e.printStackTrace()
-        null
-    }
-}

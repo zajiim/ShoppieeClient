@@ -84,6 +84,8 @@ dependencies {
     implementation(libs.lottie.compose)
     //Paging-3
     implementation(libs.androidx.paging.compose)
+    //Cloudinary
+    implementation(libs.cloudinary.cloudinary.android)
 
 
     testImplementation(libs.junit)
