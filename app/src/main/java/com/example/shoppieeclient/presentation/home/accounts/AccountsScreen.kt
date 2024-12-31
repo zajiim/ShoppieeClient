@@ -305,8 +305,8 @@ fun AccountsScreen(
             modifier = Modifier.fillMaxWidth(),
             title = "Full Name",
             titleTextColor = Color.Black,
-            textValue = "John Doe",
-            onValueChange = { },
+            textValue = accountsViewModel.uiState.profileName,
+            onValueChange = { accountsViewModel.onEvent(AccountsEvent.NameChanged(it)) },
             hasError = false,
             hint = "Full name",
             keyboardType = KeyboardType.Text,
@@ -335,7 +335,9 @@ fun AccountsScreen(
             modifier = Modifier.fillMaxWidth(),
             text = "Update",
             backgroundColor = PrimaryBlue,
-            onButtonClicked = {},
+            onButtonClicked = {
+                accountsViewModel.onEvent(AccountsEvent.UpdateProfile(name = uiState.profileName, profileImage = uiState.profileImageUrl))
+            },
             isLoading = false,
             contentColor = Color.White
         )

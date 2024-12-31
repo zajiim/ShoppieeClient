@@ -1,12 +1,10 @@
 package com.example.shoppieeclient.data.cart.remote.api
 
 import com.example.shoppieeclient.data.cart.remote.dto.CartResponseDto
-import com.example.shoppieeclient.data.cart.remote.dto.CartResultDto
 import com.example.shoppieeclient.data.cart.remote.dto.CartTotalResponseDto
 import com.example.shoppieeclient.data.cart.remote.dto.DecrementDeleteCartItemRequestDto
 import com.example.shoppieeclient.data.cart.remote.dto.IncrementCartItemRequestDto
 import com.example.shoppieeclient.data.cart.remote.dto.IncrementDecrementDeleteCartResponseDto
-import com.example.shoppieeclient.data.cart.remote.dto.IncrementDecrementDeleteResultDto
 import com.example.shoppieeclient.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

@@ -12,5 +12,8 @@ data class AccountsStates(
     val showCameraDialog: Boolean = false,
     val showGalleryDialog: Boolean = false,
     val goToCameraSettings: Boolean = false,
-    val goToGallerySettings: Boolean = false
+    val goToGallerySettings: Boolean = false,
+    val updatingProfile: Boolean = false,
+    val updateProfileError: String? = null,
+    val updateProfileSuccess: Boolean = false
 )

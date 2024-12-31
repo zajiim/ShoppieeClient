@@ -4,11 +4,13 @@ import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.data.cart.remote.api.ShoppieCartApiService
 import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObserverImpl
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
+import com.example.shoppieeclient.data.home.account.remote.api.ShoppieeUserProfileService
 import com.example.shoppieeclient.data.home.home.remote.api.ShoppieeHomeApiService
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
 import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityObserver
 import com.example.shoppieeclient.domain.home.account.repository.AccountsCloudinaryRepo
+import com.example.shoppieeclient.domain.home.account.repository.ShoppieeUserProfileRepo
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.auth.Auth
@@ -97,5 +99,6 @@ val networkModule = module {
     single { ShoppieApiService(get(named("UnauthorizedHttpClient"))) }
     single { ShoppieeHomeApiService(get(named("UnauthorizedHttpClient")), get(named("AuthorizedHttpClient"))) }
     single { ShoppieCartApiService(get(named("AuthorizedHttpClient"))) }
+    single { ShoppieeUserProfileService(get(named("AuthorizedHttpClient"))) }
 
 }

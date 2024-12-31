@@ -1,0 +1,54 @@
+package com.example.shoppieeclient.data.home.account.repository
+
+import com.example.shoppieeclient.data.home.account.remote.api.ShoppieeUserProfileService
+import com.example.shoppieeclient.data.home.account.remote.dto.UpdateProfileBody
+import com.example.shoppieeclient.data.home.account.remote.mapper.toUpdateProfileModel
+import com.example.shoppieeclient.domain.home.account.models.UpdateProfileModel
+import com.example.shoppieeclient.domain.home.account.repository.ShoppieeUserProfileRepo
+import com.example.shoppieeclient.utils.Resource
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ServerResponseException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.serialization.SerializationException
+import java.io.IOException
+
+class ShoppieeUpdateProfileRepoImpl(
+    private val shoppieeUserProfileService: ShoppieeUserProfileService
+): ShoppieeUserProfileRepo {
+    override fun updateProfile(
+        name: String,
+        profileImage: String
+    ): Flow<Resource<UpdateProfileModel>> = flow{
+        try {
+            emit(Resource.Loading())
+            val updateProfileRequest = UpdateProfileBody(
+                name = name,
+                profileImage = profileImage
+            )
+            val updateProfileResponse = shoppieeUserProfileService.updateProfile(updateProfileBody = updateProfileRequest)
+            val result = updateProfileResponse.result
+            if (updateProfileResponse.status == 200) {
+                val updateProfileResult = result.data.toUpdateProfileModel()
+                emit(Resource.Success(updateProfileResult))
+            } else {
+                emit(Resource.Error(updateProfileResponse.message))
+            }
+        } catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+    }.catch {
+        emit(Resource.Error(it.message ?: "Unexpected error occurred"))
+    }.flowOn(Dispatchers.IO)
+}

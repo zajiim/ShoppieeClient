@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.home.bottom_nav_bar.listRoutes
 import com.example.shoppieeclient.presentation.navigation.Destination
@@ -51,12 +52,12 @@ fun SideMenu(
             .padding(horizontal = 20.dp)
             .graphicsLayer(alpha = alpha)
     ) {
-        Image(
+        AsyncImage(
             modifier = Modifier
                 .padding(top = 54.dp)
                 .size(64.dp)
                 .clip(CircleShape),
-            painter = painterResource(R.drawable.user_image),
+            model = userProfileImage ?: painterResource(R.drawable.user_image),
             contentDescription = null
         )
 
