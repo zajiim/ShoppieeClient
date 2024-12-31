@@ -1,9 +1,8 @@
-package com.example.shoppieeclient.domain.auth.repository.home
+package com.example.shoppieeclient.domain.home.home.repository
 
-import com.example.shoppieeclient.domain.auth.models.home.AddToCartResultModel
-import com.example.shoppieeclient.domain.auth.models.home.DetailsProductModel
-import com.example.shoppieeclient.domain.auth.models.home.HomeProductModel
-import com.example.shoppieeclient.domain.auth.models.home.HomeResultModel
+import com.example.shoppieeclient.domain.home.home.models.AddToCartResultModel
+import com.example.shoppieeclient.domain.home.home.models.DetailsProductModel
+import com.example.shoppieeclient.domain.home.home.models.HomeResultModel
 import com.example.shoppieeclient.utils.Resource
 import kotlinx.coroutines.flow.Flow
 

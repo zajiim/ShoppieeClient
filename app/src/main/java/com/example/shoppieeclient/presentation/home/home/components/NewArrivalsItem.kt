@@ -35,16 +35,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.shoppieeclient.domain.auth.models.home.HomeProductModel
+import com.example.shoppieeclient.domain.home.home.models.HomeProductModel
 import com.example.shoppieeclient.ui.theme.Primary
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import com.example.shoppieeclient.ui.theme.TitleColor
 import com.example.shoppieeclient.utils.shimmerEffect
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.collections.get
 
 @Composable
 fun NewArrivalsItem(

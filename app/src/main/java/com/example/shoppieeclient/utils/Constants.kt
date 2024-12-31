@@ -1,5 +1,7 @@
 package com.example.shoppieeclient.utils
 
+import com.example.shoppieeclient.BuildConfig
+
 object Constants {
     const val DATASTORE_NAME = "shoppie_datastore"
     const val DATASTORE_ONBOARDING_KEY = "shoppie_onboarding_key"
@@ -12,4 +14,6 @@ object Constants {
     const val INITIAL_PAGE_INDEX = 1
 //    const val SHOPPIEE_URL = "http://192.168.76.223:3000/api"
 //    const val SHOPPIEE_URL = "http://192.168.101.223:3000/api"
+
+    const val UPLOAD_PRESET_CLOUDINARY = BuildConfig.UPLOAD_PRESET_CLOUDINARY
 }

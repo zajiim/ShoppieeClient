@@ -1,8 +1,7 @@
-package com.example.shoppieeclient.data.home.remote.mapper.home
+package com.example.shoppieeclient.data.home.home.remote.mapper.home
 
-import com.example.shoppieeclient.data.home.remote.dto.details.DetailsProductDto
-import com.example.shoppieeclient.data.home.remote.dto.home.ProductDetailsDto
-import com.example.shoppieeclient.domain.auth.models.home.DetailsProductModel
+import com.example.shoppieeclient.data.home.home.remote.dto.details.DetailsProductDto
+import com.example.shoppieeclient.domain.home.home.models.DetailsProductModel
 
 fun DetailsProductDto.toProductDetailsModel(): DetailsProductModel {
     return DetailsProductModel(

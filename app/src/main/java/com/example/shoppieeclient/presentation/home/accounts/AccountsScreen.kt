@@ -44,6 +44,7 @@ import coil.compose.AsyncImage
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.presentation.auth.components.CustomTextField
+import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
 import com.example.shoppieeclient.presentation.home.accounts.components.CustomImagePickerDialog
 import com.example.shoppieeclient.presentation.home.accounts.components.PermissionRationaleDialogBox
 import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
@@ -72,7 +73,10 @@ fun AccountsScreen(
                 val imageUri = saveBitmapToFile(ctx, bitmap)
                 Log.e(TAG, "Image: $imageUri")
 //                accountsViewModel.updateProfileImage(imageUri.toString())
-                accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = imageUri.toString()))
+//                accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = imageUri.toString()))
+                imageUri?.let {
+                    accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = it.toString(), userName = "John Doe"))
+                }
             }
         }
     )
@@ -82,7 +86,10 @@ fun AccountsScreen(
         onResult = { uri ->
             uri?.let { imageUri ->
 //                accountsViewModel.updateProfileImage(imageUri.toString())
-                accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = imageUri.toString()))
+//                accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = imageUri.toString()))
+                imageUri.let {
+                    accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = it.toString(), userName = "John Doe"))
+                }
             }
 
         }
@@ -247,6 +254,12 @@ fun AccountsScreen(
         Box(modifier = Modifier
             .fillMaxWidth()
         ) {
+            if(uiState.isUploadingProfilePic) {
+                CustomLineProgressIndicator(
+                    modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(90.dp))
+            }
             AsyncImage(
                 model = uiState.profileImageUrl.ifEmpty { "https://picsum.photos/200" },
                 contentDescription = "Profile Image",

@@ -1,4 +1,4 @@
-package com.example.shoppieeclient.domain.auth.models.home
+package com.example.shoppieeclient.domain.home.home.models
 
 data class HomeResultModel(
     val popularItemsModel: List<HomeProductModel>,

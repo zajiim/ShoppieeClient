@@ -1,7 +1,6 @@
 package com.example.shoppieeclient.presentation.home.home
 
-import com.example.shoppieeclient.domain.auth.models.home.HomeResultModel
-import com.example.shoppieeclient.utils.Resource
+import com.example.shoppieeclient.domain.home.home.models.HomeResultModel
 
 data class HomeStates(
     val query: String = "",

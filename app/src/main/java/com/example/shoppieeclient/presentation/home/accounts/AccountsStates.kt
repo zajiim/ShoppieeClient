@@ -5,6 +5,8 @@ data class AccountsStates(
     val profileName: String = "",
     val email: String = "",
     val profileImageUrl: String = "",
+    val isUploadingProfilePic: Boolean = false,
+    val uploadError: String? = null,
     val cameraPermissionGranted: Boolean = false,
     val galleryPermissionGranted: Boolean = false,
     val showCameraDialog: Boolean = false,

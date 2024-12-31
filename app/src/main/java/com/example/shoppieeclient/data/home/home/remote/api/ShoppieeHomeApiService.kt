@@ -1,10 +1,10 @@
-package com.example.shoppieeclient.data.home.remote.api
+package com.example.shoppieeclient.data.home.home.remote.api
 
-import com.example.shoppieeclient.data.home.remote.dto.details.AddToCartRequestDto
-import com.example.shoppieeclient.data.home.remote.dto.details.AddToCartResponseDto
-import com.example.shoppieeclient.data.home.remote.dto.details.AddToCartResultDto
-import com.example.shoppieeclient.data.home.remote.dto.details.DetailsResponseDto
-import com.example.shoppieeclient.data.home.remote.dto.home.HomeResponseDto
+
+import com.example.shoppieeclient.data.home.home.remote.dto.details.AddToCartRequestDto
+import com.example.shoppieeclient.data.home.home.remote.dto.details.AddToCartResponseDto
+import com.example.shoppieeclient.data.home.home.remote.dto.details.DetailsResponseDto
+import com.example.shoppieeclient.data.home.home.remote.dto.home.HomeResponseDto
 import com.example.shoppieeclient.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

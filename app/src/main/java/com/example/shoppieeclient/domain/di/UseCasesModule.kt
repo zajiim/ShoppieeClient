@@ -24,6 +24,7 @@ import com.example.shoppieeclient.domain.cart.use_cases.GetCartTotalUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.GetCartUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.IncrementItemUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.RemoveItemUseCase
+import com.example.shoppieeclient.domain.home.account.use_cases.UploadImageUseCase
 import org.koin.dsl.module
 
 val useCasesModule = module {
@@ -112,6 +113,12 @@ val useCasesModule = module {
     single {
         GetCartTotalUseCase(
             shoppieCartRepo = get()
+        )
+    }
+
+    single {
+        UploadImageUseCase(
+            accountsCloudinaryRepo = get()
         )
     }
 

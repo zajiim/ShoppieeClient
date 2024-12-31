@@ -17,7 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.shoppieeclient.domain.auth.models.home.HomeProductModel
+import com.example.shoppieeclient.domain.home.home.models.HomeProductModel
 import com.example.shoppieeclient.ui.theme.Primary
 import com.example.shoppieeclient.ui.theme.TitleColor
 

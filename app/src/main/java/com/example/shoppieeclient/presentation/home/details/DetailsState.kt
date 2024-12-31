@@ -1,7 +1,6 @@
 package com.example.shoppieeclient.presentation.home.details
 
-import com.example.shoppieeclient.domain.auth.models.auth.signup.ProductModel
-import com.example.shoppieeclient.domain.auth.models.home.DetailsProductModel
+import com.example.shoppieeclient.domain.home.home.models.DetailsProductModel
 
 data class DetailsState(
     val isLoading: Boolean = false,

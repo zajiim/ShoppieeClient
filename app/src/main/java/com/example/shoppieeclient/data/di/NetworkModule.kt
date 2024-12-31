@@ -1,18 +1,14 @@
 package com.example.shoppieeclient.data.di
 
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
-import com.example.shoppieeclient.data.auth.repository.ShoppieeRepoImpl
 import com.example.shoppieeclient.data.cart.remote.api.ShoppieCartApiService
-import com.example.shoppieeclient.data.cart.repository.ShoppieCartRepoImpl
 import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObserverImpl
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
-import com.example.shoppieeclient.data.home.remote.api.ShoppieeHomeApiService
-import com.example.shoppieeclient.data.home.repository.ShoppieeHomeRepoImpl
+import com.example.shoppieeclient.data.home.home.remote.api.ShoppieeHomeApiService
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
-import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
-import com.example.shoppieeclient.domain.auth.repository.home.ShoppieeHomeRepo
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
 import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityObserver
+import com.example.shoppieeclient.domain.home.account.repository.AccountsCloudinaryRepo
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.auth.Auth
@@ -101,7 +97,5 @@ val networkModule = module {
     single { ShoppieApiService(get(named("UnauthorizedHttpClient"))) }
     single { ShoppieeHomeApiService(get(named("UnauthorizedHttpClient")), get(named("AuthorizedHttpClient"))) }
     single { ShoppieCartApiService(get(named("AuthorizedHttpClient"))) }
-
-
 
 }

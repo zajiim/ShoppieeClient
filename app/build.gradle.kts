@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -12,13 +14,20 @@ android {
     defaultConfig {
         applicationId = "com.example.shoppieeclient"
         minSdk = 29
-        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    val localProperties = Properties()
+    val localPropertiesFile = File(rootDir, "secret.properties")
+    if(localPropertiesFile.exists() && localPropertiesFile.isFile) {
+        localPropertiesFile.inputStream().use {
+            localProperties.load(it)
         }
     }
 
@@ -29,6 +38,16 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "CLOUDINARY_API_KEY", localProperties.getProperty("CLOUDINARY_API_KEY"))
+            buildConfigField("String", "CLOUDINARY_API_SECRET", localProperties.getProperty("CLOUDINARY_API_SECRET"))
+            buildConfigField("String", "CLOUDINARY_CLOUD_NAME", localProperties.getProperty("CLOUDINARY_CLOUD_NAME"))
+            buildConfigField("String", "UPLOAD_PRESET_CLOUDINARY", localProperties.getProperty("UPLOAD_PRESET_CLOUDINARY"))
+        }
+        debug {
+            buildConfigField("String", "CLOUDINARY_API_KEY", localProperties.getProperty("CLOUDINARY_API_KEY"))
+            buildConfigField("String", "CLOUDINARY_API_SECRET", localProperties.getProperty("CLOUDINARY_API_SECRET"))
+            buildConfigField("String", "CLOUDINARY_CLOUD_NAME", localProperties.getProperty("CLOUDINARY_CLOUD_NAME"))
+            buildConfigField("String", "UPLOAD_PRESET_CLOUDINARY", localProperties.getProperty("UPLOAD_PRESET_CLOUDINARY"))
         }
     }
     compileOptions {
@@ -40,6 +59,8 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+        resValues = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
