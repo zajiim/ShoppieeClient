@@ -1,8 +1,11 @@
 package com.example.shoppieeclient.data.home.account.repository
 
+import android.util.Log
 import com.example.shoppieeclient.data.home.account.remote.api.ShoppieeUserProfileService
 import com.example.shoppieeclient.data.home.account.remote.dto.UpdateProfileBody
+import com.example.shoppieeclient.data.home.account.remote.mapper.toProfileDataModel
 import com.example.shoppieeclient.data.home.account.remote.mapper.toUpdateProfileModel
+import com.example.shoppieeclient.domain.home.account.models.ProfileDataModel
 import com.example.shoppieeclient.domain.home.account.models.UpdateProfileModel
 import com.example.shoppieeclient.domain.home.account.repository.ShoppieeUserProfileRepo
 import com.example.shoppieeclient.utils.Resource
@@ -16,6 +19,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.serialization.SerializationException
 import java.io.IOException
 
+private const val TAG = "ShoppieeUpdateProfileRe"
 class ShoppieeUpdateProfileRepoImpl(
     private val shoppieeUserProfileService: ShoppieeUserProfileService
 ): ShoppieeUserProfileRepo {
@@ -37,6 +41,35 @@ class ShoppieeUpdateProfileRepoImpl(
             } else {
                 emit(Resource.Error(updateProfileResponse.message))
             }
+        } catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+    }.catch {
+        emit(Resource.Error(it.message ?: "Unexpected error occurred"))
+    }.flowOn(Dispatchers.IO)
+
+    override fun getProfileData(): Flow<Resource<ProfileDataModel>> = flow {
+        try {
+            emit(Resource.Loading())
+            val getProfileResponse = shoppieeUserProfileService.getProfileData()
+            if (getProfileResponse.status == 200) {
+                val result = getProfileResponse.result
+                Log.e(TAG, "getProfileData:>>>>> $result ", )
+                val profileData = result.toProfileDataModel()
+                Log.e(TAG, "profileData:>>>>> $profileData ", )
+                emit(Resource.Success(profileData))
+            } else {
+                emit(Resource.Error(getProfileResponse.message))
+            }
+
         } catch (e: ClientRequestException) {
             emit(Resource.Error(e.message))
         } catch (e: ServerResponseException) {

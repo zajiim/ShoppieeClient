@@ -37,6 +37,7 @@ fun CustomTextField(
     onValueChange: (String) -> Unit,
     cursorColor: Color = Primary,
     hint: String,
+    readOnly: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Ascii,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     hasError: Boolean= false,
@@ -85,7 +86,8 @@ fun CustomTextField(
                          }
                      )
                 }
-            }
+            },
+            readOnly = readOnly
         )
 
         AnimatedVisibility(

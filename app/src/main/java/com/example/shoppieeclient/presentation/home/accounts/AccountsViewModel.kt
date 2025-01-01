@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shoppieeclient.domain.home.account.use_cases.GetProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UpdateProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UploadImageUseCase
 import com.example.shoppieeclient.utils.Resource
@@ -20,15 +22,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private const val TAG = "AccountsViewModel"
 class AccountsViewModel(
     private val uploadImageUseCase: UploadImageUseCase,
-    private val updateProfileDataUseCase: UpdateProfileDataUseCase
+    private val updateProfileDataUseCase: UpdateProfileDataUseCase,
+    private val getUserDataUseCase: GetProfileDataUseCase
 ) : ViewModel() {
     var uiState by mutableStateOf(AccountsStates())
         private set
 
     fun onEvent(event: AccountsEvent) {
         when (event) {
+            AccountsEvent.OnInitial -> {
+                fetchUserDetail()
+            }
+
+
             AccountsEvent.DismissDialog -> {
                 uiState = uiState.copy(
                     isAlertBoxOpen = false
@@ -94,6 +103,40 @@ class AccountsViewModel(
                 updateProfile(event.name, event.profileImage)
             }
 
+        }
+    }
+
+    private fun fetchUserDetail() = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            getUserDataUseCase().collect { result ->
+                Log.e(TAG, "fetchUserDetail: result is $result", )
+                when (result) {
+                    is Resource.Error -> {
+                        uiState = uiState.copy(
+                            isLoading = false,
+                            error = result.message ?: "Something went wrong"
+                        )
+                    }
+
+                    is Resource.Loading -> {
+                        uiState = uiState.copy(
+                            isLoading = true,
+                            error = null
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        Log.e(TAG, "fetchUserDetail:>>>>>> ${uiState.profileName} ", )
+                        uiState = uiState.copy(
+                            isLoading = false,
+                            error = null,
+                            profileName = result.data?.username ?: "",
+                            email = result.data?.email ?: "",
+                            profileImageUrl = result.data?.profileImage ?: ""
+                        )
+                    }
+                }
+            }
         }
     }
 

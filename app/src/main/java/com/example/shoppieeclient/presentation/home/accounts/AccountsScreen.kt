@@ -29,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,6 +66,12 @@ fun AccountsScreen(
     val ctx = LocalContext.current
     val activity = ctx as Activity
     val uiState = accountsViewModel.uiState
+
+    LaunchedEffect(Unit) {
+        accountsViewModel.onEvent(AccountsEvent.OnInitial)
+    }
+
+    Log.e(TAG, "AccountsScreen: profilename=====> ${uiState.profileName}", )
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview(),
@@ -257,8 +264,8 @@ fun AccountsScreen(
             if(uiState.isUploadingProfilePic) {
                 CustomLineProgressIndicator(
                     modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(90.dp))
+                        .align(Alignment.Center)
+                        .size(90.dp))
             }
             AsyncImage(
                 model = uiState.profileImageUrl.ifEmpty { "https://picsum.photos/200" },
@@ -294,7 +301,7 @@ fun AccountsScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 24.dp),
-            text = "John Doe",
+            text = uiState.profileName,
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             textAlign = TextAlign.Center
         )
@@ -320,7 +327,8 @@ fun AccountsScreen(
             modifier = Modifier.fillMaxWidth(),
             title = "Email Address",
             titleTextColor = Color.Black,
-            textValue = "Johndoe@gmail.com",
+            readOnly = true,
+            textValue = accountsViewModel.uiState.email,
             onValueChange = { },
             hasError = false,
             hint = "Email address",
