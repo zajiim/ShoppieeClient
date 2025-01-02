@@ -71,7 +71,7 @@ fun AccountsScreen(
         accountsViewModel.onEvent(AccountsEvent.OnInitial)
     }
 
-    Log.e(TAG, "AccountsScreen: profilename=====> ${uiState.profileName}", )
+    Log.e(TAG, "AccountsScreen: profileName=====> ${uiState.profileName}")
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview(),
