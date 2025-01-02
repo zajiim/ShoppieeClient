@@ -1,9 +1,11 @@
 package com.example.shoppieeclient.data.di
 
+import androidx.room.Room
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.data.cart.remote.api.ShoppieCartApiService
 import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObserverImpl
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
+import com.example.shoppieeclient.data.home.account.local.ProfileDatabase
 import com.example.shoppieeclient.data.home.account.remote.api.ShoppieeUserProfileService
 import com.example.shoppieeclient.data.home.home.remote.api.ShoppieeHomeApiService
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
@@ -11,6 +13,7 @@ import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppToke
 import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityObserver
 import com.example.shoppieeclient.domain.home.account.repository.AccountsCloudinaryRepo
 import com.example.shoppieeclient.domain.home.account.repository.ShoppieeUserProfileRepo
+import com.example.shoppieeclient.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.auth.Auth
@@ -26,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -84,6 +88,18 @@ val networkModule = module {
 
 
     single<LocalUserManager> { LocalUserManagerImpl(get()) }
+
+    //RoomDB
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            ProfileDatabase::class.java,
+            Constants.PROFILE_DATA_TABLE
+        ).fallbackToDestructiveMigration()
+            .build()
+    }
+    //Provides profileDao
+    single { get<ProfileDatabase>().profileDao() }
 
     single { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
 

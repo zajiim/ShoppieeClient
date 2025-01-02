@@ -16,4 +16,5 @@ object Constants {
 //    const val SHOPPIEE_URL = "http://192.168.101.223:3000/api"
 
     const val UPLOAD_PRESET_CLOUDINARY = BuildConfig.UPLOAD_PRESET_CLOUDINARY
+    const val PROFILE_DATA_TABLE = "profile_data_table"
 }

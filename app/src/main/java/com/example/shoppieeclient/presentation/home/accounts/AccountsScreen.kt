@@ -42,6 +42,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.presentation.auth.components.CustomTextField
@@ -82,7 +84,7 @@ fun AccountsScreen(
 //                accountsViewModel.updateProfileImage(imageUri.toString())
 //                accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = imageUri.toString()))
                 imageUri?.let {
-                    accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = it.toString(), userName = "John Doe"))
+                    accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = it.toString(), userName = uiState.profileName))
                 }
             }
         }
@@ -95,7 +97,8 @@ fun AccountsScreen(
 //                accountsViewModel.updateProfileImage(imageUri.toString())
 //                accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = imageUri.toString()))
                 imageUri.let {
-                    accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = it.toString(), userName = "John Doe"))
+                    Log.e(TAG, "ImageURI: $it", )
+                    accountsViewModel.onEvent(AccountsEvent.UpdateProfileImage(imageUrl = it.toString(), userName = uiState.profileName))
                 }
             }
 
@@ -269,6 +272,9 @@ fun AccountsScreen(
             }
             AsyncImage(
                 model = uiState.profileImageUrl.ifEmpty { "https://picsum.photos/200" },
+//                model = ImageRequest.Builder(ctx)
+//                    .data(uiState.profileImageUrl.ifEmpty { "https://picsum.photos/200" })
+//                    .build(),
                 contentDescription = "Profile Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

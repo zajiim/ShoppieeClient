@@ -3,14 +3,12 @@ package com.example.shoppieeclient.presentation.auth.main
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityObserver
@@ -18,13 +16,13 @@ import com.example.shoppieeclient.presentation.navigation.ShoppieNavGraph
 import com.example.shoppieeclient.ui.theme.ShoppieeClientTheme
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.example.shoppieeclient.R
 
 private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
     private val connectivityObserver: NetworkConnectivityObserver by inject()
     private val mainActivityViewModel: MainActivityViewModel by viewModel()
+
     @OptIn(ExperimentalSharedTransitionApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +49,7 @@ class MainActivity : ComponentActivity() {
                     ShoppieNavGraph(
                         navController = navController,
                         connectivityObserver = connectivityObserver
-                        )
+                    )
                 }
             }
         }

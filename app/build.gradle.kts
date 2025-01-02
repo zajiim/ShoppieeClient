@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -107,6 +108,11 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     //Cloudinary
     implementation(libs.cloudinary.cloudinary.android)
+    // Room
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
 
 
     testImplementation(libs.junit)

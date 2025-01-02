@@ -23,7 +23,8 @@ class AccountsCloudinaryRepoImpl: AccountsCloudinaryRepo {
                 try {
                     val folderName = "users/$userName"
                     // Assign public ID to replace existing image
-                    val publicId = "profile"
+                    val publicId = "profile_${System.currentTimeMillis()}"
+//                    val publicId = "profilePic"
                     Log.e(TAG, "Starting upload for $userName")
                     MediaManager.get().upload(imageUri)
                         .unsigned(Constants.UPLOAD_PRESET_CLOUDINARY)

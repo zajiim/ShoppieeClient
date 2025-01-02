@@ -19,5 +19,5 @@ val repositoryModule = module {
     single<ShoppieeHomeRepo> { ShoppieeHomeRepoImpl(get()) }
     single<ShoppieCartRepo> { ShoppieCartRepoImpl(get()) }
     single<AccountsCloudinaryRepo> { AccountsCloudinaryRepoImpl() }
-    single<ShoppieeUserProfileRepo> { ShoppieeUpdateProfileRepoImpl(get()) }
+    single<ShoppieeUserProfileRepo> { ShoppieeUpdateProfileRepoImpl(shoppieeUserProfileService = get(), profileDao = get()) }
 }

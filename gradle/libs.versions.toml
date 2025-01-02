@@ -25,6 +25,9 @@ lottieCompose = "6.5.2"
 navigationCompose = "2.8.2"
 pagingCompose = "3.3.0"
 cloudinaryAndroidVersion = "2.5.0"
+roomVersion = "2.5.0"
+ksp = "2.0.21-1.0.27"
+
 
 
 [libraries]
@@ -59,6 +62,11 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
 cloudinary-cloudinary-android = { module = "com.cloudinary:cloudinary-android", version.ref = "cloudinaryAndroidVersion" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomVersion" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
+
 
 
 [plugins]
@@ -66,4 +74,6 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
 
