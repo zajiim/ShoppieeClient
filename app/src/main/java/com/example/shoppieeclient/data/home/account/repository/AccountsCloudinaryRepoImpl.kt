@@ -33,8 +33,6 @@ class AccountsCloudinaryRepoImpl: AccountsCloudinaryRepo {
 
                     Log.e(TAG, "Starting upload for $userName")
                     MediaManager.get().upload(imageUri)
-//                        .unsigned(Constants.UPLOAD_PRESET_CLOUDINARY)
-//                        .option("folder", folderName)
                         .option("public_id", publicId)
                         .callback(object : UploadCallback{
                             override fun onStart(requestId: String?) {

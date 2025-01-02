@@ -49,6 +49,7 @@ import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.presentation.auth.components.CustomTextField
 import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
 import com.example.shoppieeclient.presentation.home.accounts.components.CustomImagePickerDialog
+import com.example.shoppieeclient.presentation.home.accounts.components.CustomProfileImage
 import com.example.shoppieeclient.presentation.home.accounts.components.PermissionRationaleDialogBox
 import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
@@ -264,23 +265,10 @@ fun AccountsScreen(
         Box(modifier = Modifier
             .fillMaxWidth()
         ) {
-            if(uiState.isUploadingProfilePic) {
-                CustomLineProgressIndicator(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(90.dp))
-            }
-            AsyncImage(
-                model = uiState.profileImageUrl.ifEmpty { "https://picsum.photos/200" },
-//                model = ImageRequest.Builder(ctx)
-//                    .data(uiState.profileImageUrl.ifEmpty { "https://picsum.photos/200" })
-//                    .build(),
-                contentDescription = "Profile Image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(90.dp)
-                    .clip(CircleShape)
+            CustomProfileImage(
+                modifier = Modifier.fillMaxWidth(),
+                profileImage = uiState.profileImageUrl,
+                isLoading = uiState.isUploadingProfilePic
             )
             Box(modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -289,7 +277,6 @@ fun AccountsScreen(
                 .clip(CircleShape)
                 .background(PrimaryBlue)
                 .clickable {
-//                    accountsViewModel.showAlertBox()
                     accountsViewModel.onEvent(AccountsEvent.ShowAlertBox)
                 },
                 contentAlignment = Alignment.Center
