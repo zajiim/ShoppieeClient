@@ -17,5 +17,6 @@ data class AccountsStates(
     val goToGallerySettings: Boolean = false,
     val updatingProfile: Boolean = false,
     val updateProfileError: String? = null,
-    val updateProfileSuccess: Boolean = false
+    val updateProfileSuccess: Boolean = false,
+    val updateProfileSuccessAlertBox: Boolean = false
 )

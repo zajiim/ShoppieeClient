@@ -102,6 +102,11 @@ class AccountsViewModel(
             is AccountsEvent.UpdateProfile -> {
                 updateProfile(event.name, event.profileImage)
             }
+            AccountsEvent.DismissUpdateAlertBox -> {
+                uiState = uiState.copy(
+                    updateProfileSuccessAlertBox = false
+                )
+            }
 
         }
     }
@@ -155,7 +160,8 @@ class AccountsViewModel(
 
                         is Resource.Loading -> {
                             uiState = uiState.copy(
-                                updatingProfile = true, updateProfileError = null
+                                updatingProfile = true,
+                                updateProfileError = null
                             )
                         }
 
@@ -163,7 +169,8 @@ class AccountsViewModel(
                             uiState = uiState.copy(
                                 updatingProfile = false,
                                 updateProfileError = null,
-                                updateProfileSuccess = true
+                                updateProfileSuccess = true,
+                                updateProfileSuccessAlertBox = true
                             )
                         }
                     }

@@ -47,6 +47,7 @@ import coil.request.ImageRequest
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.presentation.auth.components.CustomTextField
+import com.example.shoppieeclient.presentation.common.components.CustomAlertBox
 import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
 import com.example.shoppieeclient.presentation.home.accounts.components.CustomImagePickerDialog
 import com.example.shoppieeclient.presentation.home.accounts.components.CustomProfileImage
@@ -183,6 +184,20 @@ fun AccountsScreen(
         )
     }
 
+
+    if (uiState.updateProfileSuccessAlertBox) {
+        CustomAlertBox(
+            onDismiss = {
+                accountsViewModel.onEvent(AccountsEvent.DismissUpdateAlertBox)
+            },
+            onButtonClick = {
+                accountsViewModel.onEvent(AccountsEvent.DismissUpdateAlertBox)
+            },
+            animationRes = if (uiState.updateProfileSuccess) R.raw.success else R.raw.failure,
+            message = "User profile updated successfully",
+            buttonText = "Ok"
+        )
+    }
 
 
 

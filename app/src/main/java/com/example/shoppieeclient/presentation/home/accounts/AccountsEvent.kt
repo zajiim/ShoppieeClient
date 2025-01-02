@@ -13,5 +13,6 @@ sealed class AccountsEvent {
     data class GoToCameraSettings(val value: Boolean): AccountsEvent()
     data class GoToGallerySettings(val value: Boolean): AccountsEvent()
     data class UpdateProfile(val name: String, val profileImage: String): AccountsEvent()
+    data object DismissUpdateAlertBox: AccountsEvent()
     data class NameChanged(val name: String): AccountsEvent()
 }
