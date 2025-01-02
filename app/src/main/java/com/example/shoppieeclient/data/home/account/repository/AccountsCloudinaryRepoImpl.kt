@@ -22,13 +22,19 @@ class AccountsCloudinaryRepoImpl: AccountsCloudinaryRepo {
 
                 try {
                     val folderName = "users/$userName"
-                    // Assign public ID to replace existing image
-                    val publicId = "profile_${System.currentTimeMillis()}"
-//                    val publicId = "profilePic"
+                    val publicId = "$folderName/profilePic"
+                    //delete the existing profilePic
+                    try {
+                        MediaManager.get().cloudinary.uploader().destroy(publicId, emptyMap<String, String>())
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Exception during deletion: ${e.message}")
+                        e.printStackTrace()
+                    }
+
                     Log.e(TAG, "Starting upload for $userName")
                     MediaManager.get().upload(imageUri)
-                        .unsigned(Constants.UPLOAD_PRESET_CLOUDINARY)
-                        .option("folder", folderName)
+//                        .unsigned(Constants.UPLOAD_PRESET_CLOUDINARY)
+//                        .option("folder", folderName)
                         .option("public_id", publicId)
                         .callback(object : UploadCallback{
                             override fun onStart(requestId: String?) {
