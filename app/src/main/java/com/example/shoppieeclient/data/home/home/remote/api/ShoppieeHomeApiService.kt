@@ -1,6 +1,7 @@
 package com.example.shoppieeclient.data.home.home.remote.api
 
 
+import com.example.shoppieeclient.data.auth.remote.dto.auth.signout.SignOutResponseDto
 import com.example.shoppieeclient.data.home.home.remote.dto.details.AddToCartRequestDto
 import com.example.shoppieeclient.data.home.home.remote.dto.details.AddToCartResponseDto
 import com.example.shoppieeclient.data.home.home.remote.dto.details.DetailsResponseDto
@@ -39,6 +40,12 @@ class ShoppieeHomeApiService(
         return authorizedHttpClient.post("${Constants.SHOPPIEE_URL}/add-to-cart") {
             contentType(ContentType.Application.Json)
             setBody(addToCartRequestDto)
+        }.body()
+    }
+
+    suspend fun signOut(): SignOutResponseDto {
+        return authorizedHttpClient.post("${Constants.SHOPPIEE_URL}/signout") {
+            contentType(ContentType.Application.Json)
         }.body()
     }
 }

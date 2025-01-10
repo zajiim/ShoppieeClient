@@ -2,6 +2,7 @@ package com.example.shoppieeclient.data.auth.remote.api
 
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signin.SignInResponseDto
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signin.SingInRequestDto
+import com.example.shoppieeclient.data.auth.remote.dto.auth.signout.SignOutResponseDto
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signup.SignUpRequestDto
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signup.SignUpResponseDto
 import com.example.shoppieeclient.utils.Constants

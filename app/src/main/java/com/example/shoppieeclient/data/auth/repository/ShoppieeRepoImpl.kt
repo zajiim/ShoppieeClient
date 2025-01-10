@@ -5,8 +5,10 @@ import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signin.SingInRequestDto
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signup.SignUpRequestDto
 import com.example.shoppieeclient.data.auth.remote.mapper.auth.signin.toSignInUserModel
+import com.example.shoppieeclient.data.auth.remote.mapper.auth.signout.toSignOutModel
 import com.example.shoppieeclient.data.auth.remote.mapper.auth.signup.toSignUpUserModel
 import com.example.shoppieeclient.domain.auth.models.auth.signin.SignInUserModel
+import com.example.shoppieeclient.domain.auth.models.auth.signout.SignOutModel
 import com.example.shoppieeclient.domain.auth.models.auth.signup.SignUpUserModel
 import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
 import com.example.shoppieeclient.utils.Resource

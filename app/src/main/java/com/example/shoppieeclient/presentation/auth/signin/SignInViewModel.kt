@@ -67,16 +67,11 @@ class SignInViewModel(
                         }
                         is Resource.Success -> {
                             Log.e(TAG, "signInUser token: ${result.data?.token}")
-//                            result.data?.token?.let { token ->
-//                                saveTokenUseCase(token)
-//                            }
+
 
                             result.data?.let{ data ->
-                                data.token.let { token ->
-                                    saveTokenUseCase(token)
-                                }
+                                saveTokenUseCase(data.token)
                                 saveUserDetailsUseCase(data.name, data.profileImage)
-
                             }
 
                             signInFormState = signInFormState.copy(

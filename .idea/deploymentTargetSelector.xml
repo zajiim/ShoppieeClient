@@ -13,9 +13,6 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="LottiePreview">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="PreviewCustomScaffold">
         <option name="selectionMode" value="DROPDOWN" />
         <DropdownSelection timestamp="2024-10-15T16:27:30.407526500Z">

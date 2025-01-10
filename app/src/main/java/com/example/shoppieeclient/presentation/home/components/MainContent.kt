@@ -46,7 +46,8 @@ fun MainContent(
             }) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 CustomBottomNavBar(
-                    navController = navController, items = listRoutes
+                    navController = navController,
+                    items = listRoutes
                 )
 
                 if (isMenuOpen) {

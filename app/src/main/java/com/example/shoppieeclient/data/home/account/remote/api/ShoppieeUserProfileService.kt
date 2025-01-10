@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.data.home.account.remote.api
 
+import com.example.shoppieeclient.data.auth.remote.dto.auth.signout.SignOutResponseDto
 import com.example.shoppieeclient.data.home.account.remote.dto.GetProfileResponseDto
 import com.example.shoppieeclient.data.home.account.remote.dto.UpdateProfileBody
 import com.example.shoppieeclient.data.home.account.remote.dto.UpdateProfileResponseDto
@@ -24,6 +25,13 @@ class ShoppieeUserProfileService(
 
     suspend fun getProfileData(): GetProfileResponseDto {
         return authorizedHttpClient.get("${Constants.SHOPPIEE_URL}/get-user-profile") {
+            contentType(ContentType.Application.Json)
+        }.body()
+    }
+
+
+    suspend fun signOut(): SignOutResponseDto {
+        return authorizedHttpClient.post("${Constants.SHOPPIEE_URL}/signout") {
             contentType(ContentType.Application.Json)
         }.body()
     }

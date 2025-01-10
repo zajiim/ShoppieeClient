@@ -16,7 +16,15 @@ import org.koin.dsl.module
 
 val viewmodelModule = module {
     viewModel<OnBoardingViewModel> { OnBoardingViewModel(get()) }
-    viewModel<MainActivityViewModel> { MainActivityViewModel(get(), get(), get(), get()) }
+    viewModel<MainActivityViewModel> {
+        MainActivityViewModel(
+            readOnBoardingUseCase = get(),
+            readAppTokenUseCase = get(),
+            saveAppTokenUseCase = get(),
+            readUserDetailsUseCase = get(),
+            signOutUseCase = get()
+        )
+    }
     viewModel<SignUpViewModel> { SignUpViewModel(get(), get()) }
     viewModel<SignInViewModel> { SignInViewModel(get(), get(), get(), get() ) }
     viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }

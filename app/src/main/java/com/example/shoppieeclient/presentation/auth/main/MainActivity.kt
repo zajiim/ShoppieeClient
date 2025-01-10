@@ -45,10 +45,12 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                 ) { innerPadding ->
+                    innerPadding
                     val navController = rememberNavController()
                     ShoppieNavGraph(
                         navController = navController,
-                        connectivityObserver = connectivityObserver
+                        connectivityObserver = connectivityObserver,
+                        mainActivityViewModel = mainActivityViewModel
                     )
                 }
             }

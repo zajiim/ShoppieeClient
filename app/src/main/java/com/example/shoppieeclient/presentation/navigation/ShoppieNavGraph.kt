@@ -1,6 +1,7 @@
 package com.example.shoppieeclient.presentation.navigation
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
@@ -31,20 +32,22 @@ private const val TAG = "ShoppieNavGraph"
 @Composable
 fun ShoppieNavGraph(
     navController: NavHostController,
-    mainActivityViewModel: MainActivityViewModel = koinViewModel(),
+    mainActivityViewModel: MainActivityViewModel,
     connectivityObserver: NetworkConnectivityObserver
 ) {
     val startDestination = mainActivityViewModel.startDestination
-    val userName by mainActivityViewModel.userName.collectAsState()
-    val userProfileImage by mainActivityViewModel.userProfileImage.collectAsState()
+    val userDetails by mainActivityViewModel.userDetails.collectAsState()
 
     CustomShoppieeScaffold(
         navController = navController,
-        userName = userName,
-        userProfileImage = userProfileImage,
+        userName = userDetails.name,
+        userProfileImage = userDetails.profileImage,
+        mainActivityViewModel = mainActivityViewModel
     ) {
+        Log.e(TAG, "ShoppieNavGraph: startDestination====> $startDestination", )
         SharedTransitionLayout {
-            NavHost(navController = navController,
+            NavHost(
+                navController = navController,
                 startDestination = startDestination,
 
                 /*enterTransition = {

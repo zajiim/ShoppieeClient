@@ -1,11 +1,13 @@
 package com.example.shoppieeclient.data.home.home.repository
 
 import android.util.Log
+import com.example.shoppieeclient.data.auth.remote.mapper.auth.signout.toSignOutModel
 import com.example.shoppieeclient.data.home.home.remote.api.ShoppieeHomeApiService
 import com.example.shoppieeclient.data.home.home.remote.dto.details.AddToCartRequestDto
 import com.example.shoppieeclient.data.home.home.remote.mapper.home.toAddToCartResultModel
 import com.example.shoppieeclient.data.home.home.remote.mapper.home.toHomeResultModel
 import com.example.shoppieeclient.data.home.home.remote.mapper.home.toProductDetailsModel
+import com.example.shoppieeclient.domain.auth.models.auth.signout.SignOutModel
 import com.example.shoppieeclient.domain.home.home.models.AddToCartResultModel
 import com.example.shoppieeclient.domain.home.home.models.DetailsProductModel
 import com.example.shoppieeclient.domain.home.home.models.HomeResultModel
@@ -127,4 +129,31 @@ class ShoppieeHomeRepoImpl(
     }.catch { e ->
         emit(Resource.Error(e.message ?: "Unexpected error occurred"))
     }.flowOn(Dispatchers.IO)
+
+
+    override fun signOut(): Flow<Resource<SignOutModel>> = flow {
+        try {
+            emit(Resource.Loading())
+            val apiResponse = shoppieeHomeApi.signOut()
+            if (apiResponse.status == 200) {
+                val signOutResponse = apiResponse.toSignOutModel()
+                Log.e(TAG, "signOut: $signOutResponse", )
+                emit(Resource.Success(data = signOutResponse, message = apiResponse.message))
+            } else {
+                emit(Resource.Error(apiResponse.message))
+            }
+        } catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+    }.catch { e ->
+        emit(Resource.Error(e.localizedMessage ?: "Unexpected error occurred"))
+    }
 }

@@ -44,6 +44,7 @@ fun SideMenu(
     width: Dp,
     userName: String?,
     userProfileImage: String?,
+    onSignOut: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -118,7 +119,11 @@ fun SideMenu(
                 contentDescription = null,
                 tint = ScaffoldTextColorFaded
             )
-            Text("Sign out", color = Color.White)
+            Text(modifier = Modifier.clickable {
+onSignOut()
+            },
+                text = "Sign out",
+                color = Color.White)
         }
     }
 }

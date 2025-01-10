@@ -26,9 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.shoppieeclient.presentation.auth.main.MainActivityEvents
+import com.example.shoppieeclient.presentation.auth.main.MainActivityViewModel
 import com.example.shoppieeclient.ui.LocalIsMenuOpen
 import com.example.shoppieeclient.ui.LocalToggleMenu
-import okhttp3.internal.userAgent
+import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "RestrictedApi")
 @Composable
@@ -36,6 +38,7 @@ fun CustomShoppieeScaffold(
     navController: NavHostController,
     userName: String?,
     userProfileImage: String?,
+    mainActivityViewModel: MainActivityViewModel,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -57,7 +60,7 @@ fun CustomShoppieeScaffold(
         Box(modifier = Modifier.fillMaxSize()) {
             SideMenu(
                 alpha = animatedProgress,
-                onNavigate =  { destination ->
+                onNavigate = { destination ->
                     navController.navigate(destination) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
@@ -70,7 +73,11 @@ fun CustomShoppieeScaffold(
                 },
                 width = width,
                 userName = userName,
-                userProfileImage = userProfileImage
+                userProfileImage = userProfileImage,
+                onSignOut = {
+                    mainActivityViewModel.onEvent(MainActivityEvents.SignOutClicked)
+                    isMenuOpen = false
+                }
             )
 
             Box(
@@ -104,8 +111,6 @@ fun CustomShoppieeScaffold(
 }
 
 
-
-
 @Preview
 @Composable
 private fun PreviewCustomScaffold() {
@@ -113,6 +118,7 @@ private fun PreviewCustomScaffold() {
         navController = rememberNavController(),
         userName = "John Doe",
         userProfileImage = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg",
-        content = {}
+        content = {},
+        mainActivityViewModel = koinViewModel()
     )
 }

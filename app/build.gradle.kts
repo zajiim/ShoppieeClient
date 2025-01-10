@@ -43,12 +43,14 @@ android {
             buildConfigField("String", "CLOUDINARY_API_SECRET", localProperties.getProperty("CLOUDINARY_API_SECRET"))
             buildConfigField("String", "CLOUDINARY_CLOUD_NAME", localProperties.getProperty("CLOUDINARY_CLOUD_NAME"))
             buildConfigField("String", "UPLOAD_PRESET_CLOUDINARY", localProperties.getProperty("UPLOAD_PRESET_CLOUDINARY"))
+            buildConfigField("String", "GOOGLE_CLIENT_ID", localProperties.getProperty("GOOGLE_CLIENT_ID"))
         }
         debug {
             buildConfigField("String", "CLOUDINARY_API_KEY", localProperties.getProperty("CLOUDINARY_API_KEY"))
             buildConfigField("String", "CLOUDINARY_API_SECRET", localProperties.getProperty("CLOUDINARY_API_SECRET"))
             buildConfigField("String", "CLOUDINARY_CLOUD_NAME", localProperties.getProperty("CLOUDINARY_CLOUD_NAME"))
             buildConfigField("String", "UPLOAD_PRESET_CLOUDINARY", localProperties.getProperty("UPLOAD_PRESET_CLOUDINARY"))
+            buildConfigField("String", "GOOGLE_CLIENT_ID", localProperties.getProperty("GOOGLE_CLIENT_ID"))
         }
     }
     compileOptions {
@@ -113,6 +115,11 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
+
+    //credential
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
 
     testImplementation(libs.junit)

@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
+import com.example.shoppieeclient.domain.common.model.UserDetails
 import com.example.shoppieeclient.utils.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -46,17 +47,26 @@ class LocalUserManagerImpl(
         }
     }
 
-    override fun readUserImage(): Flow<String?> {
+    override fun readUserDetails(): Flow<UserDetails> {
         return context.datastore.data.map { prefs ->
-            prefs[PreferencesKeys.USER_IMAGE] ?: ""
+            UserDetails(
+                prefs[PreferencesKeys.USER_NAME] ?: "",
+                prefs[PreferencesKeys.USER_IMAGE] ?: ""
+            )
         }
     }
 
-    override fun readUserName(): Flow<String?> {
-        return context.datastore.data.map { prefs ->
-            prefs[PreferencesKeys.USER_NAME] ?: ""
-        }
-    }
+//    override fun readUserImage(): Flow<String?> {
+//        return context.datastore.data.map { prefs ->
+//            prefs[PreferencesKeys.USER_IMAGE] ?: ""
+//        }
+//    }
+//
+//    override fun readUserName(): Flow<String?> {
+//        return context.datastore.data.map { prefs ->
+//            prefs[PreferencesKeys.USER_NAME] ?: ""
+//        }
+//    }
 
 
 }
