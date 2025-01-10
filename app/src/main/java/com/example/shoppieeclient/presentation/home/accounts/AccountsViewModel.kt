@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveUserDetailsUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.GetProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UpdateProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UploadImageUseCase
@@ -26,7 +27,8 @@ private const val TAG = "AccountsViewModel"
 class AccountsViewModel(
     private val uploadImageUseCase: UploadImageUseCase,
     private val updateProfileDataUseCase: UpdateProfileDataUseCase,
-    private val getUserDataUseCase: GetProfileDataUseCase
+    private val getUserDataUseCase: GetProfileDataUseCase,
+    private val saveUserDetailsUseCase: SaveUserDetailsUseCase
 ) : ViewModel() {
     var uiState by mutableStateOf(AccountsStates())
         private set
@@ -166,12 +168,20 @@ class AccountsViewModel(
                         }
 
                         is Resource.Success -> {
-                            uiState = uiState.copy(
-                                updatingProfile = false,
-                                updateProfileError = null,
-                                updateProfileSuccess = true,
-                                updateProfileSuccessAlertBox = true
-                            )
+                            try {
+                                saveUserDetailsUseCase(uiState.profileName, uiState.profileImageUrl)
+                                uiState = uiState.copy(
+                                    updatingProfile = false,
+                                    updateProfileError = null,
+                                    updateProfileSuccess = true,
+                                    updateProfileSuccessAlertBox = true
+                                )
+                            } catch (e: Exception) {
+                                uiState = uiState.copy(
+                                    updatingProfile = false,
+                                    updateProfileError = e.message ?: "Something went wrong"
+                                )
+                            }
                         }
                     }
                 }
