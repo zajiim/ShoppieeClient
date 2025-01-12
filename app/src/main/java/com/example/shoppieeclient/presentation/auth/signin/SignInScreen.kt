@@ -178,6 +178,17 @@ fun SignInScreen(
                     },
                     modifier = Modifier.fillMaxWidth(),
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                CustomSocialMediaButton(
+                    title = "Sign in with Facebook",
+                    icon = R.drawable.ic_facebook_logo,
+                    onClick = {
+                        signInViewModel.onEvent(SignInEvents.SignInWithFacebook(ctx))
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
                 Spacer(modifier = Modifier.height(100.dp))
                 CustomTextButtonQuery(title = "Don\'t have an Account?",
                     clickableText = "Sign Up For Free",

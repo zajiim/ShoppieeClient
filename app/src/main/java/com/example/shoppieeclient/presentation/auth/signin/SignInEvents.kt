@@ -8,5 +8,6 @@ sealed class SignInEvents {
     data class VisiblePasswordChanged(val isVisiblePassword: Boolean) : SignInEvents()
     data object Submit: SignInEvents()
     data class SignInWithGoogle(val activityContext: Context): SignInEvents()
+    data class SignInWithFacebook(val activityContext: Context): SignInEvents()
     data object DismissDialog: SignInEvents()
 }

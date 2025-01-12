@@ -12,6 +12,7 @@ import com.example.shoppieeclient.domain.auth.repository.SocialMediaSignInRepo
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveUserDetailsUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInWithFacebookUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signin.SignInValidationsUseCases
 import com.example.shoppieeclient.utils.Resource
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,8 @@ class SignInViewModel(
     private val signInUseCase: SignInUseCase,
     private val saveTokenUseCase: SaveTokenUseCase,
     private val saveUserDetailsUseCase: SaveUserDetailsUseCase,
-    private val socialMediaSignInRepo: SocialMediaSignInRepo
+    private val socialMediaSignInRepo: SocialMediaSignInRepo,
+    private val signInWithFacebookUseCase: SignInWithFacebookUseCase
 ): ViewModel() {
 
     var signInFormState by mutableStateOf(SignInState())
@@ -58,7 +60,17 @@ class SignInViewModel(
             is SignInEvents.SignInWithGoogle -> {
                 signInWithGoogle(event.activityContext)
             }
+
+            is SignInEvents.SignInWithFacebook -> {
+                signInWithFacebook(event.activityContext)
+            }
         }
+    }
+
+    private fun signInWithFacebook(activityContext: Context) = viewModelScope.launch {
+        signInFormState = signInFormState.copy(isLoading = true)
+        val result = signInWithFacebookUseCase(activityContext)
+        handleSignInResult(result)
     }
 
     private fun signInWithGoogle(activityContext: Context) = viewModelScope.launch {

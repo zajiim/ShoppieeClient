@@ -14,6 +14,7 @@ import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
 import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityObserver
 import com.example.shoppieeclient.utils.Constants
+import com.facebook.CallbackManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.auth.Auth
@@ -121,6 +122,9 @@ val networkModule = module {
 
     single {
         CredentialManager.create(androidContext())
+    }
+    single {
+        CallbackManager.Factory.create()
     }
 
 
