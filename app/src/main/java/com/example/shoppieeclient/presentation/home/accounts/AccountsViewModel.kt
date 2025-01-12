@@ -116,7 +116,7 @@ class AccountsViewModel(
     private fun fetchUserDetail() = viewModelScope.launch {
         withContext(Dispatchers.IO) {
             getUserDataUseCase().collect { result ->
-                Log.e(TAG, "fetchUserDetail: result is $result", )
+                Log.e(TAG, "fetchUserDetail: result is $result")
                 when (result) {
                     is Resource.Error -> {
                         uiState = uiState.copy(
@@ -133,7 +133,7 @@ class AccountsViewModel(
                     }
 
                     is Resource.Success -> {
-                        Log.e(TAG, "fetchUserDetail:>>>>>> ${uiState.profileName} ", )
+                        Log.e(TAG, "fetchUserDetail:>>>>>> ${uiState.profileName} ")
                         uiState = uiState.copy(
                             isLoading = false,
                             error = null,
@@ -168,6 +168,7 @@ class AccountsViewModel(
                         }
 
                         is Resource.Success -> {
+                            saveUserDetailsUseCase(uiState.profileName, uiState.profileImageUrl)
                             try {
                                 saveUserDetailsUseCase(uiState.profileName, uiState.profileImageUrl)
                                 uiState = uiState.copy(

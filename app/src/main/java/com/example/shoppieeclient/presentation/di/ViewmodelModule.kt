@@ -26,7 +26,7 @@ val viewmodelModule = module {
         )
     }
     viewModel<SignUpViewModel> { SignUpViewModel(get(), get()) }
-    viewModel<SignInViewModel> { SignInViewModel(get(), get(), get(), get() ) }
+    viewModel<SignInViewModel> { SignInViewModel(get(), get(), get(), get(), get()) }
     viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }
     viewModel<HomeViewModel>{ HomeViewModel(getHomeApiUseCase = get()) }
     viewModel<DetailsViewModel>{ (savedStateHandle: SavedStateHandle) ->

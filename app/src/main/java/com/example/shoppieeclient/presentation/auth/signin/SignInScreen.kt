@@ -27,12 +27,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.domain.common.model.NetworkStatus
 import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityObserver
@@ -55,6 +57,7 @@ fun SignInScreen(
     signInViewModel: SignInViewModel = koinViewModel(),
     connectivityObserver: NetworkConnectivityObserver
 ) {
+    val ctx = LocalContext.current
     val status by connectivityObserver.networkStatus.collectAsState()
     var showMessageBar by rememberSaveable { mutableStateOf(false) }
     var message by rememberSaveable { mutableStateOf("") }
@@ -170,7 +173,9 @@ fun SignInScreen(
                 CustomSocialMediaButton(
                     title = "Sign in with Google",
                     icon = R.drawable.ic_google_logo,
-                    onClick = {},
+                    onClick = {
+                        signInViewModel.onEvent(SignInEvents.SignInWithGoogle(ctx))
+                    },
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(modifier = Modifier.height(100.dp))

@@ -21,8 +21,9 @@ class AccountsCloudinaryRepoImpl: AccountsCloudinaryRepo {
             suspendCancellableCoroutine { continuation ->
 
                 try {
-                    val folderName = "users/$userName"
+                    val folderName = "users/${userName.trim().filterNot { it.isWhitespace() }}"
                     val publicId = "$folderName/profilePic"
+                    Log.e(TAG, "uploadImage:public id is======> $publicId", )
                     //delete the existing profilePic
                     try {
                         MediaManager.get().cloudinary.uploader().destroy(publicId, emptyMap<String, String>())

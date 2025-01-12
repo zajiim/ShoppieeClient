@@ -12,17 +12,17 @@ import org.koin.core.context.startKoin
 class ShoppieApplication: Application() {
     override fun onCreate() {
         super.onCreate()
-        initCloudinary()
         startKoin {
             androidLogger()
             androidContext(this@ShoppieApplication)
-//            modules(appModule)
             modules(listOf(
                 dataModule,
                 domainModule,
                 presentationModule
             ))
         }
+
+        initCloudinary()
     }
 
     private fun initCloudinary() {

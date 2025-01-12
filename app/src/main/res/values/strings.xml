@@ -11,4 +11,11 @@
 
     <string name="signup_alert_button_success">Go to Login</string>
     <string name="signup_alert_button_failure">Go back</string>
+
+
+    <string name="facebook_app_id">610025884836006</string>
+    <string name="fb_login_protocol_scheme">fb610025884836006</string>
+    <string name="facebook_client_token">add62bd0e57416439cb5e218abecacc0</string>
+
+
 </resources>

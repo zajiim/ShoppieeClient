@@ -28,11 +28,4 @@ class ShoppieeUserProfileService(
             contentType(ContentType.Application.Json)
         }.body()
     }
-
-
-    suspend fun signOut(): SignOutResponseDto {
-        return authorizedHttpClient.post("${Constants.SHOPPIEE_URL}/signout") {
-            contentType(ContentType.Application.Json)
-        }.body()
-    }
 }

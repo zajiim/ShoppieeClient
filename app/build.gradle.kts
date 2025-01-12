@@ -44,6 +44,8 @@ android {
             buildConfigField("String", "CLOUDINARY_CLOUD_NAME", localProperties.getProperty("CLOUDINARY_CLOUD_NAME"))
             buildConfigField("String", "UPLOAD_PRESET_CLOUDINARY", localProperties.getProperty("UPLOAD_PRESET_CLOUDINARY"))
             buildConfigField("String", "GOOGLE_CLIENT_ID", localProperties.getProperty("GOOGLE_CLIENT_ID"))
+            buildConfigField("String", "FACEBOOK_APP_ID", localProperties.getProperty("FACEBOOK_APP_ID"))
+            buildConfigField("String", "FACEBOOK_APP_SECRET", localProperties.getProperty("FACEBOOK_APP_SECRET"))
         }
         debug {
             buildConfigField("String", "CLOUDINARY_API_KEY", localProperties.getProperty("CLOUDINARY_API_KEY"))
@@ -51,6 +53,8 @@ android {
             buildConfigField("String", "CLOUDINARY_CLOUD_NAME", localProperties.getProperty("CLOUDINARY_CLOUD_NAME"))
             buildConfigField("String", "UPLOAD_PRESET_CLOUDINARY", localProperties.getProperty("UPLOAD_PRESET_CLOUDINARY"))
             buildConfigField("String", "GOOGLE_CLIENT_ID", localProperties.getProperty("GOOGLE_CLIENT_ID"))
+            buildConfigField("String", "FACEBOOK_APP_ID", localProperties.getProperty("FACEBOOK_APP_ID"))
+            buildConfigField("String", "FACEBOOK_APP_SECRET", localProperties.getProperty("FACEBOOK_APP_SECRET"))
         }
     }
     compileOptions {
@@ -116,10 +120,12 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
 
-    //credential
+    //credential google
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    //Facebook sdk
+    implementation(libs.facebook.login)
 
 
     testImplementation(libs.junit)

@@ -1,5 +1,7 @@
 package com.example.shoppieeclient.data.di
 
+
+import androidx.credentials.CredentialManager
 import androidx.room.Room
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.data.cart.remote.api.ShoppieCartApiService
@@ -11,8 +13,6 @@ import com.example.shoppieeclient.data.home.home.remote.api.ShoppieeHomeApiServi
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
 import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityObserver
-import com.example.shoppieeclient.domain.home.account.repository.AccountsCloudinaryRepo
-import com.example.shoppieeclient.domain.home.account.repository.ShoppieeUserProfileRepo
 import com.example.shoppieeclient.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -116,5 +116,12 @@ val networkModule = module {
     single { ShoppieeHomeApiService(get(named("UnauthorizedHttpClient")), get(named("AuthorizedHttpClient"))) }
     single { ShoppieCartApiService(get(named("AuthorizedHttpClient"))) }
     single { ShoppieeUserProfileService(get(named("AuthorizedHttpClient"))) }
+
+    // Provide Credential Manager
+
+    single {
+        CredentialManager.create(androidContext())
+    }
+
 
 }
