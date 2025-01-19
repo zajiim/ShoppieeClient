@@ -6,6 +6,7 @@ import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveTokenUs
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveUserDetailsUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInWithFacebookUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInWithGoogleUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.signout.SignOutUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.signup.SignUpUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.home.GetHomeApiUseCase
@@ -78,6 +79,12 @@ val useCasesModule = module {
     single {
         SignInWithFacebookUseCase(
             repository = get()
+        )
+    }
+
+    single {
+        SignInWithGoogleUseCase(
+            socialMediaSignInRepo = get()
         )
     }
 

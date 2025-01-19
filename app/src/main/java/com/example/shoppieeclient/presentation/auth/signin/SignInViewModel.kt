@@ -7,12 +7,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shoppieeclient.domain.auth.models.auth.FacebookAccount
 import com.example.shoppieeclient.domain.auth.models.auth.GoogleAccount
-import com.example.shoppieeclient.domain.auth.repository.SocialMediaSignInRepo
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveUserDetailsUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInWithFacebookUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInWithGoogleUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signin.SignInValidationsUseCases
 import com.example.shoppieeclient.utils.Resource
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +27,7 @@ class SignInViewModel(
     private val signInUseCase: SignInUseCase,
     private val saveTokenUseCase: SaveTokenUseCase,
     private val saveUserDetailsUseCase: SaveUserDetailsUseCase,
-    private val socialMediaSignInRepo: SocialMediaSignInRepo,
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
     private val signInWithFacebookUseCase: SignInWithFacebookUseCase
 ): ViewModel() {
 
@@ -75,7 +76,7 @@ class SignInViewModel(
 
     private fun signInWithGoogle(activityContext: Context) = viewModelScope.launch {
         signInFormState = signInFormState.copy(isLoading = true)
-        val result = socialMediaSignInRepo.signInWithGoogle(activityContext)
+        val result = signInWithGoogleUseCase(activityContext)
         handleSignInResult(result)
     }
 
@@ -108,7 +109,7 @@ class SignInViewModel(
                             )
                         }
                         is Resource.Error -> {
-                            Log.e(TAG, "Resource exception $result", )
+                            Log.e(TAG, "Resource exception $result")
                             signInFormState = signInFormState.copy(
                                 isLoading = false,
                                 isSignInSuccessful = false,
@@ -118,7 +119,7 @@ class SignInViewModel(
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, "common exception: $e", )
+                    Log.e(TAG, "common exception: $e")
                     signInFormState = signInFormState.copy(
                         isLoading = false,
                         isSignInSuccessful = false,
@@ -126,7 +127,7 @@ class SignInViewModel(
                         alertButtonString = "Go back"
                     )
                 } catch (e: NoRouteToHostException) {
-                    Log.e(TAG, "errorr: $e", )
+                    Log.e(TAG, "errorr: $e")
                 }
             }
         }
@@ -154,6 +155,10 @@ class SignInViewModel(
                 is Resource.Success -> {
                     result.data?.let { data ->
                         if (data is GoogleAccount ) {
+                            saveTokenUseCase(data.token)
+                            saveUserDetailsUseCase(data.displayName, data.profileImageUrl)
+                        }
+                        if (data is FacebookAccount) {
                             saveTokenUseCase(data.token)
                             saveUserDetailsUseCase(data.displayName, data.profileImageUrl)
                         }

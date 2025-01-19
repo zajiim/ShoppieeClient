@@ -28,7 +28,6 @@ class SocialMediaSignInRepoImpl(
     private val credentialManager: CredentialManager,
     private val callbackManager: CallbackManager
 ) : SocialMediaSignInRepo {
-//    private lateinit var callbackManager: CallbackManager
 
     override suspend fun signInWithGoogle(activityContext: Context): Resource<GoogleAccount> {
         return try {
@@ -57,8 +56,6 @@ class SocialMediaSignInRepoImpl(
     override suspend fun signInWithFacebook(activityContext: Context): Resource<FacebookAccount> {
         return try {
             suspendCancellableCoroutine { continuation ->
-//                callbackManager = CallbackManager.Factory.create()
-
                 LoginManager.getInstance().registerCallback(
                     callbackManager,
                     object : FacebookCallback<LoginResult> {
@@ -87,23 +84,7 @@ class SocialMediaSignInRepoImpl(
                             } ?: run {
                                 continuation.resume(Resource.Error("Facebook Login failed"))
                             }
-
-
-//                            val profile = Profile.getCurrentProfile()
-//                            val request = GraphRequest.newMeRequest(
-//                                result.accessToken
-//                            ) { jsonObject, _ ->
-//                                val account = FacebookAccount(
-//                                    token = result.accessToken.token,
-//                                    displayName = jsonObject?.optString("name") ?: "",
-////                                    profileImageUrl = jsonObject?.optString("picture") ?: ""
-//                                    profileImageUrl = profile?.getProfilePictureUri(200, 200).toString()
-//                                )
-//                                continuation.resume(Resource.Success(account))
-//                            }
-//                            request.parameters
                         }
-
                     }
                 )
                 LoginManager.getInstance().logInWithReadPermissions(
