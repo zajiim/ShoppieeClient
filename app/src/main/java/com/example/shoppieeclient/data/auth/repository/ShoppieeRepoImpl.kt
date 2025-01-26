@@ -2,6 +2,7 @@ package com.example.shoppieeclient.data.auth.repository
 
 import android.util.Log
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
+import com.example.shoppieeclient.data.auth.remote.dto.auth.oauth_signin.OAuthSignInRequest
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signin.SingInRequestDto
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signup.SignUpRequestDto
 import com.example.shoppieeclient.data.auth.remote.mapper.auth.signin.toSignInUserModel
@@ -79,13 +80,47 @@ class ShoppieeRepoImpl(
                 email = email,
                 password = password
             )
-
             val userResponse = api.signIn(signInRequestDto)
             if (userResponse.status == 200 && userResponse.result?.data != null) {
+                Log.e(TAG, "oauth signin: response =====> ${userResponse.result} ", )
                 val userModel = userResponse.result.data.toSignInUserModel()
+                Log.e(TAG, "oauth signin: after conversion =====> ${userModel} ", )
                 emit(Resource.Success(data = userModel, message = userResponse.message))
             } else {
                 emit(Resource.Error(userResponse.message))
+            }
+        } catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+    }.catch { e ->
+        emit(Resource.Error(e.localizedMessage ?: "Unexpected error occurred"))
+    }
+
+    override fun oAuthSignIn(
+        provider: String,
+        token: String
+    ): Flow<Resource<SignInUserModel>> = flow {
+        try {
+            emit(Resource.Loading())
+            val oauthSignInRequest = OAuthSignInRequest(
+                provider = provider,
+                token = token
+            )
+            Log.e(TAG, "oAuthSignInreq: $oauthSignInRequest", )
+            val userResponse = api.oAuthSignIn(oAuthSignInRequest = oauthSignInRequest)
+            Log.e(TAG, "oAuthSignInresponse: ${userResponse.result}", )
+            if (userResponse.status == 200 && userResponse.result?.data != null) {
+                val userModel = userResponse.result.data.toSignInUserModel()
+                Log.e(TAG, "oAuthSignInresponseParsed: ${userModel}", )
+                emit(Resource.Success(data = userModel, message = userResponse.message))
             }
         } catch (e: ClientRequestException) {
             emit(Resource.Error(e.message))

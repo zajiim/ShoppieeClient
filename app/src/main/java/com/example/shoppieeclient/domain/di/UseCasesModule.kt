@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.domain.di
 
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.OAuthSignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadUserDetailsUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveTokenUseCase
@@ -72,6 +73,12 @@ val useCasesModule = module {
 
     single {
         SignInUseCase(
+            repository = get()
+        )
+    }
+
+    single {
+        OAuthSignInUseCase(
             repository = get()
         )
     }

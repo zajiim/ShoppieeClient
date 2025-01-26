@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shoppieeclient.domain.auth.models.auth.FacebookAccount
 import com.example.shoppieeclient.domain.auth.models.auth.GoogleAccount
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.OAuthSignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveUserDetailsUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInUseCase
@@ -22,31 +23,36 @@ import kotlinx.coroutines.withContext
 import java.net.NoRouteToHostException
 
 private const val TAG = "SignInViewModel"
+
 class SignInViewModel(
     private val signInValidationsUseCase: SignInValidationsUseCases,
     private val signInUseCase: SignInUseCase,
     private val saveTokenUseCase: SaveTokenUseCase,
     private val saveUserDetailsUseCase: SaveUserDetailsUseCase,
     private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
-    private val signInWithFacebookUseCase: SignInWithFacebookUseCase
-): ViewModel() {
+    private val signInWithFacebookUseCase: SignInWithFacebookUseCase,
+    private val oAuthSignInUseCase: OAuthSignInUseCase
+) : ViewModel() {
 
     var signInFormState by mutableStateOf(SignInState())
         private set
 
     fun onEvent(event: SignInEvents) {
-        when(event) {
+        when (event) {
             is SignInEvents.EmailChanged -> {
                 signInFormState = signInFormState.copy(email = event.email)
                 validateEmail()
             }
+
             is SignInEvents.PasswordChanged -> {
                 signInFormState = signInFormState.copy(password = event.password)
                 validatePassword()
             }
+
             is SignInEvents.VisiblePasswordChanged -> {
                 signInFormState = signInFormState.copy(visiblePassword = event.isVisiblePassword)
             }
+
             SignInEvents.Submit -> {
                 if (validateEmail() && validatePassword()) {
                     Log.e(TAG, "onEvent: ======Signup Api call")
@@ -82,25 +88,22 @@ class SignInViewModel(
 
     private fun signInUser() = viewModelScope.launch(Dispatchers.IO) {
         signInUseCase(
-            email = signInFormState.email,
-            password = signInFormState.password
+            email = signInFormState.email, password = signInFormState.password
         ).collect { result ->
             withContext(Dispatchers.Main) {
                 try {
                     signInFormState = signInFormState.copy(isLoading = true)
-                    when(result) {
+                    when (result) {
                         is Resource.Loading -> {
                             signInFormState = signInFormState.copy(isLoading = true)
                         }
+
                         is Resource.Success -> {
                             Log.e(TAG, "signInUser token: ${result.data?.token}")
-
-
-                            result.data?.let{ data ->
+                            result.data?.let { data ->
                                 saveTokenUseCase(data.token)
                                 saveUserDetailsUseCase(data.name, data.profileImage)
                             }
-
                             signInFormState = signInFormState.copy(
                                 isLoading = false,
                                 isSignInSuccessful = true,
@@ -108,6 +111,7 @@ class SignInViewModel(
                                 alertButtonString = "Go to Home"
                             )
                         }
+
                         is Resource.Error -> {
                             Log.e(TAG, "Resource exception $result")
                             signInFormState = signInFormState.copy(
@@ -148,35 +152,97 @@ class SignInViewModel(
 
     private suspend fun <T> handleSignInResult(result: Resource<T>) {
         withContext(Dispatchers.Main) {
-            signInFormState = when (result) {
-                is Resource.Loading -> {
-                    signInFormState.copy(isLoading = true)
-                }
+            when (result) {
                 is Resource.Success -> {
                     result.data?.let { data ->
-                        if (data is GoogleAccount ) {
-                            saveTokenUseCase(data.token)
-                            saveUserDetailsUseCase(data.displayName, data.profileImageUrl)
+                        if (data is GoogleAccount) {
+                            oAuthSignInUseCase(
+                                provider = "google", token = data.token
+                            ).collect { oauthResult ->
+                                when (oauthResult) {
+                                    is Resource.Success -> {
+                                        oauthResult.data?.let { userData ->
+                                            saveTokenUseCase(userData.token)
+                                            saveUserDetailsUseCase(
+                                                userData.name, userData.profileImage
+                                            )
+
+                                            signInFormState = signInFormState.copy(
+                                                isLoading = false,
+                                                isSignInSuccessful = true,
+                                                alertDialog = oauthResult.message,
+                                                alertButtonString = "Go to Home"
+                                            )
+                                        }
+                                    }
+
+                                    is Resource.Error -> {
+                                        signInFormState = signInFormState.copy(
+                                            isLoading = false,
+                                            isSignInSuccessful = false,
+                                            alertDialog = oauthResult.message,
+                                            alertButtonString = "Go back"
+                                        )
+                                    }
+
+                                    is Resource.Loading -> {
+                                        signInFormState = signInFormState.copy(isLoading = true)
+                                    }
+                                }
+                            }
                         }
+
+
                         if (data is FacebookAccount) {
-                            saveTokenUseCase(data.token)
-                            saveUserDetailsUseCase(data.displayName, data.profileImageUrl)
+                            oAuthSignInUseCase(
+                                provider = "facebook", token = data.token
+                            ).collect { oauthResult ->
+                                when (oauthResult) {
+                                    is Resource.Success -> {
+                                        oauthResult.data?.let { userData ->
+                                            saveTokenUseCase(userData.token)
+                                            saveUserDetailsUseCase(
+                                                userData.name, userData.profileImage
+                                            )
+
+                                            signInFormState = signInFormState.copy(
+                                                isLoading = false,
+                                                isSignInSuccessful = true,
+                                                alertDialog = oauthResult.message,
+                                                alertButtonString = "Go to Home"
+                                            )
+                                        }
+                                    }
+
+                                    is Resource.Error -> {
+                                        signInFormState = signInFormState.copy(
+                                            isLoading = false,
+                                            isSignInSuccessful = false,
+                                            alertDialog = oauthResult.message,
+                                            alertButtonString = "Go back"
+                                        )
+                                    }
+
+                                    is Resource.Loading -> {
+                                        signInFormState = signInFormState.copy(isLoading = true)
+                                    }
+                                }
+                            }
                         }
                     }
-                    signInFormState.copy(
-                        isLoading = false,
-                        isSignInSuccessful = true,
-                        alertDialog = result.message,
-                        alertButtonString = "Go to Home"
-                    )
                 }
+
                 is Resource.Error -> {
-                    signInFormState.copy(
+                    signInFormState = signInFormState.copy(
                         isLoading = false,
                         isSignInSuccessful = false,
                         alertDialog = result.message,
                         alertButtonString = "Go back"
                     )
+                }
+
+                is Resource.Loading -> {
+                    signInFormState = signInFormState.copy(isLoading = true)
                 }
             }
         }

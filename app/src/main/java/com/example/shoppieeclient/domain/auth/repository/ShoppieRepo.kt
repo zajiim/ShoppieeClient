@@ -18,4 +18,9 @@ interface ShoppieRepo {
         email: String,
         password: String
     ): Flow<Resource<SignInUserModel>>
+
+    fun oAuthSignIn(
+        provider: String,
+        token: String
+    ): Flow<Resource<SignInUserModel>>
 }

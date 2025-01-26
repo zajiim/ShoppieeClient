@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.data.auth.remote.api
 
+import com.example.shoppieeclient.data.auth.remote.dto.auth.oauth_signin.OAuthSignInRequest
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signin.SignInResponseDto
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signin.SingInRequestDto
 import com.example.shoppieeclient.data.auth.remote.dto.auth.signout.SignOutResponseDto
@@ -28,6 +29,13 @@ class ShoppieApiService(
         return client.post("${Constants.SHOPPIEE_URL}/signin") {
             contentType(ContentType.Application.Json)
             setBody(signInRequestDto)
+        }.body()
+    }
+
+    suspend fun oAuthSignIn(oAuthSignInRequest: OAuthSignInRequest): SignInResponseDto {
+        return client.post("${Constants.SHOPPIEE_URL}/oauth") {
+            contentType(ContentType.Application.Json)
+            setBody(oAuthSignInRequest)
         }.body()
     }
 }
