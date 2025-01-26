@@ -16,5 +16,6 @@ data class SignUpState(
     val isLoading: Boolean = false,
     val alertDialog: String? = null,
     val alertButtonString: String? = null,
-    val isSignUpSuccessful: Boolean = false
+    val isSignUpSuccessful: Boolean = false,
+    val isSocialSignInSuccessful: Boolean = false
 )

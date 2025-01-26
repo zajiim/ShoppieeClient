@@ -25,7 +25,7 @@ val viewmodelModule = module {
             signOutUseCase = get()
         )
     }
-    viewModel<SignUpViewModel> { SignUpViewModel(get(), get()) }
+    viewModel<SignUpViewModel> { SignUpViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel<SignInViewModel> { SignInViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }
     viewModel<HomeViewModel>{ HomeViewModel(getHomeApiUseCase = get()) }

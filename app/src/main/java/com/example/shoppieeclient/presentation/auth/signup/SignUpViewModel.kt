@@ -1,11 +1,19 @@
 package com.example.shoppieeclient.presentation.auth.signup
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shoppieeclient.domain.auth.models.auth.FacebookAccount
+import com.example.shoppieeclient.domain.auth.models.auth.GoogleAccount
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.OAuthSignInUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveTokenUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SaveUserDetailsUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInWithFacebookUseCase
+import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.SignInWithGoogleUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.signup.SignUpUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.validations.signup.SignupValidationsUseCase
 import com.example.shoppieeclient.utils.Resource
@@ -17,7 +25,12 @@ private const val TAG = "SignUpViewModel"
 
 class SignUpViewModel(
     private val signUpValidationsUseCase: SignupValidationsUseCase,
-    private val signUpUseCase: SignUpUseCase
+    private val signUpUseCase: SignUpUseCase,
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
+    private val signInWithFacebookUseCase: SignInWithFacebookUseCase,
+    private val oAuthSignInUseCase: OAuthSignInUseCase,
+    private val saveTokenUseCase: SaveTokenUseCase,
+    private val saveUserDetailsUseCase: SaveUserDetailsUseCase,
 ) : ViewModel() {
 
     var signUpFormState by mutableStateOf(SignUpState())
@@ -62,6 +75,13 @@ class SignUpViewModel(
             SignUpEvents.DismissDialog -> {
                 signUpFormState = signUpFormState.copy(alertDialog = null)
             }
+
+            is SignUpEvents.SignInWithFacebook -> {
+                signInWithFacebook(event.activityContext)
+            }
+            is SignUpEvents.SignInWithGoogle -> {
+                signInWithGoogle(event.activityContext)
+            }
         }
     }
 
@@ -83,7 +103,6 @@ class SignUpViewModel(
                                 isSignUpSuccessful = true,
                                 alertDialog = result.message,
                                 alertButtonString = "Go to Login"
-//                                signUpError = null
                             )
                         }
 
@@ -92,7 +111,6 @@ class SignUpViewModel(
                             signUpFormState = signUpFormState.copy(
                                 isLoading = false,
                                 isSignUpSuccessful = false,
-//                                signUpError = result.message ?: "Unknown error"
                                 alertDialog = result.message,
                                 alertButtonString = "Go back"
                             )
@@ -110,7 +128,6 @@ class SignUpViewModel(
                     signUpFormState = signUpFormState.copy(
                         isLoading = false,
                         isSignUpSuccessful = false,
-//                        signUpError = "Sign up failed: ${e.message}"
                         alertDialog = result.message,
                         alertButtonString = "Go back"
                     )
@@ -145,6 +162,116 @@ class SignUpViewModel(
         signUpFormState =
             signUpFormState.copy(confirmPasswordError = confirmPasswordResult.errorMessage)
         return confirmPasswordResult.successful
+    }
+
+    private fun signInWithFacebook(activityContext: Context) = viewModelScope.launch {
+        signUpFormState = signUpFormState.copy(isLoading = true)
+        val result = signInWithFacebookUseCase(activityContext)
+        handleSignInResult(result)
+    }
+
+    private fun signInWithGoogle(activityContext: Context) = viewModelScope.launch {
+        signUpFormState = signUpFormState.copy(isLoading = true)
+        val result = signInWithGoogleUseCase(activityContext)
+        handleSignInResult(result)
+    }
+
+    private suspend fun <T> handleSignInResult(result: Resource<T>) {
+        withContext(Dispatchers.Main) {
+            when (result) {
+                is Resource.Success -> {
+                    result.data?.let { data ->
+                        if (data is GoogleAccount) {
+                            oAuthSignInUseCase(
+                                provider = "google", token = data.token
+                            ).collect { oauthResult ->
+                                when (oauthResult) {
+                                    is Resource.Success -> {
+                                        oauthResult.data?.let { userData ->
+                                            saveTokenUseCase(userData.token)
+                                            saveUserDetailsUseCase(
+                                                userData.name, userData.profileImage
+                                            )
+
+                                            signUpFormState = signUpFormState.copy(
+                                                isLoading = false,
+                                                isSocialSignInSuccessful = true,
+                                                alertDialog = oauthResult.message,
+                                                alertButtonString = "Go to Home"
+                                            )
+                                        }
+                                    }
+
+                                    is Resource.Error -> {
+                                        signUpFormState = signUpFormState.copy(
+                                            isLoading = false,
+                                            isSocialSignInSuccessful = false,
+                                            alertDialog = oauthResult.message,
+                                            alertButtonString = "Go back"
+                                        )
+                                    }
+
+                                    is Resource.Loading -> {
+                                        signUpFormState = signUpFormState.copy(isLoading = true)
+                                    }
+                                }
+                            }
+                        }
+
+
+                        if (data is FacebookAccount) {
+                            oAuthSignInUseCase(
+                                provider = "facebook", token = data.token
+                            ).collect { oauthResult ->
+                                when (oauthResult) {
+                                    is Resource.Success -> {
+                                        oauthResult.data?.let { userData ->
+                                            saveTokenUseCase(userData.token)
+                                            saveUserDetailsUseCase(
+                                                userData.name, userData.profileImage
+                                            )
+
+                                            signUpFormState = signUpFormState.copy(
+                                                isLoading = false,
+                                                isSocialSignInSuccessful = true,
+                                                alertDialog = oauthResult.message,
+                                                alertButtonString = "Go to Home"
+                                            )
+                                        }
+                                    }
+
+                                    is Resource.Error -> {
+                                        signUpFormState = signUpFormState.copy(
+                                            isLoading = false,
+                                            isSocialSignInSuccessful = false,
+                                            alertDialog = oauthResult.message,
+                                            alertButtonString = "Go back"
+                                        )
+                                    }
+
+                                    is Resource.Loading -> {
+                                        signUpFormState = signUpFormState.copy(isLoading = true)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                is Resource.Error -> {
+                    signUpFormState = signUpFormState.copy(
+                        isLoading = false,
+                        isSocialSignInSuccessful = false,
+                        alertDialog = result.message,
+                        alertButtonString = "Go back"
+                    )
+                }
+
+                is Resource.Loading -> {
+                    signUpFormState = signUpFormState.copy(isLoading = true)
+                }
+            }
+        }
     }
 
 }

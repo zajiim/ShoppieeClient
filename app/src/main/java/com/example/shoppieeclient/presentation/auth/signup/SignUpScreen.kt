@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -41,6 +42,7 @@ fun SignUpScreen(
     onBackClicked: () -> Unit,
     signUpViewModel: SignUpViewModel = koinViewModel()
 ) {
+    val ctx = LocalContext.current
     val visiblePasswordIcon = ImageVector.vectorResource(id = R.drawable.ic_visibility_on)
     val inVisiblePasswordIcon = ImageVector.vectorResource(id = R.drawable.ic_visibility_off)
 
@@ -163,7 +165,20 @@ fun SignUpScreen(
                 CustomSocialMediaButton(
                     title = "Sign in with Google",
                     icon = R.drawable.ic_google_logo,
-                    onClick = {},
+                    onClick = {
+                        signUpViewModel.onEvent(SignUpEvents.SignInWithGoogle(ctx))
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                CustomSocialMediaButton(
+                    title = "Sign in with Facebook",
+                    icon = R.drawable.ic_facebook_logo,
+                    onClick = {
+                        signUpViewModel.onEvent(SignUpEvents.SignInWithFacebook(ctx))
+                    },
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(modifier = Modifier.height(24.dp))
