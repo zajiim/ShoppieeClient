@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -21,23 +20,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
-import kotlin.io.path.Path
 
 @Composable
 fun CustomCheckOutCard(
     modifier: Modifier = Modifier,
     subTotal: Double,
     platformFees: Double,
-    totalCost: Double
+    totalCost: Double,
+    buttonText: String,
+    onCheckOutClicked: () -> Unit
 ) {
-    val safeBottomBarPaddingVal = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val safeBottomBarPaddingVal =
+        WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -92,11 +92,13 @@ fun CustomCheckOutCard(
 
             Spacer(modifier = Modifier.height(24.dp))
             CustomButton(
-                modifier = Modifier.fillMaxWidth().padding( horizontal = 20.dp),
-                text = "Checkout",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                text = buttonText,
                 backgroundColor = PrimaryBlue,
                 contentColor = Color.White,
-                onButtonClicked = { },
+                onButtonClicked = onCheckOutClicked,
                 isLoading = false,
                 enabled = true
             )
@@ -120,7 +122,9 @@ private fun CustomTotalRow(
             text = titleText,
             style = MaterialTheme.typography.titleMedium.copy(color = titleColor)
         )
-        Text(text = valueText,
-            style = MaterialTheme.typography.titleMedium.copy(valueColor))
+        Text(
+            text = valueText,
+            style = MaterialTheme.typography.titleMedium.copy(valueColor)
+        )
     }
 }

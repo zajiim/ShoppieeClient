@@ -1,8 +1,8 @@
 package com.example.shoppieeclient.presentation.navigation.main
 
-import androidx.compose.animation.AnimatedVisibilityScope
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.navigation.NavGraphBuilder
@@ -20,12 +20,13 @@ import com.example.shoppieeclient.presentation.home.favorites.FavoriesScreen
 import com.example.shoppieeclient.presentation.home.notifications.NotificationsScreen
 import com.example.shoppieeclient.presentation.home.payment.PaymentScreen
 import com.example.shoppieeclient.presentation.home.profile.ProfileScreen
-import com.example.shoppieeclient.presentation.home.shipping.ShippingScreen
+import com.example.shoppieeclient.presentation.home.checkout.CheckOutScreen
 import com.example.shoppieeclient.presentation.navigation.Destination
 import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
 import org.koin.androidx.compose.koinViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 fun NavGraphBuilder.homeNavGraph(
     navController: NavHostController,
@@ -66,6 +67,9 @@ fun NavGraphBuilder.homeNavGraph(
                 CartScreen(
                     onNavigateClick = {
                         navController.navigateUp()
+                    },
+                    onCheckOutClicked = {
+                        navController.navigate(Destination.CheckOut)
                     }
                 )
             }
@@ -81,7 +85,7 @@ fun NavGraphBuilder.homeNavGraph(
                         navController.navigate(Destination.Account)
                     },
                     onShippingAddressClick = {
-                        navController.navigate(Destination.Shipping)
+                        navController.navigate(Destination.CheckOut)
                     },
                     onPaymentInfoClick = {
                         navController.navigate(Destination.Payment)
@@ -103,13 +107,15 @@ fun NavGraphBuilder.homeNavGraph(
             )
         }
 
-        composable<Destination.Shipping> {
-            ShippingScreen(
+        composable<Destination.CheckOut> {
+            CheckOutScreen(
                 onNavigateClick = {
                     navController.navigateUp()
                 }
             )
         }
+
+
 
         composable<Destination.Payment> {
             PaymentScreen(

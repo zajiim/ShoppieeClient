@@ -32,12 +32,13 @@ sealed class Destination() {
     @Serializable
     object Account: Destination()
 
-    @Serializable
-    object Shipping: Destination()
 
     @Serializable
     object Payment: Destination()
 
     @Serializable
     object Delete: Destination()
+
+    @Serializable
+    object CheckOut: Destination()
 }

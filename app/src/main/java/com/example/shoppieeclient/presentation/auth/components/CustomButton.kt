@@ -24,9 +24,7 @@ fun CustomButton(
 ) {
     Button(
         modifier = modifier.height(56.dp),
-        onClick = {
-            onButtonClicked()
-        },
+        onClick = onButtonClicked,
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
             contentColor = contentColor,
