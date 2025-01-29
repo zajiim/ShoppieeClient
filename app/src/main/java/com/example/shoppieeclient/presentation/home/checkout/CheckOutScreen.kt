@@ -31,7 +31,10 @@ import com.example.shoppieeclient.ui.theme.BackGroundColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckOutScreen(
-    modifier: Modifier = Modifier, onNavigateClick: () -> Unit
+    modifier: Modifier = Modifier,
+    onNavigateClick: () -> Unit,
+    onAddressRoute: () -> Unit,
+    onPaymentRoute: () -> Unit
 ) {
     val checkoutCardHeight = remember { mutableIntStateOf(0) }
     Box(
@@ -63,13 +66,15 @@ fun CheckOutScreen(
             CustomCheckOutDetails(
                 modifier = Modifier,
                 title = "Delivery Address",
-                subtitle = "Add new address"
+                subtitle = "Add new address",
+                onNavigateClick = onAddressRoute
             )
 
             CustomCheckOutDetails(
                 modifier = Modifier,
                 title = "Payment Method",
-                subtitle = "Add new payment method"
+                subtitle = "Add new payment method",
+                onNavigateClick = onPaymentRoute
             )
         }
         CustomCheckOutCard(
@@ -83,7 +88,7 @@ fun CheckOutScreen(
             platformFees = 12.2,
             totalCost = 13232.23,
             onCheckOutClicked = {},
-            buttonText = "PLace Order"
+            buttonText = "Place Order"
         )
     }
 }

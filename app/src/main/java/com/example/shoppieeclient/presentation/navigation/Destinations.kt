@@ -41,4 +41,8 @@ sealed class Destination() {
 
     @Serializable
     object CheckOut: Destination()
+
+    @Serializable
+    object Address: Destination()
+
 }

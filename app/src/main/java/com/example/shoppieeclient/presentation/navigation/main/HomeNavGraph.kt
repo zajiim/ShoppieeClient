@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.example.shoppieeclient.presentation.home.accounts.AccountsScreen
+import com.example.shoppieeclient.presentation.home.address.AddressScreen
 import com.example.shoppieeclient.presentation.home.home.HomeScreen
 import com.example.shoppieeclient.presentation.home.cart.CartScreen
 import com.example.shoppieeclient.presentation.home.delete_account.DeleteAccountScreen
@@ -111,6 +112,12 @@ fun NavGraphBuilder.homeNavGraph(
             CheckOutScreen(
                 onNavigateClick = {
                     navController.navigateUp()
+                },
+                onAddressRoute = {
+                    navController.navigate(Destination.Address)
+                },
+                onPaymentRoute = {
+                    navController.navigate(Destination.Payment)
                 }
             )
         }
@@ -119,6 +126,14 @@ fun NavGraphBuilder.homeNavGraph(
 
         composable<Destination.Payment> {
             PaymentScreen(
+                onNavigateClick = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
+        composable<Destination.Address> {
+            AddressScreen(
                 onNavigateClick = {
                     navController.navigateUp()
                 }

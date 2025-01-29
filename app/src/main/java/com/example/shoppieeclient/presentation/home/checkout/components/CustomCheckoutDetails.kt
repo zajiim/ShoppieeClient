@@ -1,6 +1,7 @@
 package com.example.shoppieeclient.presentation.home.checkout.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,13 +23,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.shoppieeclient.ui.theme.fonts
 
 @Composable
 fun CustomCheckOutDetails(
     modifier: Modifier = Modifier,
     title: String,
-    subtitle: String
+    subtitle: String,
+    onNavigateClick: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -39,6 +43,9 @@ fun CustomCheckOutDetails(
                 RoundedCornerShape(16.dp)
             )
             .background(Color.LightGray.copy(alpha = 0.2f))
+            .clickable {
+                onNavigateClick()
+            }
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -51,11 +58,11 @@ fun CustomCheckOutDetails(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium.copy(color = Gray)
+                    style = MaterialTheme.typography.titleSmall.copy(color = Gray)
                 )
                 Text(
                     text = subtitle,
-                    style = MaterialTheme.typography.titleLarge.copy(color = Black)
+                    style = MaterialTheme.typography.bodyMedium.copy(color = Black, fontWeight = FontWeight.Bold)
                 )
             }
             IconButton(onClick = {}) {

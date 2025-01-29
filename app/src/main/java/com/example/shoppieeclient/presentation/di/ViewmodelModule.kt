@@ -7,6 +7,7 @@ import com.example.shoppieeclient.presentation.auth.onboarding.OnBoardingViewMod
 import com.example.shoppieeclient.presentation.auth.signin.SignInViewModel
 import com.example.shoppieeclient.presentation.auth.signup.SignUpViewModel
 import com.example.shoppieeclient.presentation.home.accounts.AccountsViewModel
+import com.example.shoppieeclient.presentation.home.address.AddressViewModel
 import com.example.shoppieeclient.presentation.home.cart.CartViewModel
 import com.example.shoppieeclient.presentation.home.details.DetailsViewModel
 import com.example.shoppieeclient.presentation.home.home.HomeViewModel
@@ -35,4 +36,5 @@ val viewmodelModule = module {
     viewModel<CartViewModel> { CartViewModel(getCartUseCase = get(), incrementItemUseCase = get(), decrementItemUseCase = get(), removeItemUseCase = get(), getCartTotalUseCase = get()) }
     viewModel<ProfileViewModel> { ProfileViewModel() }
     viewModel<AccountsViewModel> { AccountsViewModel(uploadImageUseCase = get(), updateProfileDataUseCase = get(), getUserDataUseCase = get(), saveUserDetailsUseCase = get()) }
+    viewModel<AddressViewModel> { AddressViewModel() }
 }
