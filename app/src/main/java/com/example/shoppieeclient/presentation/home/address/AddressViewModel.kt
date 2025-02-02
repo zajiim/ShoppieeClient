@@ -24,6 +24,12 @@ class AddressViewModel: ViewModel() {
                 )
 
             }
+
+            is AddressEvents.AddAddressSubmit -> {
+                addressState = addressState.copy(
+
+                )
+            }
         }
     }
 
