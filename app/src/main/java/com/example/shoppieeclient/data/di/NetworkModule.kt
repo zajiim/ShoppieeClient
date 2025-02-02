@@ -3,6 +3,7 @@ package com.example.shoppieeclient.data.di
 
 import androidx.credentials.CredentialManager
 import androidx.room.Room
+import com.example.shoppieeclient.data.address.remote.api.AddressApiService
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.data.cart.remote.api.ShoppieCartApiService
 import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObserverImpl
@@ -33,6 +34,7 @@ import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import kotlin.math.sin
 
 val networkModule = module {
     //Unauthorized HttpClient
@@ -117,6 +119,7 @@ val networkModule = module {
     single { ShoppieeHomeApiService(get(named("UnauthorizedHttpClient")), get(named("AuthorizedHttpClient"))) }
     single { ShoppieCartApiService(get(named("AuthorizedHttpClient"))) }
     single { ShoppieeUserProfileService(get(named("AuthorizedHttpClient"))) }
+    single { AddressApiService(get(named("AuthorizedHttpClient"))) }
 
     // Provide Credential Manager
 

@@ -1,4 +1,4 @@
-package com.example.shoppieeclient.presentation.home.home.components
+package com.example.shoppieeclient.presentation.home.address.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +15,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.presentation.home.address.AddressEvents
 import com.example.shoppieeclient.presentation.home.address.AddressStates
-import com.example.shoppieeclient.presentation.home.address.components.CustomAddressTextField
 
 @Composable
 fun AddAddressForm(

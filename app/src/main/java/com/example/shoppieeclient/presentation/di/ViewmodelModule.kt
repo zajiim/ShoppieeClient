@@ -36,5 +36,5 @@ val viewmodelModule = module {
     viewModel<CartViewModel> { CartViewModel(getCartUseCase = get(), incrementItemUseCase = get(), decrementItemUseCase = get(), removeItemUseCase = get(), getCartTotalUseCase = get()) }
     viewModel<ProfileViewModel> { ProfileViewModel() }
     viewModel<AccountsViewModel> { AccountsViewModel(uploadImageUseCase = get(), updateProfileDataUseCase = get(), getUserDataUseCase = get(), saveUserDetailsUseCase = get()) }
-    viewModel<AddressViewModel> { AddressViewModel() }
+    viewModel<AddressViewModel> { AddressViewModel(getAddressListUseCase = get()) }
 }

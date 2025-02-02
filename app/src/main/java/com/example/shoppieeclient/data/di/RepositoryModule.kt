@@ -1,11 +1,13 @@
 package com.example.shoppieeclient.data.di
 
+import com.example.shoppieeclient.data.address.remote.repository.AddressRepoImpl
 import com.example.shoppieeclient.data.auth.repository.ShoppieeRepoImpl
 import com.example.shoppieeclient.data.auth.repository.SocialMediaSignInRepoImpl
 import com.example.shoppieeclient.data.cart.repository.ShoppieCartRepoImpl
 import com.example.shoppieeclient.data.home.account.repository.AccountsCloudinaryRepoImpl
 import com.example.shoppieeclient.data.home.account.repository.ShoppieeUpdateProfileRepoImpl
 import com.example.shoppieeclient.data.home.home.repository.ShoppieeHomeRepoImpl
+import com.example.shoppieeclient.domain.address.repository.AddressRepo
 import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
 import com.example.shoppieeclient.domain.auth.repository.SocialMediaSignInRepo
 import com.example.shoppieeclient.domain.home.home.repository.ShoppieeHomeRepo
@@ -23,4 +25,5 @@ val repositoryModule = module {
     single<AccountsCloudinaryRepo> { AccountsCloudinaryRepoImpl() }
     single<ShoppieeUserProfileRepo> { ShoppieeUpdateProfileRepoImpl(shoppieeUserProfileService = get(), profileDao = get()) }
     single<SocialMediaSignInRepo> { SocialMediaSignInRepoImpl(credentialManager = get(), callbackManager = get()) }
+    single<AddressRepo> { AddressRepoImpl(addressApiService = get()) }
 }

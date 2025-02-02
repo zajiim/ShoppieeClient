@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.domain.di
 
+import com.example.shoppieeclient.domain.address.use_cases.GetAddressListUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.OAuthSignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadUserDetailsUseCase
@@ -31,6 +32,7 @@ import com.example.shoppieeclient.domain.home.account.use_cases.GetProfileDataUs
 import com.example.shoppieeclient.domain.home.account.use_cases.UpdateProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UploadImageUseCase
 import org.koin.dsl.module
+import kotlin.math.sin
 
 val useCasesModule = module {
     single { SaveOnBoardingUseCase(get()) }
@@ -158,6 +160,12 @@ val useCasesModule = module {
     single {
         GetProfileDataUseCase(
             shoppieeUserProfileRepo = get()
+        )
+    }
+
+    single {
+        GetAddressListUseCase(
+            addressRepo = get()
         )
     }
 

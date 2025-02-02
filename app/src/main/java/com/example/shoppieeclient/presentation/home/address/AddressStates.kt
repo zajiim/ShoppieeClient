@@ -1,14 +1,12 @@
 package com.example.shoppieeclient.presentation.home.address
 
+import com.example.shoppieeclient.domain.address.models.AddressModel
+
 data class AddressStates(
     val isAddAddressClicked: Boolean = false,
-    val addresses: List<Address>?=emptyList<Address>(),
+    val addresses: List<AddressModel>?=emptyList<AddressModel>(),
+    val isLoading: Boolean = false,
+    val error: String? = null,
 )
 
 
-data class Address(
-    val streetAddress: String?="null",
-    val city: String?="",
-    val state: String?="",
-    val zipCode: String?="",
-)
