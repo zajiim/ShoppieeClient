@@ -65,8 +65,38 @@ class AddressViewModel(
 
             is AddressEvents.EditButtonClicked -> {
                 addressState = addressState.copy(
-                    isAddAddressClicked = true
+                    isAddAddressClicked = true,
+                    selectedAddress = events.address.copy()
                 )
+            }
+
+            is AddressEvents.UpdateCity -> {
+                addressState.selectedAddress?.let { currentVal ->
+                    addressState = addressState.copy(
+                        selectedAddress = currentVal.copy(city = events.city)
+                    )
+                }
+            }
+            is AddressEvents.UpdateState -> {
+                addressState.selectedAddress?.let { currentVal ->
+                    addressState = addressState.copy(
+                        selectedAddress = currentVal.copy(state = events.state)
+                    )
+                }
+            }
+            is AddressEvents.UpdateStreetAddress -> {
+                addressState.selectedAddress?.let { currentVal ->
+                    addressState = addressState.copy(
+                        selectedAddress = currentVal.copy(streetAddress = events.streetAddress)
+                    )
+                }
+            }
+            is AddressEvents.UpdateZipCode -> {
+                addressState.selectedAddress?.let { currentVal ->
+                    addressState = addressState.copy(
+                        selectedAddress = currentVal.copy(zipCode = events.zipCode)
+                    )
+                }
             }
         }
     }

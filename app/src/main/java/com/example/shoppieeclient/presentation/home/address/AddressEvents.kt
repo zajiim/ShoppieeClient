@@ -7,4 +7,8 @@ sealed class AddressEvents {
     data object DismissBottomSheet: AddressEvents()
     data class AddAddressSubmit(val address: AddressModel): AddressEvents()
     data class EditButtonClicked(val address: AddressModel): AddressEvents()
+    data class UpdateStreetAddress(val streetAddress: String): AddressEvents()
+    data class UpdateCity(val city: String): AddressEvents()
+    data class UpdateState(val state: String): AddressEvents()
+    data class UpdateZipCode(val zipCode: String): AddressEvents()
 }

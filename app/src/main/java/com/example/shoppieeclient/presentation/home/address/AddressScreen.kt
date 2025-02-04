@@ -1,6 +1,5 @@
 package com.example.shoppieeclient.presentation.home.address
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -119,9 +118,7 @@ fun AddressScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(state.addresses) { address ->
-                            AddressItem(
-                                address = address,
-                                onEditClick = {
+                            AddressItem(address = address, onEditClick = {
                                 addressViewModel.onEvent(AddressEvents.EditButtonClicked(address))
                             })
                         }
@@ -133,17 +130,17 @@ fun AddressScreen(
         }
 
         if (state.isAddAddressClicked) {
-                ModalBottomSheet(
-                    onDismissRequest = {
-                        addressViewModel.onEvent(AddressEvents.DismissBottomSheet)
-                    }, sheetState = sheetState
-                ) {
-                    AddAddressForm(formState = addressViewModel.addressState,
-                        onEvent = {
-//                        addressViewModel.onEvent(AddressEvents.AddAddressSubmit)
-                    })
-                }
+            ModalBottomSheet(
+                onDismissRequest = {
+                    addressViewModel.onEvent(AddressEvents.DismissBottomSheet)
+                }, sheetState = sheetState
+            ) {
+                AddAddressForm(address = state.selectedAddress, onEvent = { onEditClickEvent ->
+                    addressViewModel.onEvent(onEditClickEvent)
+                })
+
             }
+        }
 
     }
 }

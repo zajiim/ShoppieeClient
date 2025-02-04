@@ -13,12 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.example.shoppieeclient.domain.address.models.AddressModel
 import com.example.shoppieeclient.presentation.home.address.AddressEvents
 import com.example.shoppieeclient.presentation.home.address.AddressStates
 
 @Composable
 fun AddAddressForm(
-    formState: AddressStates,
+    address: AddressModel?,
     onEvent: (AddressEvents) -> Unit
 ) {
     Column(
@@ -29,37 +30,38 @@ fun AddAddressForm(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
        CustomAddressTextField(
-           value = "",
+           value = address?.streetAddress ?: "",
            label = "Street Address",
-           onValueChange = {  },
+           onValueChange = { onEvent(AddressEvents.UpdateStreetAddress(it)) },
            modifier = Modifier.fillMaxWidth(),
            imeAction = ImeAction.Next
        )
 
         CustomAddressTextField(
-            value = "",
+            value = address?.city ?: "",
             label = "City",
-            onValueChange = {  },
+            onValueChange = { onEvent(AddressEvents.UpdateCity(it)) },
             modifier = Modifier.fillMaxWidth(),
             imeAction = ImeAction.Next
         )
 
-        Row(modifier = Modifier.fillMaxWidth(),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             CustomAddressTextField(
-                value = "",
+                value = address?.state ?: "",
                 label = "State",
-                onValueChange = {  },
+                onValueChange = { onEvent(AddressEvents.UpdateState(it)) },
                 modifier = Modifier.weight(1f),
                 imeAction = ImeAction.Next
             )
 
             CustomAddressTextField(
-                value = "",
+                value = address?.zipCode ?: "",
                 label = "Zip Code",
-                onValueChange = {  },
+                onValueChange = { onEvent(AddressEvents.UpdateZipCode(it)) },
                 modifier = Modifier.weight(1f),
                 imeAction = ImeAction.Done
             )
