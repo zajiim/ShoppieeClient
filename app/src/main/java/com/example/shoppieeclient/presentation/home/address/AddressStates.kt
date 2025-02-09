@@ -7,7 +7,9 @@ data class AddressStates(
     val addresses: List<AddressModel>?=emptyList<AddressModel>(),
     val isLoading: Boolean = false,
     val error: String? = null,
-    val selectedAddress: AddressModel? = null
+    val selectedAddress: AddressModel? = null,
+    val selectedForDeletion: AddressModel? = null,
+    val showDeleteConfirmation: Boolean = false
 )
 
 

@@ -1,5 +1,8 @@
 package com.example.shoppieeclient.presentation.home.address.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,22 +17,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.domain.address.models.AddressModel
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AddressItem(
     address: AddressModel,
+    isSelected: Boolean,
     onEditClick: () -> Unit,
+    onLongClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onDismissSelection: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .combinedClickable(
+                onClick = { onDismissSelection() },
+                onLongClick = { onLongClick() }
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) LightGray else Color.White
+        ),
     ) {
         Row(
             modifier = Modifier
@@ -45,9 +61,12 @@ fun AddressItem(
                 style = MaterialTheme.typography.bodyMedium
             )
             TextButton(
-                onClick = onEditClick
+                onClick = if (isSelected) onDeleteClick else onEditClick
             ) {
-                Text(text = "Edit", color = PrimaryBlue)
+                Text(
+                    text = if (isSelected) "Delete" else "Edit",
+                    color = if (isSelected) Color.Red else PrimaryBlue
+                )
             }
         }
     }

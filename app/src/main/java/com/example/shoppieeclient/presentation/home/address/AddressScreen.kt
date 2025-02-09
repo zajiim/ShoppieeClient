@@ -2,6 +2,7 @@ package com.example.shoppieeclient.presentation.home.address
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,13 +21,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +59,14 @@ fun AddressScreen(
         modifier = modifier
             .fillMaxSize()
             .background(BackGroundColor)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
+                if (state.selectedForDeletion != null) {
+                    addressViewModel.onEvent(AddressEvents.UnSelectAddress)
+                }
+            }
     ) {
         Column(modifier = Modifier) {
             CustomNavigationTopAppBar(modifier = Modifier
@@ -118,16 +130,51 @@ fun AddressScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(state.addresses) { address ->
-                            AddressItem(address = address, onEditClick = {
-                                addressViewModel.onEvent(AddressEvents.EditButtonClicked(address))
-                            })
+                            AddressItem(
+                                address = address,
+                                isSelected = address == state.selectedForDeletion,
+                                onEditClick = {
+                                    addressViewModel.onEvent(AddressEvents.EditButtonClicked(address))
+                                },
+                                onLongClick = {
+                                    if (address == state.selectedForDeletion) {
+                                        addressViewModel.onEvent(AddressEvents.UnSelectAddress)
+                                    } else {
+                                        addressViewModel.onEvent(AddressEvents.LongPressAddress(address))
+                                    }
+                                },
+                                onDeleteClick = {
+                                    addressViewModel.onEvent(AddressEvents.DeleteClicked)
+                                },
+                                onDismissSelection = {
+                                    addressViewModel.onEvent(AddressEvents.UnSelectAddress)
+                                }
+                            )
                         }
                     }
                 }
-
-
             }
         }
+
+
+        if (state.showDeleteConfirmation) {
+            AlertDialog(
+                onDismissRequest = { addressViewModel.onEvent(AddressEvents.CancelDelete) },
+                title = { Text(text = "Remove address") },
+                text = { Text(text = "Are you sure you want to remove this address?") },
+                confirmButton = {
+                    TextButton(onClick = { addressViewModel.onEvent(AddressEvents.ConfirmDelete) }) {
+                        Text("Yes")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { addressViewModel.onEvent(AddressEvents.CancelDelete) }) {
+                        Text("No")
+                    }
+                })
+        }
+
+
 
         if (state.isAddAddressClicked) {
             ModalBottomSheet(

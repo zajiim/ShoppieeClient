@@ -66,7 +66,7 @@ class AddressViewModel(
             is AddressEvents.EditButtonClicked -> {
                 addressState = addressState.copy(
                     isAddAddressClicked = true,
-                    selectedAddress = events.address.copy()
+                    selectedAddress = events.address
                 )
             }
 
@@ -97,6 +97,32 @@ class AddressViewModel(
                         selectedAddress = currentVal.copy(zipCode = events.zipCode)
                     )
                 }
+            }
+
+            AddressEvents.CancelDelete -> {
+                addressState = addressState.copy(
+                    showDeleteConfirmation = false,
+                    selectedForDeletion = null
+                )
+            }
+            AddressEvents.ConfirmDelete -> {
+                // TODO: Delete api 
+            }
+            is AddressEvents.LongPressAddress -> {
+                addressState = addressState.copy(
+                    selectedForDeletion = events.address
+                )
+            }
+
+            AddressEvents.UnSelectAddress -> {
+                addressState = addressState.copy(
+                    selectedForDeletion = null
+                )
+            }
+            AddressEvents.DeleteClicked -> {
+                addressState = addressState.copy(
+                    showDeleteConfirmation = true
+                )
             }
         }
     }
