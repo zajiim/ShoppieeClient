@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.presentation.home.address.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,9 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.example.shoppieeclient.data.address.remote.dto.AddressRequest
 import com.example.shoppieeclient.domain.address.models.AddressModel
 import com.example.shoppieeclient.presentation.home.address.AddressEvents
 
+private const val TAG = "AddAddressForm"
 @Composable
 fun AddAddressForm(
     address: AddressModel?,
@@ -67,7 +70,7 @@ fun AddAddressForm(
         }
         Button(
             onClick = {
-                onEvent
+                onEvent(AddressEvents.AddAddressSubmit)
             },
             modifier = Modifier.fillMaxWidth()
         ) {

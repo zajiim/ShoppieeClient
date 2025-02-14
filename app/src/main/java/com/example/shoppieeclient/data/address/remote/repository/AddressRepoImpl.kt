@@ -1,6 +1,8 @@
 package com.example.shoppieeclient.data.address.remote.repository
 
+import android.util.Log
 import com.example.shoppieeclient.data.address.remote.api.AddressApiService
+import com.example.shoppieeclient.data.address.remote.dto.AddressRequest
 import com.example.shoppieeclient.data.address.remote.mapper.toAddressModel
 import com.example.shoppieeclient.domain.address.models.AddressModel
 import com.example.shoppieeclient.domain.address.repository.AddressRepo
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.serialization.SerializationException
 import java.io.IOException
 
+private const val TAG = "AddressRepoImpl"
 class AddressRepoImpl(
     private val addressApiService: AddressApiService
 ) : AddressRepo {
@@ -58,6 +61,41 @@ class AddressRepoImpl(
             }
 
         }  catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+    }.catch { e ->
+        emit(Resource.Error(e.message ?: "Unexpected error occurred"))
+    }.flowOn(Dispatchers.IO)
+
+    override fun addAddress(
+        streetAddress: String,
+        city: String,
+        state: String?,
+        zipCode: String?
+    ): Flow<Resource<List<AddressModel>>> = flow {
+        try {
+            emit(Resource.Loading())
+            val addressRequest = AddressRequest(
+                streetAddress = streetAddress,
+                city = city,
+                state = state,
+                zipCode = zipCode
+            )
+            val addressResponse = addressApiService.addAddress(
+                addressRequest = addressRequest
+            )
+            val addresses = addressResponse.result.addresses.map { it.toAddressModel() }
+            emit(Resource.Success(addresses))
+
+        } catch (e: ClientRequestException) {
             emit(Resource.Error(e.message))
         } catch (e: ServerResponseException) {
             emit(Resource.Error(e.message))

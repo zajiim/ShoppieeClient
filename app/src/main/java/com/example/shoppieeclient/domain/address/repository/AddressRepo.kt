@@ -8,4 +8,11 @@ interface AddressRepo {
     fun getAddresses(): Flow<Resource<List<AddressModel>>>
 
     fun deleteAddress(id: String): Flow<Resource<List<AddressModel>>>
+
+    fun addAddress(
+        streetAddress: String,
+        city: String,
+        state: String?,
+        zipCode: String?
+    ): Flow<Resource<List<AddressModel>>>
 }
