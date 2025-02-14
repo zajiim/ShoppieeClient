@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -42,6 +43,7 @@ import com.example.shoppieeclient.presentation.home.address.components.AddAddres
 import com.example.shoppieeclient.presentation.home.address.components.AddressItem
 import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
 import com.example.shoppieeclient.ui.theme.BackGroundColor
+import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import org.koin.androidx.compose.koinViewModel
 
 private const val TAG = "AddressScreen"
@@ -55,19 +57,16 @@ fun AddressScreen(
 ) {
     val sheetState = rememberModalBottomSheetState()
     val state = addressViewModel.addressState
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(BackGroundColor)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) {
-                if (state.selectedForDeletion != null) {
-                    addressViewModel.onEvent(AddressEvents.UnSelectAddress)
-                }
+    Box(modifier = modifier
+        .fillMaxSize()
+        .background(BackGroundColor)
+        .clickable(
+            interactionSource = remember { MutableInteractionSource() }, indication = null
+        ) {
+            if (state.selectedForDeletion != null) {
+                addressViewModel.onEvent(AddressEvents.UnSelectAddress)
             }
-    ) {
+        }) {
         Column(modifier = Modifier) {
             CustomNavigationTopAppBar(modifier = Modifier
                 .fillMaxWidth()
@@ -85,6 +84,25 @@ fun AddressScreen(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = "Go back"
                         )
+                    }
+                },
+                actions = {
+                    if (state.addresses?.isNotEmpty() == true) {
+                        IconButton(
+                            onClick = {
+                                addressViewModel.onEvent(AddressEvents.AddAddressClicked)
+                            },
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .clip(CircleShape)
+                                .background(Color.White)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Add,
+                                contentDescription = "Add Address",
+                                tint = PrimaryBlue
+                            )
+                        }
                     }
                 })
             when {
@@ -130,8 +148,7 @@ fun AddressScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(state.addresses) { address ->
-                            AddressItem(
-                                address = address,
+                            AddressItem(address = address,
                                 isSelected = address == state.selectedForDeletion,
                                 onEditClick = {
                                     addressViewModel.onEvent(AddressEvents.EditButtonClicked(address))
@@ -140,7 +157,11 @@ fun AddressScreen(
                                     if (address == state.selectedForDeletion) {
                                         addressViewModel.onEvent(AddressEvents.UnSelectAddress)
                                     } else {
-                                        addressViewModel.onEvent(AddressEvents.LongPressAddress(address))
+                                        addressViewModel.onEvent(
+                                            AddressEvents.LongPressAddress(
+                                                address
+                                            )
+                                        )
                                     }
                                 },
                                 onDeleteClick = {
@@ -148,8 +169,7 @@ fun AddressScreen(
                                 },
                                 onDismissSelection = {
                                     addressViewModel.onEvent(AddressEvents.UnSelectAddress)
-                                }
-                            )
+                                })
                         }
                     }
                 }
@@ -158,12 +178,15 @@ fun AddressScreen(
 
 
         if (state.showDeleteConfirmation) {
-            AlertDialog(
-                onDismissRequest = { addressViewModel.onEvent(AddressEvents.CancelDelete) },
+            AlertDialog(onDismissRequest = { addressViewModel.onEvent(AddressEvents.CancelDelete) },
                 title = { Text(text = "Remove address") },
                 text = { Text(text = "Are you sure you want to remove this address?") },
                 confirmButton = {
-                    TextButton(onClick = { addressViewModel.onEvent(AddressEvents.ConfirmDelete) }) {
+                    TextButton(onClick = {
+                        state.selectedForDeletion?.let { address ->
+                            addressViewModel.onEvent(AddressEvents.ConfirmDelete(address))
+                        }
+                    }) {
                         Text("Yes")
                     }
                 },

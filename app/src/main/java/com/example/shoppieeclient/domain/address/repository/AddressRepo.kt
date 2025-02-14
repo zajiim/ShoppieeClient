@@ -6,4 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface AddressRepo {
     fun getAddresses(): Flow<Resource<List<AddressModel>>>
+
+    fun deleteAddress(id: String): Flow<Resource<List<AddressModel>>>
 }

@@ -13,7 +13,7 @@ sealed class AddressEvents {
     data class UpdateZipCode(val zipCode: String): AddressEvents()
     data class LongPressAddress(val address: AddressModel): AddressEvents()
     data object CancelDelete: AddressEvents()
-    data object ConfirmDelete: AddressEvents()
+    data class ConfirmDelete(val address: AddressModel): AddressEvents()
     data object UnSelectAddress: AddressEvents()
     data object DeleteClicked: AddressEvents()
 }
