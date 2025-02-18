@@ -205,9 +205,13 @@ fun AddressScreen(
                     addressViewModel.onEvent(AddressEvents.DismissBottomSheet)
                 }, sheetState = sheetState
             ) {
-                AddAddressForm(address = state.selectedAddress, onEvent = { onEditClickEvent ->
-                    addressViewModel.onEvent(onEditClickEvent)
-                })
+                AddAddressForm(
+                    address = state.selectedAddress,
+                    onEvent = { onEditClickEvents ->
+                        addressViewModel.onEvent(onEditClickEvents)
+                    },
+                    isEditing = state.selectedAddress?.id?.isNotEmpty() == true
+                )
 
             }
         }

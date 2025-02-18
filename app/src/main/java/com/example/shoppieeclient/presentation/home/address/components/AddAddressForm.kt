@@ -22,7 +22,8 @@ private const val TAG = "AddAddressForm"
 @Composable
 fun AddAddressForm(
     address: AddressModel?,
-    onEvent: (AddressEvents) -> Unit
+    onEvent: (AddressEvents) -> Unit,
+    isEditing: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -70,11 +71,17 @@ fun AddAddressForm(
         }
         Button(
             onClick = {
-                onEvent(AddressEvents.AddAddressSubmit)
+                if (isEditing) {
+                    address?.id?.let { id ->
+                        onEvent(AddressEvents.EditAddressSubmit(id))
+                    }
+                } else {
+                    onEvent(AddressEvents.AddAddressSubmit)
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Save Address")
+            Text(if (isEditing) "Edit Address" else "Save Address")
         }
     }
 }

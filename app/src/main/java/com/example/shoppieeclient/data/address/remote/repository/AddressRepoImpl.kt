@@ -18,6 +18,7 @@ import kotlinx.serialization.SerializationException
 import java.io.IOException
 
 private const val TAG = "AddressRepoImpl"
+
 class AddressRepoImpl(
     private val addressApiService: AddressApiService
 ) : AddressRepo {
@@ -60,7 +61,7 @@ class AddressRepoImpl(
                 emit(Resource.Error(addressResponse.message))
             }
 
-        }  catch (e: ClientRequestException) {
+        } catch (e: ClientRequestException) {
             emit(Resource.Error(e.message))
         } catch (e: ServerResponseException) {
             emit(Resource.Error(e.message))
@@ -76,22 +77,45 @@ class AddressRepoImpl(
     }.flowOn(Dispatchers.IO)
 
     override fun addAddress(
-        streetAddress: String,
-        city: String,
-        state: String?,
-        zipCode: String?
+        streetAddress: String, city: String, state: String?, zipCode: String?
     ): Flow<Resource<List<AddressModel>>> = flow {
         try {
             emit(Resource.Loading())
             val addressRequest = AddressRequest(
-                streetAddress = streetAddress,
-                city = city,
-                state = state,
-                zipCode = zipCode
+                streetAddress = streetAddress, city = city, state = state, zipCode = zipCode
             )
             val addressResponse = addressApiService.addAddress(
                 addressRequest = addressRequest
             )
+            val addresses = addressResponse.result.addresses.map { it.toAddressModel() }
+            emit(Resource.Success(addresses))
+
+        } catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException) {
+            Log.e(TAG, "exception: ${e.message}", )
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+    }.catch { e ->
+        emit(Resource.Error(e.message ?: "Unexpected error occurred"))
+    }.flowOn(Dispatchers.IO)
+
+    override fun editAddress(
+        id: String,
+        streetAddress: String, city: String, state: String?, zipCode: String?
+    ): Flow<Resource<List<AddressModel>>> = flow {
+        try {
+            emit(Resource.Loading())
+            val addressRequest = AddressRequest(
+                streetAddress = streetAddress, city = city, state = state, zipCode = zipCode
+            )
+            val addressResponse = addressApiService.editAddress(id = id, addressRequest = addressRequest)
             val addresses = addressResponse.result.addresses.map { it.toAddressModel() }
             emit(Resource.Success(addresses))
 

@@ -29,12 +29,38 @@ val viewmodelModule = module {
     viewModel<SignUpViewModel> { SignUpViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel<SignInViewModel> { SignInViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel<ForgotPasswordViewModel> { ForgotPasswordViewModel(get()) }
-    viewModel<HomeViewModel>{ HomeViewModel(getHomeApiUseCase = get()) }
-    viewModel<DetailsViewModel>{ (savedStateHandle: SavedStateHandle) ->
-        DetailsViewModel(fetchDetailsUseCase = get(), addToCartUseCase = get(), savedStateHandle = savedStateHandle)
+    viewModel<HomeViewModel> { HomeViewModel(getHomeApiUseCase = get()) }
+    viewModel<DetailsViewModel> { (savedStateHandle: SavedStateHandle) ->
+        DetailsViewModel(
+            fetchDetailsUseCase = get(),
+            addToCartUseCase = get(),
+            savedStateHandle = savedStateHandle
+        )
     }
-    viewModel<CartViewModel> { CartViewModel(getCartUseCase = get(), incrementItemUseCase = get(), decrementItemUseCase = get(), removeItemUseCase = get(), getCartTotalUseCase = get()) }
+    viewModel<CartViewModel> {
+        CartViewModel(
+            getCartUseCase = get(),
+            incrementItemUseCase = get(),
+            decrementItemUseCase = get(),
+            removeItemUseCase = get(),
+            getCartTotalUseCase = get()
+        )
+    }
     viewModel<ProfileViewModel> { ProfileViewModel() }
-    viewModel<AccountsViewModel> { AccountsViewModel(uploadImageUseCase = get(), updateProfileDataUseCase = get(), getUserDataUseCase = get(), saveUserDetailsUseCase = get()) }
-    viewModel<AddressViewModel> { AddressViewModel(getAddressListUseCase = get(), deleteAddressUseCase = get(), addAddressUseCase = get()) }
+    viewModel<AccountsViewModel> {
+        AccountsViewModel(
+            uploadImageUseCase = get(),
+            updateProfileDataUseCase = get(),
+            getUserDataUseCase = get(),
+            saveUserDetailsUseCase = get()
+        )
+    }
+    viewModel<AddressViewModel> {
+        AddressViewModel(
+            getAddressListUseCase = get(),
+            deleteAddressUseCase = get(),
+            addAddressUseCase = get(),
+            editAddressUseCase = get()
+        )
+    }
 }

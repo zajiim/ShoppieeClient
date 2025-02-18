@@ -15,4 +15,12 @@ interface AddressRepo {
         state: String?,
         zipCode: String?
     ): Flow<Resource<List<AddressModel>>>
+
+    fun editAddress(
+        id: String,
+        streetAddress: String,
+        city: String,
+        state: String?,
+        zipCode: String?
+    ): Flow<Resource<List<AddressModel>>>
 }

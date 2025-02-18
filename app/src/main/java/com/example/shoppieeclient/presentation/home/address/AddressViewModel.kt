@@ -1,6 +1,5 @@
 package com.example.shoppieeclient.presentation.home.address
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.shoppieeclient.domain.address.models.AddressModel
 import com.example.shoppieeclient.domain.address.use_cases.AddAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.DeleteAddressUseCase
+import com.example.shoppieeclient.domain.address.use_cases.EditAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.GetAddressListUseCase
 import com.example.shoppieeclient.utils.Resource
 import kotlinx.coroutines.launch
@@ -18,7 +18,8 @@ private const val TAG = "AddressViewModel"
 class AddressViewModel(
     private val getAddressListUseCase: GetAddressListUseCase,
     private val deleteAddressUseCase: DeleteAddressUseCase,
-    private val addAddressUseCase: AddAddressUseCase
+    private val addAddressUseCase: AddAddressUseCase,
+    private val editAddressUseCase: EditAddressUseCase
 ) : ViewModel() {
 
     var addressState by mutableStateOf(AddressStates())
@@ -74,7 +75,7 @@ class AddressViewModel(
 
             is AddressEvents.AddAddressSubmit -> {
                 val selectedAddress = addressState.selectedAddress
-                    if (selectedAddress != null) {
+                if (selectedAddress != null) {
                     addAddressApi(
                         streetAddress = selectedAddress.streetAddress,
                         city = selectedAddress.city,
@@ -148,11 +149,11 @@ class AddressViewModel(
             }
 
             is AddressEvents.UpdateZipCode -> {
-               /* addressState.selectedAddress?.let { currentVal ->
-                    addressState = addressState.copy(
-                        selectedAddress = currentVal.copy(zipCode = events.zipCode)
-                    )
-                }*/
+                /* addressState.selectedAddress?.let { currentVal ->
+                     addressState = addressState.copy(
+                         selectedAddress = currentVal.copy(zipCode = events.zipCode)
+                     )
+                 }*/
                 addressState = addressState.copy(
                     selectedAddress = (addressState.selectedAddress ?: AddressModel(
                         id = "",
@@ -192,6 +193,59 @@ class AddressViewModel(
                     showDeleteConfirmation = true
                 )
             }
+
+            is AddressEvents.EditAddressSubmit -> {
+                val selectedAddress = addressState.selectedAddress
+                if (selectedAddress != null) {
+                    editAddressApi(
+                        id = events.addressId,
+                        streetAddress = selectedAddress.streetAddress,
+                        city = selectedAddress.city,
+                        state = selectedAddress.state,
+                        zipCode = selectedAddress.zipCode
+                    )
+                }
+                addressState = addressState.copy(
+                    isAddAddressClicked = false
+                )
+            }
+        }
+    }
+
+    private fun editAddressApi(
+        id: String,
+        streetAddress: String,
+        city: String,
+        state: String?,
+        zipCode: String?
+    ) {
+        viewModelScope.launch {
+            editAddressUseCase(
+                id = id,
+                streetAddress = streetAddress,
+                city = city,
+                state = state,
+                zipCode = zipCode
+            ).collect { result ->
+                when (result) {
+                    is Resource.Error -> {
+                        addressState = addressState.copy(
+                            isLoading = false,
+                            error = result.message
+                        )
+                    }
+
+                    is Resource.Loading -> {
+                        addressState = addressState.copy(isLoading = true)
+                    }
+                    is Resource.Success -> {
+                        addressState = addressState.copy(
+                            isLoading = false,
+                            addresses = result.data ?: emptyList()
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -200,7 +254,7 @@ class AddressViewModel(
         city: String,
         state: String?,
         zipCode: String?
-    ){
+    ) {
         viewModelScope.launch {
             addAddressUseCase(
                 streetAddress = streetAddress,
@@ -215,6 +269,7 @@ class AddressViewModel(
                             error = result.message
                         )
                     }
+
                     is Resource.Loading -> {
                         addressState = addressState.copy(isLoading = true)
                     }
@@ -244,6 +299,7 @@ class AddressViewModel(
                         selectedForDeletion = null
                     )
                 }
+
                 is Resource.Loading -> {
                     addressState = addressState.copy(isLoading = true)
                 }

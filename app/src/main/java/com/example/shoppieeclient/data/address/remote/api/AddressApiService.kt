@@ -10,6 +10,7 @@ import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -36,6 +37,16 @@ class AddressApiService(
     suspend fun addAddress(addressRequest: AddressRequest): AddressResponse {
         return httpClient.post("${Constants.SHOPPIEE_URL}/add-address") {
             contentType(ContentType.Application.Json)
+            setBody(addressRequest)
+        }.body()
+    }
+
+    suspend fun editAddress(id: String, addressRequest: AddressRequest): AddressResponse {
+        return httpClient.put("${Constants.SHOPPIEE_URL}/edit-address") {
+            contentType(ContentType.Application.Json)
+            url {
+                parameters.append("id", id)
+            }
             setBody(addressRequest)
         }.body()
     }
