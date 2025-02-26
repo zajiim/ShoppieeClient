@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.shoppieeclient.ui.theme.fonts
 
 @Composable
 fun CustomCheckOutDetails(

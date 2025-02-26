@@ -9,7 +9,9 @@ data class AddressStates(
     val error: String? = null,
     val selectedAddress: AddressModel? = null,
     val selectedForDeletion: AddressModel? = null,
-    val showDeleteConfirmation: Boolean = false
+    val showDeleteConfirmation: Boolean = false,
+    val showConfirmationButton: Boolean = false,
+    val confirmSelectedAddress: Boolean = false
 )
 
 

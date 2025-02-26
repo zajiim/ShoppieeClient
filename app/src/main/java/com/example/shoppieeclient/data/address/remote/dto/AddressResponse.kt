@@ -22,5 +22,6 @@ data class AddressDto(
     val streetAddress: String,
     val city: String,
     val state: String,
-    val zipCode: String
+    val zipCode: String,
+    val isUserSelected: Boolean
 )

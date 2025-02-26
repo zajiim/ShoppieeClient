@@ -136,6 +136,9 @@ fun NavGraphBuilder.homeNavGraph(
             AddressScreen(
                 onNavigateClick = {
                     navController.navigateUp()
+                },
+                onNavigateBack = {
+                    navController.navigateUp()
                 }
             )
         }

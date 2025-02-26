@@ -23,4 +23,6 @@ interface AddressRepo {
         state: String?,
         zipCode: String?
     ): Flow<Resource<List<AddressModel>>>
+
+    fun selectAddress(id: String): Flow<Resource<List<AddressModel>>>
 }

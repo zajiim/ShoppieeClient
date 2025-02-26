@@ -17,4 +17,6 @@ sealed class AddressEvents {
     data class ConfirmDelete(val address: AddressModel): AddressEvents()
     data object UnSelectAddress: AddressEvents()
     data object DeleteClicked: AddressEvents()
+    data class SelectAddress(val address: AddressModel): AddressEvents()
+    data class ConfirmAddressSelection(val addressId: String): AddressEvents()
 }

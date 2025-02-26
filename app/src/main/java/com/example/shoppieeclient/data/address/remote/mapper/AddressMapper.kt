@@ -10,6 +10,7 @@ fun AddressDto.toAddressModel(): AddressModel {
         streetAddress = this.streetAddress,
         city = this.city,
         state = this.state,
-        zipCode = this.zipCode
+        zipCode = this.zipCode,
+        isSelected = this.isUserSelected
     )
 }

@@ -60,7 +60,8 @@ val viewmodelModule = module {
             getAddressListUseCase = get(),
             deleteAddressUseCase = get(),
             addAddressUseCase = get(),
-            editAddressUseCase = get()
+            editAddressUseCase = get(),
+            selectAddressUseCase = get()
         )
     }
 }

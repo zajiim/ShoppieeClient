@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -43,15 +42,19 @@ fun AddressItem(
     onLongClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onDismissSelection: () -> Unit,
+    onSelectAddress: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .combinedClickable(onClick = { onDismissSelection() }, onLongClick = { onLongClick() }),
+            .combinedClickable(onClick = {
+//                onDismissSelection()
+                onSelectAddress()
+            }, onLongClick = { onLongClick() }),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) LightGray else Color.White
+            containerColor = if (isSelected || address.isSelected) LightGray else Color.White
         ),
     ) {
         Row(
@@ -87,7 +90,7 @@ fun AddressItem(
             }
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                if (isSetSelected) {
+                if (address.isSelected) {
                     Box(
                         modifier = Modifier
                             .size(24.dp)
@@ -97,6 +100,7 @@ fun AddressItem(
                                 color = PrimaryBlue,
                                 shape = CircleShape
                             )
+                            .background(PrimaryBlue, CircleShape)
                     )
 
                 }
@@ -131,7 +135,7 @@ private fun PreviewAddress() {
         onEditClick = {},
         onLongClick = {},
         onDeleteClick = {},
-        onDismissSelection = {}
-
+        onDismissSelection = {},
+        onSelectAddress = {}
     )
 }

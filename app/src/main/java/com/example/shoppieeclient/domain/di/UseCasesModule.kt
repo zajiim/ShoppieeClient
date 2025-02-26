@@ -4,6 +4,7 @@ import com.example.shoppieeclient.domain.address.use_cases.AddAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.DeleteAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.EditAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.GetAddressListUseCase
+import com.example.shoppieeclient.domain.address.use_cases.SelectAddressUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.OAuthSignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadUserDetailsUseCase
@@ -186,6 +187,12 @@ val useCasesModule = module {
 
     single {
         EditAddressUseCase(
+            addressRepo = get()
+        )
+    }
+
+    single {
+        SelectAddressUseCase(
             addressRepo = get()
         )
     }

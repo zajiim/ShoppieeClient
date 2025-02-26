@@ -50,4 +50,13 @@ class AddressApiService(
             setBody(addressRequest)
         }.body()
     }
+
+    suspend fun selectAddress(id: String): AddressResponse {
+        return httpClient.put("${Constants.SHOPPIEE_URL}/select-address") {
+            contentType(ContentType.Application.Json)
+            url {
+                parameters.append("id", id)
+            }
+        }.body()
+    }
 }

@@ -6,5 +6,6 @@ data class AddressModel(
     val streetAddress: String,
     val city: String,
     val state: String,
-    val zipCode: String
+    val zipCode: String,
+    val isSelected: Boolean = false
 )

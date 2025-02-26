@@ -1,16 +1,21 @@
 package com.example.shoppieeclient.presentation.home.address
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shoppieeclient.data.address.local.dao.SelectedAddressDao
+import com.example.shoppieeclient.data.address.local.entity.SelectedAddressEntity
 import com.example.shoppieeclient.domain.address.models.AddressModel
 import com.example.shoppieeclient.domain.address.use_cases.AddAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.DeleteAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.EditAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.GetAddressListUseCase
+import com.example.shoppieeclient.domain.address.use_cases.SelectAddressUseCase
 import com.example.shoppieeclient.utils.Resource
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 private const val TAG = "AddressViewModel"
@@ -19,7 +24,8 @@ class AddressViewModel(
     private val getAddressListUseCase: GetAddressListUseCase,
     private val deleteAddressUseCase: DeleteAddressUseCase,
     private val addAddressUseCase: AddAddressUseCase,
-    private val editAddressUseCase: EditAddressUseCase
+    private val editAddressUseCase: EditAddressUseCase,
+    private val selectAddressUseCase: SelectAddressUseCase
 ) : ViewModel() {
 
     var addressState by mutableStateOf(AddressStates())
@@ -42,7 +48,10 @@ class AddressViewModel(
                 }
 
                 is Resource.Success -> {
-                    addressState = addressState.copy(isLoading = false, addresses = result.data)
+                    addressState = addressState.copy(
+                        isLoading = false,
+                        addresses = result.data
+                    )
                 }
             }
         }
@@ -208,6 +217,41 @@ class AddressViewModel(
                 addressState = addressState.copy(
                     isAddAddressClicked = false
                 )
+            }
+
+            is AddressEvents.ConfirmAddressSelection -> {
+                Log.e(TAG, "started >>>>> func", )
+                selectAddress(events.addressId)
+                addressState = addressState.copy(confirmSelectedAddress = true)
+            }
+            is AddressEvents.SelectAddress -> {
+                val updatedAddress = addressState.addresses?.map {address ->
+                    address.copy(isSelected = address.id == events.address.id)
+                }
+                addressState = addressState.copy(addresses = updatedAddress, selectedAddress = events.address)
+            }
+        }
+    }
+
+    private fun selectAddress(id: String) = viewModelScope.launch{
+        selectAddressUseCase(id = id).collect { result ->
+            when (result) {
+                is Resource.Error -> {
+                    addressState = addressState.copy(
+                        isLoading = false,
+                        error = result.message
+                    )
+                }
+
+                is Resource.Loading -> {
+                    addressState = addressState.copy(isLoading = true)
+                }
+                is Resource.Success -> {
+                    addressState = addressState.copy(
+                        isLoading = false,
+                        addresses = result.data ?: emptyList()
+                    )
+                }
             }
         }
     }

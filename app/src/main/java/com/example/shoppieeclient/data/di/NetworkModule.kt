@@ -6,6 +6,7 @@ import androidx.room.Room
 import com.example.shoppieeclient.data.address.remote.api.AddressApiService
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.data.cart.remote.api.ShoppieCartApiService
+import com.example.shoppieeclient.data.common.database.ShoppieDatabase
 import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObserverImpl
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
 import com.example.shoppieeclient.data.home.account.local.ProfileDatabase
@@ -96,13 +97,14 @@ val networkModule = module {
     single {
         Room.databaseBuilder(
             androidContext(),
-            ProfileDatabase::class.java,
-            Constants.PROFILE_DATA_TABLE
+            ShoppieDatabase::class.java,
+            Constants.SHOPPIEE_DB
         ).fallbackToDestructiveMigration()
             .build()
     }
     //Provides profileDao
-    single { get<ProfileDatabase>().profileDao() }
+    single { get<ShoppieDatabase>().profileDao() }
+    single { get<ShoppieDatabase>().selectedAddressDao() }
 
     single { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
 

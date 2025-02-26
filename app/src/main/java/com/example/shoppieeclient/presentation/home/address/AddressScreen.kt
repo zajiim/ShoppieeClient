@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.presentation.home.address
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeGesturesPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +25,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.unit.dp
+import com.example.shoppieeclient.presentation.common.components.CustomAlertBox
 import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
 import com.example.shoppieeclient.presentation.home.address.components.AddAddressForm
 import com.example.shoppieeclient.presentation.home.address.components.AddressItem
@@ -45,6 +49,7 @@ import com.example.shoppieeclient.presentation.home.details.components.CustomNav
 import com.example.shoppieeclient.ui.theme.BackGroundColor
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import org.koin.androidx.compose.koinViewModel
+import com.example.shoppieeclient.R
 
 private const val TAG = "AddressScreen"
 
@@ -53,7 +58,8 @@ private const val TAG = "AddressScreen"
 fun AddressScreen(
     modifier: Modifier = Modifier,
     onNavigateClick: () -> Unit,
-    addressViewModel: AddressViewModel = koinViewModel()
+    addressViewModel: AddressViewModel = koinViewModel(),
+    onNavigateBack: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
     val state = addressViewModel.addressState
@@ -67,7 +73,7 @@ fun AddressScreen(
                 addressViewModel.onEvent(AddressEvents.UnSelectAddress)
             }
         }) {
-        Column(modifier = Modifier) {
+        Column(modifier = Modifier.fillMaxSize()) {
             CustomNavigationTopAppBar(modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
@@ -148,7 +154,8 @@ fun AddressScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(state.addresses) { address ->
-                            AddressItem(address = address,
+                            AddressItem(
+                                address = address,
                                 isSelected = address == state.selectedForDeletion,
                                 onEditClick = {
                                     addressViewModel.onEvent(AddressEvents.EditButtonClicked(address))
@@ -169,12 +176,30 @@ fun AddressScreen(
                                 },
                                 onDismissSelection = {
                                     addressViewModel.onEvent(AddressEvents.UnSelectAddress)
-                                })
+                                },
+                                onSelectAddress = {
+                                    addressViewModel.onEvent(AddressEvents.SelectAddress(address))
+                                }
+                            )
                         }
                     }
                 }
             }
         }
+
+        if (state.addresses?.any { it.isSelected } == true) {
+                Button(
+                    onClick = { state.selectedAddress?.id?.let { addressViewModel.onEvent(AddressEvents.ConfirmAddressSelection(addressId = it)) } },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .safeGesturesPadding()
+                ) {
+                    Text("Confirm Selection")
+                }
+            }
+        Log.e(TAG, "database address value: ${state.selectedAddress}")
+
 
 
         if (state.showDeleteConfirmation) {
@@ -214,6 +239,18 @@ fun AddressScreen(
                 )
 
             }
+        }
+
+        if(state.confirmSelectedAddress) {
+            CustomAlertBox(
+                buttonText = "Go Back",
+                onDismiss = {},
+                onButtonClick = {
+                    onNavigateBack()
+                },
+                animationRes = R.raw.success,
+                message = "Address added successfully"
+            )
         }
 
     }
