@@ -11,6 +11,7 @@ import com.example.shoppieeclient.presentation.home.address.AddressViewModel
 import com.example.shoppieeclient.presentation.home.cart.CartViewModel
 import com.example.shoppieeclient.presentation.home.details.DetailsViewModel
 import com.example.shoppieeclient.presentation.home.home.HomeViewModel
+import com.example.shoppieeclient.presentation.home.payment.PaymentViewModel
 import com.example.shoppieeclient.presentation.home.profile.ProfileViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -63,5 +64,8 @@ val viewmodelModule = module {
             editAddressUseCase = get(),
             selectAddressUseCase = get()
         )
+    }
+    viewModel<PaymentViewModel> {
+        PaymentViewModel()
     }
 }
