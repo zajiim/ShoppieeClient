@@ -44,7 +44,7 @@ fun PaymentScreen(
     onNavigateClick: () -> Unit,
     paymentViewModel: PaymentViewModel = koinViewModel()
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val state = paymentViewModel.paymentState
 
     Box(
@@ -82,7 +82,7 @@ fun PaymentScreen(
                         sheetState = sheetState,
                     ) {
                         AddCardForm(
-                            modifier = Modifier.fillMaxHeight(0.9f),
+//                            modifier = Modifier.fillMaxHeight(0.9f),
                             paymentCardModel = null,
                             onEvent = paymentViewModel::onEvent,
                             isEditing = false
