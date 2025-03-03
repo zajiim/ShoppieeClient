@@ -17,3 +17,7 @@ fun isPasswordValid(password: String): Boolean {
 fun Double.roundToTwoDecimalPlaces(): Double {
     return String.format("%.2f".format(this)).toDouble()
 }
+
+fun String.startsWithAny(vararg prefixes: String): Boolean {
+    return prefixes.any { this.startsWith(it) }
+}

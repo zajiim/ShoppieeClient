@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.presentation.home.payment.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,7 @@ import com.example.shoppieeclient.presentation.home.address.AddressEvents
 import com.example.shoppieeclient.presentation.home.address.components.CustomAddressTextField
 import com.example.shoppieeclient.presentation.home.payment.PaymentEvents
 
+private const val TAG = "AddCardForm"
 @Composable
 fun AddCardForm(
     modifier: Modifier = Modifier,
@@ -57,6 +59,7 @@ fun AddCardForm(
             value = paymentCardModel?.cardHolderName ?: "",
             label = "Name",
             onValueChange = {
+                Log.e(TAG, "onchange name called", )
                 onEvent(PaymentEvents.CardHolderNameChanged(it))
             }
         )

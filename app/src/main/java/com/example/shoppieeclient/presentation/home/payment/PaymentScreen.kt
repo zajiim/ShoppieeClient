@@ -82,10 +82,9 @@ fun PaymentScreen(
                         sheetState = sheetState,
                     ) {
                         AddCardForm(
-//                            modifier = Modifier.fillMaxHeight(0.9f),
-                            paymentCardModel = null,
+                            paymentCardModel = state.selectedPayment,
                             onEvent = paymentViewModel::onEvent,
-                            isEditing = false
+                            isEditing =  state.selectedPayment?.id?.isNotEmpty() == true
                         )
                     }
                 }
