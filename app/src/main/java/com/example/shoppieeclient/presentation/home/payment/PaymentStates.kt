@@ -18,7 +18,7 @@ data class PaymentStates(
     val backVisibleState: Boolean = false,
     val cardHolderName: String = "",
     val cardNumber: String = "",
-    val maskedCardNumber: String = "*****************",
+    val maskedCardNumber: String = "****************",
     val cardExpiryDate: String = "",
     val cardCvvNumber: String = "",
     val cardType: CardTypes = CardTypes.NONE

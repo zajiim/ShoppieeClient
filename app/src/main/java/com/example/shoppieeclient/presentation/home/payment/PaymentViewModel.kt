@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.presentation.home.payment
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.getValue
@@ -7,6 +8,9 @@ import androidx.compose.runtime.setValue
 import com.example.shoppieeclient.domain.payment.CardTypes
 import com.example.shoppieeclient.domain.payment.PaymentCardModel
 import com.example.shoppieeclient.utils.startsWithAny
+
+private const val TAG = "PaymentViewModel"
+
 
 class PaymentViewModel: ViewModel() {
     var paymentState by mutableStateOf(PaymentStates())
@@ -53,11 +57,15 @@ class PaymentViewModel: ViewModel() {
                 paymentState = paymentState.copy(
                     selectedPayment = paymentState.selectedPayment.copy(expirationDate = expiryNumber)
                 )
+                Log.e(TAG, "onEvent: expiry date == >> ${paymentState.cardExpiryDate}", )
+                Log.e(TAG, "onEvent: expiry selected == >> ${paymentState.selectedPayment.expirationDate}", )
+
 
             }
             is PaymentEvents.CardHolderNameChanged -> {
                 paymentState = paymentState.copy(
-                    selectedPayment = paymentState.selectedPayment.copy(cardHolderName = event.name)
+                    selectedPayment = paymentState.selectedPayment.copy(cardHolderName = event.name),
+                    cardHolderName = event.name
                 )
 
             }
@@ -71,28 +79,25 @@ class PaymentViewModel: ViewModel() {
                 }
 
                 val maskedNumber = if (cardNumber.isEmpty()) {
-                    "***************"
+                    "****************"
                 } else {
-                    cardNumber.replaceRange(0, cardNumber.length, cardNumber)
-
+                    "****************".replaceRange(0, cardNumber.length, cardNumber)
                 }
 
-//                paymentState = paymentState.copy(
-//                    cardNumber = cardNumber,
-//                    maskedCardNumber = maskedNumber,
-//                    cardType = cardType
-//                )
                 paymentState = paymentState.copy(
                     selectedPayment = paymentState.selectedPayment.copy(
                         cardNumber = cardNumber
                     ),
                     maskedCardNumber = maskedNumber,
+                    cardNumber = maskedNumber,
                     cardType = cardType
                 )
+                Log.e(TAG, "masked number ====> $maskedNumber or ${paymentState.maskedCardNumber}", )
             }
 
             PaymentEvents.OnCardClicked -> {
-                paymentState = paymentState.copy(backVisibleState = paymentState.backVisibleState)
+                Log.e(TAG, "card clicked: ${paymentState.backVisibleState}", )
+                paymentState = paymentState.copy(backVisibleState = !paymentState.backVisibleState)
             }
         }
     }
