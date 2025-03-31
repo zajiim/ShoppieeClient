@@ -3,19 +3,25 @@ package com.example.shoppieeclient.presentation.home.payment.components
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.example.shoppieeclient.domain.payment.PaymentCardModel
+import com.example.shoppieeclient.domain.payment.models.PaymentCardModel
+import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.presentation.home.address.components.CustomAddressTextField
 import com.example.shoppieeclient.presentation.home.payment.PaymentEvents
 import com.example.shoppieeclient.presentation.home.payment.PaymentStates
+import com.example.shoppieeclient.ui.theme.Primary
+import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import com.example.shoppieeclient.utils.visual_transformations.CreditCardExpiryVisualTransformation
 import com.example.shoppieeclient.utils.visual_transformations.CreditCardNumberVisualTransformation
 
@@ -26,8 +32,7 @@ fun AddCardForm(
     modifier: Modifier = Modifier,
     paymentCardModel: PaymentCardModel?,
     state: PaymentStates,
-    onEvent: (PaymentEvents) -> Unit,
-    isEditing: Boolean
+    onEvent: (PaymentEvents) -> Unit
 ) {
 
 //    Column(
@@ -166,6 +171,27 @@ fun AddCardForm(
                     imeAction = ImeAction.Done,
                 )
             }
+            Spacer(modifier = Modifier.height(24.dp))
+
+            CustomButton(
+                text = "Update Card",
+                backgroundColor = PrimaryBlue,
+                contentColor = Color.White,
+                onButtonClicked = {
+                    onEvent(PaymentEvents.AddPaymentCard(
+                        paymentDetails = PaymentCardModel(
+                            id = paymentCardModel?.id ?: -1,
+                            cardHolderName = paymentCardModel?.cardHolderName ?: "",
+                            cardNumber = paymentCardModel?.cardNumber ?: "",
+                            expirationDate = paymentCardModel?.expirationDate ?: "",
+                            cvv = paymentCardModel?.cvv ?: ""
+                        )
+                    ))
+                },
+                isLoading = false,
+                enabled = true,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
 
     }

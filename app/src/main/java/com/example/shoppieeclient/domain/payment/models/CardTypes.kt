@@ -1,4 +1,4 @@
-package com.example.shoppieeclient.domain.payment
+package com.example.shoppieeclient.domain.payment.models
 
 import androidx.annotation.DrawableRes
 import com.example.shoppieeclient.R

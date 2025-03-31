@@ -66,6 +66,6 @@ val viewmodelModule = module {
         )
     }
     viewModel<PaymentViewModel> {
-        PaymentViewModel()
+        PaymentViewModel(addCardDetailsUseCase = get())
     }
 }

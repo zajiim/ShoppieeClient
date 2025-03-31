@@ -18,5 +18,6 @@ object Constants {
     const val UPLOAD_PRESET_CLOUDINARY = BuildConfig.UPLOAD_PRESET_CLOUDINARY
     const val PROFILE_DATA_TABLE = "profile_data_table"
     const val ADDRESS_DATA_TABLE = "address_data_table"
+    const val PAYMENT_DATA_TABLE = "payment_data_table"
     const val SHOPPIEE_DB = "shoppiee_db"
 }

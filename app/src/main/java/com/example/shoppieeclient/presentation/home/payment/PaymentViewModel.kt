@@ -5,14 +5,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import com.example.shoppieeclient.domain.payment.CardTypes
-import com.example.shoppieeclient.domain.payment.PaymentCardModel
+import androidx.lifecycle.viewModelScope
+import com.example.shoppieeclient.domain.payment.models.CardTypes
+import com.example.shoppieeclient.domain.payment.models.PaymentCardModel
+import com.example.shoppieeclient.domain.payment.use_cases.AddCardDetailsUseCase
 import com.example.shoppieeclient.utils.startsWithAny
+import kotlinx.coroutines.launch
 
 private const val TAG = "PaymentViewModel"
 
 
-class PaymentViewModel: ViewModel() {
+class PaymentViewModel(
+    private val addCardDetailsUseCase: AddCardDetailsUseCase
+): ViewModel() {
     var paymentState by mutableStateOf(PaymentStates())
         private set
 
@@ -21,15 +26,15 @@ class PaymentViewModel: ViewModel() {
         when(event) {
             PaymentEvents.AddCardClicked -> {
                 paymentState = paymentState.copy(
-                    isAddCardClicked = true,
-                    selectedPayment = PaymentCardModel(
-                        id = "",
-                        cardHolderName = "",
-                        cardNumber = "",
-                        expirationDate = "",
-                        cvv = ""
-                    )
+                    isAddCardClicked = true
                 )
+            }
+
+            is PaymentEvents.AddPaymentCard -> {
+                viewModelScope.launch {
+//                    addCardDetailsUseCase(paymentState.selectedPayment)
+                    addCardDetailsUseCase(event.paymentDetails)
+                }
             }
 
             PaymentEvents.DismissBottomSheet -> {
@@ -92,7 +97,7 @@ class PaymentViewModel: ViewModel() {
                     cardNumber = maskedNumber,
                     cardType = cardType
                 )
-                Log.e(TAG, "masked number ====> $maskedNumber or ${paymentState.maskedCardNumber}", )
+
             }
 
             PaymentEvents.OnCardClicked -> {

@@ -9,7 +9,6 @@ import com.example.shoppieeclient.data.cart.remote.api.ShoppieCartApiService
 import com.example.shoppieeclient.data.common.database.ShoppieDatabase
 import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObserverImpl
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
-import com.example.shoppieeclient.data.home.account.local.ProfileDatabase
 import com.example.shoppieeclient.data.home.account.remote.api.ShoppieeUserProfileService
 import com.example.shoppieeclient.data.home.home.remote.api.ShoppieeHomeApiService
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
@@ -104,8 +103,8 @@ val networkModule = module {
     }
     //Provides profileDao
     single { get<ShoppieDatabase>().profileDao() }
-    single { get<ShoppieDatabase>().selectedAddressDao() }
-
+//    single { get<ShoppieDatabase>().selectedAddressDao() }
+    single { get<ShoppieDatabase>().paymentDao()}
     single { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
 
     // Provide NetworkConnectivityObserver

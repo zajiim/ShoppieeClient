@@ -15,6 +15,7 @@ import com.example.shoppieeclient.domain.common.repository.NetworkConnectivityOb
 import com.example.shoppieeclient.presentation.navigation.ShoppieNavGraph
 import com.example.shoppieeclient.ui.theme.ShoppieeClientTheme
 import org.koin.android.ext.android.inject
+import org.koin.androidx.compose.KoinAndroidContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val TAG = "MainActivity"
@@ -41,17 +42,19 @@ class MainActivity : ComponentActivity() {
 //            )
         )
         setContent {
-            ShoppieeClientTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                ) { innerPadding ->
-                    innerPadding
-                    val navController = rememberNavController()
-                    ShoppieNavGraph(
-                        navController = navController,
-                        connectivityObserver = connectivityObserver,
-                        mainActivityViewModel = mainActivityViewModel
-                    )
+            KoinAndroidContext {
+                ShoppieeClientTheme {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                    ) { innerPadding ->
+                        innerPadding
+                        val navController = rememberNavController()
+                        ShoppieNavGraph(
+                            navController = navController,
+                            connectivityObserver = connectivityObserver,
+                            mainActivityViewModel = mainActivityViewModel
+                        )
+                    }
                 }
             }
         }

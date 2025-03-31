@@ -1,6 +1,5 @@
 package com.example.shoppieeclient.presentation.home.payment.components
 
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -29,8 +28,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.R
-import com.example.shoppieeclient.domain.payment.CardTypes
-import com.example.shoppieeclient.domain.payment.PaymentCardModel
+import com.example.shoppieeclient.domain.payment.models.CardTypes
+import com.example.shoppieeclient.domain.payment.models.PaymentCardModel
 import com.example.shoppieeclient.presentation.home.payment.PaymentEvents
 import com.example.shoppieeclient.presentation.home.payment.PaymentStates
 import com.example.shoppieeclient.ui.theme.DefaultCardColor

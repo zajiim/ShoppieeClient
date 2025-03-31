@@ -1,7 +1,7 @@
 package com.example.shoppieeclient.presentation.home.payment
 
-import com.example.shoppieeclient.domain.payment.CardTypes
-import com.example.shoppieeclient.domain.payment.PaymentCardModel
+import com.example.shoppieeclient.domain.payment.models.CardTypes
+import com.example.shoppieeclient.domain.payment.models.PaymentCardModel
 
 data class PaymentStates(
     val isAddCardClicked: Boolean = false,
@@ -9,7 +9,7 @@ data class PaymentStates(
     val isLoading: Boolean = false,
     val error: String? = null,
     val selectedPayment: PaymentCardModel = PaymentCardModel(
-        id = "",
+        id = -1,
         cardHolderName = "",
         cardNumber = "",
         expirationDate = "",

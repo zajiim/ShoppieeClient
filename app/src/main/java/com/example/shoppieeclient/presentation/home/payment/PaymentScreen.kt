@@ -84,8 +84,7 @@ fun PaymentScreen(
                         AddCardForm(
                             paymentCardModel = state.selectedPayment,
                             state = state,
-                            onEvent = paymentViewModel::onEvent,
-                            isEditing =  state.selectedPayment.id.isNotEmpty() == true
+                            onEvent = paymentViewModel::onEvent
                         )
                     }
                 }

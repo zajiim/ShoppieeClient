@@ -35,6 +35,7 @@ import com.example.shoppieeclient.domain.cart.use_cases.RemoveItemUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.GetProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UpdateProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UploadImageUseCase
+import com.example.shoppieeclient.domain.payment.use_cases.AddCardDetailsUseCase
 import org.koin.dsl.module
 import kotlin.math.sin
 
@@ -194,6 +195,12 @@ val useCasesModule = module {
     single {
         SelectAddressUseCase(
             addressRepo = get()
+        )
+    }
+
+    single {
+        AddCardDetailsUseCase(
+            paymentRepository = get()
         )
     }
 
