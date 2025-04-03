@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             KoinAndroidContext {
-                ShoppieeClientTheme {
+                ShoppieeClientTheme(darkTheme = false) {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                     ) { innerPadding ->

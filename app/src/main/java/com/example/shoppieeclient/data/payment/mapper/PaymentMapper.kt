@@ -9,7 +9,8 @@ fun PaymentCardModel.toPaymentEntity(): PaymentEntity {
         cardNumber = cardNumber,
         cardHolderName = cardHolderName,
         expirationDate = expirationDate,
-        cvv = cvv
+        cvv = cvv,
+        isSelected = isSelected
     )
 }
 
@@ -19,6 +20,7 @@ fun PaymentEntity.toPaymentCardModel(): PaymentCardModel {
         cardNumber = cardNumber,
         cardHolderName = cardHolderName,
         expirationDate = expirationDate,
-        cvv = cvv
+        cvv = cvv,
+        isSelected = isSelected
     )
 }

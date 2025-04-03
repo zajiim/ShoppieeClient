@@ -15,11 +15,26 @@ class PaymentRepoImpl(private val paymentDao: PaymentDao): PaymentRepository {
         }
     }
 
-    override suspend fun insertPaymentCard(paymentCardModel: PaymentCardModel) {
-        paymentDao.insertCard(paymentEntity = paymentCardModel.toPaymentEntity())
+    override suspend fun upsertPaymentCard(paymentCardModel: PaymentCardModel) {
+        paymentDao.upsertPaymentCard(paymentEntity = paymentCardModel.toPaymentEntity())
+    }
+
+    override suspend fun getCardById(id: Int): PaymentCardModel? {
+        return paymentDao.getCardById(id)?.toPaymentCardModel()
     }
 
     override suspend fun deletePaymentCard(id: Int) {
         paymentDao.deleteCard(id = id)
+    }
+
+    override suspend fun setSelectedCard(paymentCardModel: PaymentCardModel) {
+        paymentDao.resetSelectedCards()
+        paymentDao.setSelectedCard(paymentCardModel.id)
+    }
+
+    override suspend fun getSelectedCard(): Flow<PaymentCardModel?> {
+        return paymentDao.getSelectedCard().map {
+            it?.toPaymentCardModel()
+        }
     }
 }

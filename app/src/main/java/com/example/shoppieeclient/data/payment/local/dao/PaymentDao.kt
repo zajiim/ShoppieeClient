@@ -13,9 +13,21 @@ interface PaymentDao {
     fun getAllCards(): Flow<List<PaymentEntity>>
 
     @Upsert
-    suspend fun insertCard(paymentEntity: PaymentEntity)
+    suspend fun upsertPaymentCard(paymentEntity: PaymentEntity)
+
+    @Query("SELECT * FROM ${Constants.PAYMENT_DATA_TABLE} WHERE id = :id")
+    suspend fun getCardById(id: Int): PaymentEntity?
 
     @Query("DELETE FROM ${Constants.PAYMENT_DATA_TABLE} WHERE id = :id")
     suspend fun deleteCard(id: Int)
+
+    @Query("UPDATE ${Constants.PAYMENT_DATA_TABLE} SET isSelected = 1 WHERE id = :paymentId")
+    suspend fun setSelectedCard(paymentId: Int)
+
+    @Query("UPDATE ${Constants.PAYMENT_DATA_TABLE} SET isSelected = 0")
+    suspend fun resetSelectedCards()
+
+    @Query("SELECT * FROM ${Constants.PAYMENT_DATA_TABLE} WHERE isSelected = 1")
+    fun getSelectedCard(): Flow<PaymentEntity?>
 
 }

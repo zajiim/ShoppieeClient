@@ -34,78 +34,7 @@ fun AddCardForm(
     state: PaymentStates,
     onEvent: (PaymentEvents) -> Unit
 ) {
-
-//    Column(
-//        modifier = modifier
-//            .fillMaxSize()
-//            .imePadding()
-//            .verticalScroll(rememberScrollState())
-//            .padding(16.dp),
-//        verticalArrangement = Arrangement.spacedBy(12.dp)
-//    ) {
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(200.dp)
-//                .padding(horizontal = 16.dp)
-//                .clip(RoundedCornerShape(16.dp))
-//                .background(Color.Black)
-//        )
-//        CustomAddressTextField(
-//            modifier = Modifier.fillMaxWidth(),
-//            value = paymentCardModel?.cardHolderName ?: "",
-//            label = "Name",
-//            onValueChange = {
-//                Log.e(TAG, "onchange name called", )
-//                onEvent(PaymentEvents.CardHolderNameChanged(it))
-//            }
-//        )
-//        CustomAddressTextField(
-//            modifier = Modifier.fillMaxWidth(),
-//            value = paymentCardModel?.cardNumber ?: "",
-//            label = "Card Number",
-//            onValueChange = {
-//                onEvent(PaymentEvents.CardNumberChanged(it))
-//            }
-//        )
-//        Row(
-//            modifier = Modifier.fillMaxWidth(),
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.spacedBy(8.dp)
-//        ) {
-//            CustomAddressTextField(
-//                modifier = Modifier.weight(1f),
-//                value = paymentCardModel?.expirationDate ?: "",
-//                label = "Expiry",
-//                onValueChange = {
-//                    onEvent(PaymentEvents.CardExpiryChanged(it))
-//                }
-//            )
-//            CustomAddressTextField(
-//                modifier = Modifier.weight(1f),
-//                value = paymentCardModel?.cvv ?: "",
-//                label = "CVV",
-//                onValueChange = {
-//                    onEvent(PaymentEvents.CardCvvChanged(it))
-//                }
-//            )
-//        }
-//
-//        Button(
-//            onClick = {
-//                if (isEditing) {
-//
-//                } else {
-//
-//                }
-//            },
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            Text(if (isEditing) "Edit Card" else "Save Card")
-//        }
-//    }
-
-
+    val isEditing = state.isEditing
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -174,19 +103,22 @@ fun AddCardForm(
             Spacer(modifier = Modifier.height(24.dp))
 
             CustomButton(
-                text = "Update Card",
+                text = if (isEditing) "Update Card" else "Add Card",
                 backgroundColor = PrimaryBlue,
                 contentColor = Color.White,
                 onButtonClicked = {
-                    onEvent(PaymentEvents.AddPaymentCard(
-                        paymentDetails = PaymentCardModel(
-                            id = paymentCardModel?.id ?: -1,
-                            cardHolderName = paymentCardModel?.cardHolderName ?: "",
-                            cardNumber = paymentCardModel?.cardNumber ?: "",
-                            expirationDate = paymentCardModel?.expirationDate ?: "",
-                            cvv = paymentCardModel?.cvv ?: ""
-                        )
-                    ))
+                    val paymentDetails = PaymentCardModel(
+                        id = paymentCardModel?.id ?: 0,
+                        cardHolderName = state.cardHolderName,
+                        cardNumber = state.cardNumber,
+                        expirationDate = state.cardExpiryDate,
+                        cvv = state.cardCvvNumber
+                    )
+                    if (isEditing) {
+                        onEvent(PaymentEvents.UpdateCard(paymentDetails))
+                    } else {
+                        onEvent(PaymentEvents.SaveCard)
+                    }
                 },
                 isLoading = false,
                 enabled = true,

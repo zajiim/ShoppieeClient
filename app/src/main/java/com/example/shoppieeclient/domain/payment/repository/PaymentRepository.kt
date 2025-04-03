@@ -6,7 +6,13 @@ import kotlinx.coroutines.flow.Flow
 interface PaymentRepository {
     fun getAllCards(): Flow<List<PaymentCardModel?>>
 
-    suspend fun insertPaymentCard(paymentCardModel: PaymentCardModel)
+    suspend fun upsertPaymentCard(paymentCardModel: PaymentCardModel)
+
+    suspend fun getCardById(id: Int): PaymentCardModel?
 
     suspend fun deletePaymentCard(id: Int)
+
+    suspend fun setSelectedCard(paymentCardModel: PaymentCardModel)
+
+    suspend fun getSelectedCard(): Flow<PaymentCardModel?>
 }

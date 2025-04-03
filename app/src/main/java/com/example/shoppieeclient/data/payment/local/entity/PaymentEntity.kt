@@ -12,4 +12,5 @@ data class PaymentEntity(
     val cardHolderName: String,
     val expirationDate: String,
     val cvv: String,
+    val isSelected: Boolean = false
 )
