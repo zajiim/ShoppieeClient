@@ -38,6 +38,7 @@ import com.example.shoppieeclient.domain.home.account.use_cases.UploadImageUseCa
 import com.example.shoppieeclient.domain.payment.use_cases.DeleteCardByIdUseCase
 import com.example.shoppieeclient.domain.payment.use_cases.GetAllCardsUseCase
 import com.example.shoppieeclient.domain.payment.use_cases.GetCardByIdUseCase
+import com.example.shoppieeclient.domain.payment.use_cases.GetSelectedCardUseCase
 import com.example.shoppieeclient.domain.payment.use_cases.SetSelectedCardUseCase
 import com.example.shoppieeclient.domain.payment.use_cases.UpsertCardUseCase
 import org.koin.dsl.module
@@ -232,12 +233,10 @@ val useCasesModule = module {
         )
     }
 
-
-
-
-
-
-
-
+    single {
+        GetSelectedCardUseCase(
+            paymentRepository = get()
+        )
+    }
 
 }

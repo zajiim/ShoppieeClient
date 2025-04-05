@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.presentation.home.checkout
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,22 +28,28 @@ import com.example.shoppieeclient.presentation.home.cart.components.CustomCheckO
 import com.example.shoppieeclient.presentation.home.checkout.components.CustomCheckOutDetails
 import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
 import com.example.shoppieeclient.ui.theme.BackGroundColor
+import org.koin.androidx.compose.koinViewModel
 
+private const val TAG = "CheckOutScreen"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckOutScreen(
     modifier: Modifier = Modifier,
     onNavigateClick: () -> Unit,
     onAddressRoute: () -> Unit,
-    onPaymentRoute: () -> Unit
+    onPaymentRoute: () -> Unit,
+    viewModel: CheckOutViewModel = koinViewModel()
 ) {
     val checkoutCardHeight = remember { mutableIntStateOf(0) }
+    val checkOutState = viewModel.checkOutState
+
+    Log.e(TAG, "Checkout payment state ====> ${checkOutState.selectedCard}", )
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(BackGroundColor)
     ) {
-        Column(modifier = Modifier.padding(bottom = with(LocalDensity.current) { checkoutCardHeight.intValue.toDp() })) {
+        Column(/*modifier = Modifier.padding(bottom = with(LocalDensity.current) { checkoutCardHeight.intValue.toDp() })*/) {
             CustomNavigationTopAppBar(modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
@@ -73,7 +80,7 @@ fun CheckOutScreen(
             CustomCheckOutDetails(
                 modifier = Modifier,
                 title = "Payment Method",
-                subtitle = "Add new payment method",
+                subtitle = checkOutState.selectedCard?.let { "**** **** **** ${it.cardNumber.takeLast(4)}" } ?: "Add new payment card",
                 onNavigateClick = onPaymentRoute
             )
         }
@@ -81,9 +88,9 @@ fun CheckOutScreen(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .wrapContentSize(Alignment.BottomCenter)
-                .onGloballyPositioned { layoutCoordinates ->
+                /*.onGloballyPositioned { layoutCoordinates ->
                     checkoutCardHeight.intValue = layoutCoordinates.size.height
-                },
+                }*/,
             subTotal = 1212.1,
             platformFees = 12.2,
             totalCost = 13232.23,

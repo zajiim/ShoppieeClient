@@ -9,6 +9,7 @@ import com.example.shoppieeclient.presentation.auth.signup.SignUpViewModel
 import com.example.shoppieeclient.presentation.home.accounts.AccountsViewModel
 import com.example.shoppieeclient.presentation.home.address.AddressViewModel
 import com.example.shoppieeclient.presentation.home.cart.CartViewModel
+import com.example.shoppieeclient.presentation.home.checkout.CheckOutViewModel
 import com.example.shoppieeclient.presentation.home.details.DetailsViewModel
 import com.example.shoppieeclient.presentation.home.home.HomeViewModel
 import com.example.shoppieeclient.presentation.home.payment.PaymentViewModel
@@ -72,6 +73,11 @@ val viewmodelModule = module {
             upsertCardUseCase = get(),
             getCardDetailsByIdUseCase = get(),
             setSelectedCardUseCase = get()
+        )
+    }
+    viewModel<CheckOutViewModel> {
+        CheckOutViewModel(
+            getSelectedCardUseCase = get()
         )
     }
 }

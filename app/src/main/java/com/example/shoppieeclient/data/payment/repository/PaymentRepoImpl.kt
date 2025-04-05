@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.data.payment.repository
 
+import android.util.Log
 import com.example.shoppieeclient.data.payment.local.dao.PaymentDao
 import com.example.shoppieeclient.data.payment.mapper.toPaymentCardModel
 import com.example.shoppieeclient.data.payment.mapper.toPaymentEntity
