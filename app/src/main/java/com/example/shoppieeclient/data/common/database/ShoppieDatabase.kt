@@ -15,7 +15,7 @@ import com.example.shoppieeclient.data.payment.local.entity.PaymentEntity
         SelectedAddressEntity::class,
         PaymentEntity::class
     ],
-    version = 2,
+    version = 4,
     exportSchema = false
 )
 

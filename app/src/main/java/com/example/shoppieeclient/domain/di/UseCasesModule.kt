@@ -35,10 +35,12 @@ import com.example.shoppieeclient.domain.cart.use_cases.RemoveItemUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.GetProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UpdateProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UploadImageUseCase
-import com.example.shoppieeclient.domain.payment.use_cases.AddCardDetailsUseCase
+import com.example.shoppieeclient.domain.payment.use_cases.DeleteCardByIdUseCase
+import com.example.shoppieeclient.domain.payment.use_cases.GetAllCardsUseCase
 import com.example.shoppieeclient.domain.payment.use_cases.GetCardByIdUseCase
+import com.example.shoppieeclient.domain.payment.use_cases.SetSelectedCardUseCase
+import com.example.shoppieeclient.domain.payment.use_cases.UpsertCardUseCase
 import org.koin.dsl.module
-import kotlin.math.sin
 
 val useCasesModule = module {
     single { SaveOnBoardingUseCase(get()) }
@@ -199,16 +201,43 @@ val useCasesModule = module {
         )
     }
 
-    single {
-        AddCardDetailsUseCase(
-            paymentRepository = get()
-        )
-    }
 
     single {
         GetCardByIdUseCase(
             paymentRepository = get()
         )
     }
+
+    single {
+        GetAllCardsUseCase(
+            paymentRepository = get()
+        )
+    }
+
+    single {
+        DeleteCardByIdUseCase(
+            paymentRepository = get()
+        )
+    }
+
+    single {
+        UpsertCardUseCase(
+            paymentRepository = get()
+        )
+    }
+
+    single {
+        SetSelectedCardUseCase(
+            paymentRepository = get()
+        )
+    }
+
+
+
+
+
+
+
+
 
 }

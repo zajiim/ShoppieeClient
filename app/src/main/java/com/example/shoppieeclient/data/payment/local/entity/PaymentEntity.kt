@@ -6,7 +6,7 @@ import com.example.shoppieeclient.utils.Constants
 
 @Entity(tableName = Constants.PAYMENT_DATA_TABLE)
 data class PaymentEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val cardNumber: String,
     val cardHolderName: String,

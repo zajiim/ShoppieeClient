@@ -28,5 +28,5 @@ data class PaymentStates(
     //Card Selection State
     val showSelectionDialog: Boolean = false,
     val cardToSelect: PaymentCardModel? = null,
-    val selectedCardId: PaymentCardModel? = null,
+    val selectedCard: PaymentCardModel? = null,
 )

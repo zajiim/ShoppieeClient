@@ -27,105 +27,105 @@ import com.example.shoppieeclient.utils.visual_transformations.CreditCardNumberV
 
 private const val TAG = "AddCardForm"
 
-@Composable
-fun AddCardForm(
-    modifier: Modifier = Modifier,
-    paymentCardModel: PaymentCardModel?,
-    state: PaymentStates,
-    onEvent: (PaymentEvents) -> Unit
-) {
-    val isEditing = state.isEditing
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp)
-    ) {
-        item {
-            CustomPaymentCard(
-                paymentCardModel = paymentCardModel,
-                onEvent = onEvent,
-                state = state
-            )
-        }
-
-        item {
-            CustomAddressTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = paymentCardModel?.cardHolderName ?: "",
-                label = "Name",
-                onValueChange = {
-                    Log.e(TAG, "onchange name called")
-                    onEvent(PaymentEvents.CardHolderNameChanged(it))
-                },
-
-                )
-
-            CustomAddressTextField(
-                modifier = Modifier.fillMaxWidth(),
+//@Composable
+//fun AddCardForm(
+//    modifier: Modifier = Modifier,
+//    paymentCardModel: PaymentCardModel?,
+//    state: PaymentStates,
+//    onEvent: (PaymentEvents) -> Unit
+//) {
+//    val isEditing = state.isEditing
+//    LazyColumn(
+//        modifier = modifier
+//            .fillMaxSize()
+//            .padding(horizontal = 20.dp)
+//    ) {
+//        item {
+//            CustomPaymentCard(
+//                paymentCardModel = paymentCardModel,
+//                onEvent = onEvent,
+//                state = state
+//            )
+//        }
+//
+//        item {
+//            CustomAddressTextField(
+//                modifier = Modifier.fillMaxWidth(),
+//                value = paymentCardModel?.cardHolderName ?: "",
+//                label = "Name",
+//                onValueChange = {
+//                    Log.e(TAG, "onchange name called")
+////                    onEvent(PaymentEvents.CardHolderNameChanged(it))
+//                },
+//
+//                )
+//
+//            CustomAddressTextField(
+//                modifier = Modifier.fillMaxWidth(),
+////                value = paymentCardModel?.cardNumber ?: "",
 //                value = paymentCardModel?.cardNumber ?: "",
-                value = paymentCardModel?.cardNumber ?: "",
-                label = "Card Number",
-                onValueChange = {
-                    Log.e(TAG, "onchange number called")
-                    onEvent(PaymentEvents.CardNumberChanged(it))
-                },
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next,
-                visualTransformation = CreditCardNumberVisualTransformation()
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                CustomAddressTextField(
-                    modifier = Modifier.weight(1f),
-                    value = paymentCardModel?.expirationDate ?: "",
-                    label = "MM/YY",
-                    onValueChange = {
-                        onEvent(PaymentEvents.CardExpiryChanged(it))
-                    },
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next,
-                    visualTransformation = CreditCardExpiryVisualTransformation()
-                )
-                CustomAddressTextField(
-                    modifier = Modifier.weight(1f),
-                    value = paymentCardModel?.cvv ?: "",
-                    label = "CVV",
-                    onValueChange = {
-                        onEvent(PaymentEvents.CardCvvChanged(it))
-                    },
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done,
-                )
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-
-            CustomButton(
-                text = if (isEditing) "Update Card" else "Add Card",
-                backgroundColor = PrimaryBlue,
-                contentColor = Color.White,
-                onButtonClicked = {
-                    val paymentDetails = PaymentCardModel(
-                        id = paymentCardModel?.id ?: 0,
-                        cardHolderName = state.cardHolderName,
-                        cardNumber = state.cardNumber,
-                        expirationDate = state.cardExpiryDate,
-                        cvv = state.cardCvvNumber
-                    )
-                    if (isEditing) {
-                        onEvent(PaymentEvents.UpdateCard(paymentDetails))
-                    } else {
-                        onEvent(PaymentEvents.SaveCard)
-                    }
-                },
-                isLoading = false,
-                enabled = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-    }
-
-}
+//                label = "Card Number",
+//                onValueChange = {
+//                    Log.e(TAG, "onchange number called")
+//                    onEvent(PaymentEvents.CardNumberChanged(it))
+//                },
+//                keyboardType = KeyboardType.Number,
+//                imeAction = ImeAction.Next,
+//                visualTransformation = CreditCardNumberVisualTransformation()
+//            )
+//
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.spacedBy(16.dp)
+//            ) {
+//                CustomAddressTextField(
+//                    modifier = Modifier.weight(1f),
+//                    value = paymentCardModel?.expirationDate ?: "",
+//                    label = "MM/YY",
+//                    onValueChange = {
+//                        onEvent(PaymentEvents.CardExpiryChanged(it))
+//                    },
+//                    keyboardType = KeyboardType.Number,
+//                    imeAction = ImeAction.Next,
+//                    visualTransformation = CreditCardExpiryVisualTransformation()
+//                )
+//                CustomAddressTextField(
+//                    modifier = Modifier.weight(1f),
+//                    value = paymentCardModel?.cvv ?: "",
+//                    label = "CVV",
+//                    onValueChange = {
+//                        onEvent(PaymentEvents.CardCvvChanged(it))
+//                    },
+//                    keyboardType = KeyboardType.Number,
+//                    imeAction = ImeAction.Done,
+//                )
+//            }
+//            Spacer(modifier = Modifier.height(24.dp))
+//
+//            CustomButton(
+//                text = if (isEditing) "Update Card" else "Add Card",
+//                backgroundColor = PrimaryBlue,
+//                contentColor = Color.White,
+//                onButtonClicked = {
+////                    val paymentDetails = PaymentCardModel(
+////                        id = paymentCardModel?.id ?: 0,
+////                        cardHolderName = state.cardHolderName,
+////                        cardNumber = state.cardNumber,
+////                        expirationDate = state.cardExpiryDate,
+////                        cvv = state.cardCvvNumber
+////                    )
+////                    if (isEditing) {
+////                        onEvent(PaymentEvents.UpdateCard(paymentDetails))
+////                    } else {
+////                        onEvent(PaymentEvents.SaveCard)
+////                    }
+//                },
+//                isLoading = false,
+//                enabled = true,
+//                modifier = Modifier.fillMaxWidth()
+//            )
+//        }
+//
+//    }
+//
+//}
