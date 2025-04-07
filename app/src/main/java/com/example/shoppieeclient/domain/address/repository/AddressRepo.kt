@@ -25,4 +25,6 @@ interface AddressRepo {
     ): Flow<Resource<List<AddressModel>>>
 
     fun selectAddress(id: String): Flow<Resource<List<AddressModel>>>
+
+    fun getSelectedAddress(): Flow<Resource<List<AddressModel>>>
 }

@@ -4,6 +4,7 @@ import com.example.shoppieeclient.domain.address.use_cases.AddAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.DeleteAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.EditAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.GetAddressListUseCase
+import com.example.shoppieeclient.domain.address.use_cases.GetSelectedAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.SelectAddressUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.OAuthSignInUseCase
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
@@ -32,6 +33,7 @@ import com.example.shoppieeclient.domain.cart.use_cases.GetCartTotalUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.GetCartUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.IncrementItemUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.RemoveItemUseCase
+import com.example.shoppieeclient.domain.checkout.use_cases.StartRPPaymentUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.GetProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UpdateProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UploadImageUseCase
@@ -42,6 +44,7 @@ import com.example.shoppieeclient.domain.payment.use_cases.GetSelectedCardUseCas
 import com.example.shoppieeclient.domain.payment.use_cases.SetSelectedCardUseCase
 import com.example.shoppieeclient.domain.payment.use_cases.UpsertCardUseCase
 import org.koin.dsl.module
+import kotlin.math.sin
 
 val useCasesModule = module {
     single { SaveOnBoardingUseCase(get()) }
@@ -238,5 +241,17 @@ val useCasesModule = module {
             paymentRepository = get()
         )
     }
+
+    single {
+        GetSelectedAddressUseCase(
+            addressRepo = get()
+        )
+    }
+
+
+    single {
+        StartRPPaymentUseCase(get())
+    }
+
 
 }

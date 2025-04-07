@@ -28,7 +28,7 @@ class AddressRepoImpl(
             val addressResponse = addressApiService.getAddresses()
             val addresses = addressResponse.result.addresses
             if (addressResponse.status == 200) {
-                val address = addresses.map { it.toAddressModel() }
+                val address = addresses?.map { it.toAddressModel() }
                 emit(Resource.Success(address))
             } else {
                 emit(Resource.Error(addressResponse.message))
@@ -153,6 +153,33 @@ class AddressRepoImpl(
         }
     }.catch { e ->
         emit(Resource.Error(e.message ?: "Unexpected error occurred"))
+    }.flowOn(Dispatchers.IO)
+
+    override fun getSelectedAddress(): Flow<Resource<List<AddressModel>>> = flow {
+        try {
+            emit(Resource.Loading())
+            val addressResponse = addressApiService.getSelectedAddress()
+            val addressList = addressResponse.result.addresses
+            if (addressResponse.status == 200) {
+                Log.e(TAG, "getSelectedAddress: ${addressResponse.result}", )
+                val address = addressList.map { it.toAddressModel() }
+                emit(Resource.Success(address))
+            } else {
+                emit(Resource.Error(addressResponse.message))
+            }
+        } catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+    }.catch { e->
+        emit(Resource.Error(e.message ?: "Unknown error occurred"))
     }.flowOn(Dispatchers.IO)
 
 }

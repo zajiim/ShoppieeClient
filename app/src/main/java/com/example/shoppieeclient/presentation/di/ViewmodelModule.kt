@@ -77,7 +77,10 @@ val viewmodelModule = module {
     }
     viewModel<CheckOutViewModel> {
         CheckOutViewModel(
-            getSelectedCardUseCase = get()
+            getSelectedCardUseCase = get(),
+            getSelectedAddressUseCase = get(),
+            getCartTotalUseCase = get(),
+            startRPPaymentUseCase = get()
         )
     }
 }

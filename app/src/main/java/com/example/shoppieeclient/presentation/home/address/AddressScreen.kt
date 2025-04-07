@@ -174,9 +174,6 @@ fun AddressScreen(
                                 onDeleteClick = {
                                     addressViewModel.onEvent(AddressEvents.DeleteClicked)
                                 },
-                                onDismissSelection = {
-                                    addressViewModel.onEvent(AddressEvents.UnSelectAddress)
-                                },
                                 onSelectAddress = {
                                     addressViewModel.onEvent(AddressEvents.SelectAddress(address))
                                 }
@@ -198,7 +195,6 @@ fun AddressScreen(
                     Text("Confirm Selection")
                 }
             }
-        Log.e(TAG, "database address value: ${state.selectedAddress}")
 
 
 

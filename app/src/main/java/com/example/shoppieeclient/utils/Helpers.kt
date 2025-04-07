@@ -1,5 +1,8 @@
 package com.example.shoppieeclient.utils
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.util.Patterns
 
 fun isNumber(value: String): Boolean {
@@ -20,4 +23,13 @@ fun Double.roundToTwoDecimalPlaces(): Double {
 
 fun String.startsWithAny(vararg prefixes: String): Boolean {
     return prefixes.any { this.startsWith(it) }
+}
+
+fun Context.findActivity(): Activity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    return null
 }

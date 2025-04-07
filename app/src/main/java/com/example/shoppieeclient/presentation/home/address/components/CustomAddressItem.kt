@@ -35,15 +35,13 @@ import com.example.shoppieeclient.ui.theme.PrimaryBlue
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AddressItem(
+    modifier: Modifier = Modifier,
     address: AddressModel,
     isSelected: Boolean,
-    isSetSelected: Boolean = false,
     onEditClick: () -> Unit,
     onLongClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onDismissSelection: () -> Unit,
     onSelectAddress: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier
@@ -96,9 +94,7 @@ fun AddressItem(
                             .size(24.dp)
                             .clip(CircleShape)
                             .border(
-                                width = 8.dp,
-                                color = PrimaryBlue,
-                                shape = CircleShape
+                                width = 8.dp, color = PrimaryBlue, shape = CircleShape
                             )
                             .background(PrimaryBlue, CircleShape)
                     )
@@ -119,23 +115,3 @@ fun AddressItem(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-private fun PreviewAddress() {
-    AddressItem(address = AddressModel(
-        id = "1",
-        streetAddress = "123 Main St",
-        city = "Something",
-        state = "CA",
-        zipCode = "12345",
-        userId = "sdsd"
-    ),
-        isSelected = false,
-        isSetSelected = true,
-        onEditClick = {},
-        onLongClick = {},
-        onDeleteClick = {},
-        onDismissSelection = {},
-        onSelectAddress = {}
-    )
-}

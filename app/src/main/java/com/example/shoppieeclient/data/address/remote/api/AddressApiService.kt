@@ -59,4 +59,10 @@ class AddressApiService(
             }
         }.body()
     }
+
+    suspend fun getSelectedAddress(): AddressResponse {
+        return httpClient.get("${Constants.SHOPPIEE_URL}/get-selected-address") {
+            contentType(ContentType.Application.Json)
+        }.body()
+    }
 }

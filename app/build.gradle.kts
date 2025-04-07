@@ -46,6 +46,7 @@ android {
             buildConfigField("String", "GOOGLE_CLIENT_ID", localProperties.getProperty("GOOGLE_CLIENT_ID"))
             buildConfigField("String", "FACEBOOK_APP_ID", localProperties.getProperty("FACEBOOK_APP_ID"))
             buildConfigField("String", "FACEBOOK_APP_SECRET", localProperties.getProperty("FACEBOOK_APP_SECRET"))
+            buildConfigField("String", "RAZORPAY_ID", localProperties.getProperty("RAZORPAY_ID"))
         }
         debug {
             buildConfigField("String", "CLOUDINARY_API_KEY", localProperties.getProperty("CLOUDINARY_API_KEY"))
@@ -55,6 +56,7 @@ android {
             buildConfigField("String", "GOOGLE_CLIENT_ID", localProperties.getProperty("GOOGLE_CLIENT_ID"))
             buildConfigField("String", "FACEBOOK_APP_ID", localProperties.getProperty("FACEBOOK_APP_ID"))
             buildConfigField("String", "FACEBOOK_APP_SECRET", localProperties.getProperty("FACEBOOK_APP_SECRET"))
+            buildConfigField("String", "RAZORPAY_ID", localProperties.getProperty("RAZORPAY_ID"))
         }
     }
     compileOptions {
@@ -126,6 +128,8 @@ dependencies {
     implementation(libs.googleid)
     //Facebook sdk
     implementation(libs.facebook.login)
+    //Razorpay
+    implementation(libs.checkout)
 
 
     testImplementation(libs.junit)

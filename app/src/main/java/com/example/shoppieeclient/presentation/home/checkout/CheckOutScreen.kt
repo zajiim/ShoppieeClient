@@ -15,6 +15,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,13 +24,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.presentation.home.cart.components.CustomCheckOutCard
 import com.example.shoppieeclient.presentation.home.checkout.components.CustomCheckOutDetails
 import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
 import com.example.shoppieeclient.ui.theme.BackGroundColor
+import com.example.shoppieeclient.utils.findActivity
+import com.razorpay.PaymentData
+import com.razorpay.PaymentResultWithDataListener
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 private const val TAG = "CheckOutScreen"
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,10 +45,39 @@ fun CheckOutScreen(
     onNavigateClick: () -> Unit,
     onAddressRoute: () -> Unit,
     onPaymentRoute: () -> Unit,
-    viewModel: CheckOutViewModel = koinViewModel()
+    viewModel: CheckOutViewModel = koinViewModel(),
+    paymentHandler: PaymentHandler = koinInject()
 ) {
     val checkoutCardHeight = remember { mutableIntStateOf(0) }
     val checkOutState = viewModel.checkOutState
+    val context = LocalContext.current
+    val activity = context.findActivity()
+    val paymentResult = paymentHandler.paymentState
+
+
+    LaunchedEffect(paymentResult.paymentStatus) {
+        when(paymentResult.paymentStatus) {
+            PaymentStatus.SUCCESS -> {
+                viewModel.onEvent(CheckoutEvents.PaymentSuccess(paymentResult.paymentId.toString()))
+                paymentHandler.resetPaymentState()
+            }
+            PaymentStatus.FAILED -> {
+                viewModel.onEvent(CheckoutEvents.PaymentError(-1, paymentResult.error ?: "Unknown error occurred"))
+                paymentHandler.resetPaymentState()
+            }
+            PaymentStatus.CANCELLED -> {
+                viewModel.onEvent(CheckoutEvents.PaymentCancelled)
+            }
+            else -> {}
+        }
+    }
+
+
+
+    LaunchedEffect(checkOutState.selectAddress?.get(0)?.streetAddress) {
+        Log.e(TAG, "CheckOutScreen: called", )
+        viewModel.refreshData()
+    }
 
     Log.e(TAG, "Checkout payment state ====> ${checkOutState.selectedCard}", )
     Box(
@@ -73,7 +109,12 @@ fun CheckOutScreen(
             CustomCheckOutDetails(
                 modifier = Modifier,
                 title = "Delivery Address",
-                subtitle = "Add new address",
+                subtitle = if (!checkOutState.selectAddress.isNullOrEmpty()) {
+                    val address = checkOutState.selectAddress[0]
+                    "${address.streetAddress}, ${address.state}"
+                } else {
+                    "Add new address"
+                },
                 onNavigateClick = onAddressRoute
             )
 
@@ -91,10 +132,21 @@ fun CheckOutScreen(
                 /*.onGloballyPositioned { layoutCoordinates ->
                     checkoutCardHeight.intValue = layoutCoordinates.size.height
                 }*/,
-            subTotal = 1212.1,
-            platformFees = 12.2,
-            totalCost = 13232.23,
-            onCheckOutClicked = {},
+            subTotal = checkOutState.subTotal,
+            platformFees = checkOutState.platformFees,
+            totalCost = checkOutState.totalCost,
+            onCheckOutClicked = {
+                activity?.let {
+                    viewModel.onEvent(
+                        CheckoutEvents.InitiatePayment(
+                            amount = checkOutState.totalCost,
+                            activity = it,
+                            description = "Payment for order"
+                        )
+                    )
+                    Log.e(TAG, "total ===> ${checkOutState.totalCost}", )
+                }
+            },
             buttonText = "Place Order"
         )
     }
