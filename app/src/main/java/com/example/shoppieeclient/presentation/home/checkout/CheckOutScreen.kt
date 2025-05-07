@@ -74,7 +74,7 @@ fun CheckOutScreen(
 
 
 
-    LaunchedEffect(checkOutState.selectAddress?.get(0)?.streetAddress) {
+    LaunchedEffect(checkOutState.selectedAddress?.getOrNull(0)?.streetAddress) {
         Log.e(TAG, "CheckOutScreen: called", )
         viewModel.refreshData()
     }
@@ -109,8 +109,8 @@ fun CheckOutScreen(
             CustomCheckOutDetails(
                 modifier = Modifier,
                 title = "Delivery Address",
-                subtitle = if (!checkOutState.selectAddress.isNullOrEmpty()) {
-                    val address = checkOutState.selectAddress[0]
+                subtitle = if (!checkOutState.selectedAddress.isNullOrEmpty()) {
+                    val address = checkOutState.selectedAddress[0]
                     "${address.streetAddress}, ${address.state}"
                 } else {
                     "Add new address"

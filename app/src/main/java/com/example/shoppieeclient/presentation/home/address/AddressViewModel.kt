@@ -1,31 +1,25 @@
 package com.example.shoppieeclient.presentation.home.address
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shoppieeclient.data.address.local.dao.SelectedAddressDao
-import com.example.shoppieeclient.data.address.local.entity.SelectedAddressEntity
-import com.example.shoppieeclient.domain.address.models.AddressModel
 import com.example.shoppieeclient.domain.address.use_cases.AddAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.DeleteAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.EditAddressUseCase
 import com.example.shoppieeclient.domain.address.use_cases.GetAddressListUseCase
 import com.example.shoppieeclient.domain.address.use_cases.SelectAddressUseCase
 import com.example.shoppieeclient.utils.Resource
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-private const val TAG = "AddressViewModel"
 
 class AddressViewModel(
     private val getAddressListUseCase: GetAddressListUseCase,
     private val deleteAddressUseCase: DeleteAddressUseCase,
     private val addAddressUseCase: AddAddressUseCase,
     private val editAddressUseCase: EditAddressUseCase,
-    private val selectAddressUseCase: SelectAddressUseCase
+    private val selectAddressUseCase: SelectAddressUseCase,
 ) : ViewModel() {
 
     var addressState by mutableStateOf(AddressStates())
@@ -40,7 +34,7 @@ class AddressViewModel(
         getAddressListUseCase().collect { result ->
             when (result) {
                 is Resource.Error -> {
-                    addressState = addressState.copy(isLoading = false, error = result.message)
+                    addressState = addressState.copy(isLoading = false, isError = true)
                 }
 
                 is Resource.Loading -> {
@@ -50,15 +44,130 @@ class AddressViewModel(
                 is Resource.Success -> {
                     addressState = addressState.copy(
                         isLoading = false,
-                        addresses = result.data
+                        addresses = result.data ?: emptyList(),
                     )
                 }
             }
         }
     }
 
-
     fun onEvent(events: AddressEvents) {
+        when(events) {
+            is AddressEvents.StreetAddressChanged ->  {
+                addressState = addressState.copy(
+                    streetAddressText = events.streetAddress
+                )
+            }
+            is AddressEvents.CityChanged -> {
+                addressState = addressState.copy(
+                    cityText = events.city
+                )
+            }
+            is AddressEvents.StateChanged -> {
+                addressState = addressState.copy(
+                    stateText = events.state
+                )
+            }
+            is AddressEvents.ZipCodeChanged -> {
+                addressState = addressState.copy(
+                    zipCodeText = events.zipCode
+                )
+            }
+
+            is AddressEvents.LoadAddressDetails -> {
+                val address = events.selectedAddress
+                addressState = addressState.copy(
+                    selectedAddress = address,
+                    streetAddressText = address.streetAddress,
+                    cityText = address.city,
+                    stateText = address.state,
+                    zipCodeText = address.zipCode,
+                    showBottomSheet = true,
+                    isEditing = true,
+                    currentAddressId = address.id
+                )
+            }
+
+            AddressEvents.ShowAddAddressSheet -> {
+                addressState = addressState.copy(
+                    showBottomSheet = true,
+                    streetAddressText = "",
+                    cityText = "",
+                    stateText = "",
+                    zipCodeText = "",
+                    isEditing = false,
+                    currentAddressId = ""
+                )
+            }
+
+            AddressEvents.DismissAddAddressSheet -> {
+                addressState = addressState.copy(
+                    showBottomSheet = false
+                )
+            }
+
+
+            AddressEvents.SaveAddress -> {
+                if (addressState.isEditing) {
+                    editAddressApi(
+                        id = addressState.currentAddressId.toString(),
+                        streetAddress = addressState.streetAddressText,
+                        city = addressState.cityText,
+                        state = addressState.stateText,
+                        zipCode = addressState.zipCodeText
+                    )
+                } else {
+                    addAddressApi(
+                        streetAddress = addressState.streetAddressText,
+                        city = addressState.cityText,
+                        state = addressState.stateText,
+                        zipCode = addressState.zipCodeText
+                    )
+                }
+                addressState = addressState.copy(
+                    showBottomSheet = false
+                )
+            }
+
+            AddressEvents.ConfirmAddressSelection -> {
+                selectAddress(id = addressState.currentAddressId)
+                addressState = addressState.copy(
+                    showSelectionDialog = false
+                )
+            }
+            is AddressEvents.DeleteAddress -> {
+                deleteAddressApi(events.addressId)
+            }
+            AddressEvents.DismissDeleteDialog -> {
+                addressState = addressState.copy(
+                    showDeleteDialog = false,
+                    addressToDeleteId = null
+                )
+            }
+            AddressEvents.DismissSelectionDialog -> {
+                addressState = addressState.copy(
+                    showSelectionDialog = false,
+                    addressToSelect = null
+                )
+            }
+            is AddressEvents.ShowDeleteDialog -> {
+                addressState = addressState.copy(
+                    showDeleteDialog = true,
+                    addressToDeleteId = events.addressModel.id
+                )
+            }
+            is AddressEvents.ShowSelectionDialog -> {
+                addressState = addressState.copy(
+                    showSelectionDialog = true,
+                    addressToSelect = events.addressModel,
+                    currentAddressId = events.addressModel.id
+                )
+            }
+        }
+    }
+
+
+    /*fun onEvent(events: AddressEvents) {
         when (events) {
             AddressEvents.AddAddressClicked -> {
                 addressState = addressState.copy(
@@ -104,11 +213,11 @@ class AddressViewModel(
             }
 
             is AddressEvents.UpdateCity -> {
-                /*addressState.selectedAddress?.let { currentVal ->
+                *//*addressState.selectedAddress?.let { currentVal ->
                     addressState = addressState.copy(
                         selectedAddress = currentVal.copy(city = events.city)
                     )
-                }*/
+                }*//*
                 addressState = addressState.copy(
                     selectedAddress = (addressState.selectedAddress ?: AddressModel(
                         id = "",
@@ -122,11 +231,11 @@ class AddressViewModel(
             }
 
             is AddressEvents.UpdateState -> {
-                /*addressState.selectedAddress?.let { currentVal ->
+                *//*addressState.selectedAddress?.let { currentVal ->
                     addressState = addressState.copy(
                         selectedAddress = currentVal.copy(state = events.state)
                     )
-                }*/
+                }*//*
                 addressState = addressState.copy(
                     selectedAddress = (addressState.selectedAddress ?: AddressModel(
                         id = "",
@@ -140,11 +249,11 @@ class AddressViewModel(
             }
 
             is AddressEvents.UpdateStreetAddress -> {
-                /*addressState.selectedAddress?.let { currentVal ->
+                *//*addressState.selectedAddress?.let { currentVal ->
                     addressState = addressState.copy(
                         selectedAddress = currentVal.copy(streetAddress = events.streetAddress)
                     )
-                }*/
+                }*//*
                 addressState = addressState.copy(
                     selectedAddress = (addressState.selectedAddress ?: AddressModel(
                         id = "",
@@ -158,11 +267,11 @@ class AddressViewModel(
             }
 
             is AddressEvents.UpdateZipCode -> {
-                /* addressState.selectedAddress?.let { currentVal ->
+                *//* addressState.selectedAddress?.let { currentVal ->
                      addressState = addressState.copy(
                          selectedAddress = currentVal.copy(zipCode = events.zipCode)
                      )
-                 }*/
+                 }*//*
                 addressState = addressState.copy(
                     selectedAddress = (addressState.selectedAddress ?: AddressModel(
                         id = "",
@@ -231,7 +340,7 @@ class AddressViewModel(
                 addressState = addressState.copy(addresses = updatedAddress, selectedAddress = events.address)
             }
         }
-    }
+    }*/
 
     private fun selectAddress(id: String) = viewModelScope.launch{
         selectAddressUseCase(id = id).collect { result ->
@@ -239,7 +348,7 @@ class AddressViewModel(
                 is Resource.Error -> {
                     addressState = addressState.copy(
                         isLoading = false,
-                        error = result.message
+                        isError = true
                     )
                 }
 
@@ -275,7 +384,6 @@ class AddressViewModel(
                     is Resource.Error -> {
                         addressState = addressState.copy(
                             isLoading = false,
-                            error = result.message
                         )
                     }
 
@@ -310,7 +418,7 @@ class AddressViewModel(
                     is Resource.Error -> {
                         addressState = addressState.copy(
                             isLoading = false,
-                            error = result.message
+                            isError = true
                         )
                     }
 
@@ -338,9 +446,7 @@ class AddressViewModel(
                 is Resource.Error -> {
                     addressState = addressState.copy(
                         isLoading = false,
-                        error = result.message,
-                        showDeleteConfirmation = false,
-                        selectedForDeletion = null
+                        showDeleteDialog = false
                     )
                 }
 
@@ -352,8 +458,8 @@ class AddressViewModel(
                     addressState = addressState.copy(
                         isLoading = false,
                         addresses = result.data ?: emptyList(),
-                        showDeleteConfirmation = false,
-                        selectedForDeletion = null
+                        showDeleteDialog = false,
+                        addressToDeleteId = null
                     )
                 }
             }

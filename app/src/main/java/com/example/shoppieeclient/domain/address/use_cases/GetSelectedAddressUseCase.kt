@@ -9,6 +9,6 @@ class GetSelectedAddressUseCase(
     private val addressRepo: AddressRepo
 ) {
     operator fun invoke(): Flow<Resource<List<AddressModel>>> {
-        return addressRepo.getAddresses()
+        return addressRepo.getSelectedAddress()
     }
 }

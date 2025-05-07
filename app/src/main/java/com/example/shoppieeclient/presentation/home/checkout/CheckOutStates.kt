@@ -6,7 +6,7 @@ import org.koin.viewmodel.emptyState
 
 data class CheckOutStates(
     val selectedCard: PaymentCardModel? = null,
-    val selectAddress: List<AddressModel>? = null,
+    val selectedAddress: List<AddressModel>? = emptyList(),
     val isLoading: Boolean = false,
     val subTotal: Double = 0.0,
     val platformFees: Double = 0.0,

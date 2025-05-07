@@ -1,111 +1,78 @@
 package com.example.shoppieeclient.presentation.home.address.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.LightGray
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.domain.address.models.AddressModel
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AddressItem(
+fun CustomAddressItem(
     modifier: Modifier = Modifier,
     address: AddressModel,
-    isSelected: Boolean,
-    onEditClick: () -> Unit,
+    onClick: () -> Unit,
     onLongClick: () -> Unit,
-    onDeleteClick: () -> Unit,
     onSelectAddress: () -> Unit,
 ) {
-    Card(
+
+    Surface(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .combinedClickable(onClick = {
-//                onDismissSelection()
-                onSelectAddress()
-            }, onLongClick = { onLongClick() }),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected || address.isSelected) LightGray else Color.White
-        ),
+            .padding(horizontal = 20.dp)
+            .height(100.dp)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
+        shape = RoundedCornerShape(16.dp),
+        color = LightGray,
+        shadowElevation = 4.dp
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        Row(modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(
-                    text = address.streetAddress,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        color = PrimaryBlue, fontWeight = FontWeight.Bold
-                    )
+            RadioButton(
+                selected = address.isSelected,
+                onClick = onSelectAddress,
+                colors = RadioButtonDefaults.colors(
+                    selectedColor = PrimaryBlue,
+                    unselectedColor = Color.White.copy(alpha = 0.6f)
                 )
-                Text(
-                    text = address.state,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Black)
-                )
-                Text(
-                    text = address.city,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Black)
-                )
-                Text(
-                    text = address.zipCode,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Black)
-                )
-            }
+            )
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                if (address.isSelected) {
-                    Box(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clip(CircleShape)
-                            .border(
-                                width = 8.dp, color = PrimaryBlue, shape = CircleShape
-                            )
-                            .background(PrimaryBlue, CircleShape)
-                    )
-
-                }
-                TextButton(
-                    onClick = if (isSelected) onDeleteClick else onEditClick
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = if (isSelected) "Delete" else "Edit",
-                        color = if (isSelected) Color.Red else PrimaryBlue
+                        text = address.streetAddress,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Black
                     )
                 }
             }

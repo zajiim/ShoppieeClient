@@ -1,50 +1,48 @@
 package com.example.shoppieeclient.presentation.home.address.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.example.shoppieeclient.data.address.remote.dto.AddressRequest
-import com.example.shoppieeclient.domain.address.models.AddressModel
 import com.example.shoppieeclient.presentation.home.address.AddressEvents
+import com.example.shoppieeclient.presentation.home.address.AddressStates
 
-private const val TAG = "AddAddressForm"
+
 @Composable
 fun AddAddressForm(
-    address: AddressModel?,
+    modifier: Modifier = Modifier,
+    addressStates: AddressStates,
     onEvent: (AddressEvents) -> Unit,
-    isEditing: Boolean
 ) {
+
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .imePadding(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
-       CustomAddressTextField(
-           value = address?.streetAddress ?: "",
-           label = "Street Address",
-           onValueChange = { onEvent(AddressEvents.UpdateStreetAddress(it)) },
-           modifier = Modifier.fillMaxWidth(),
-           imeAction = ImeAction.Next
-       )
 
         CustomAddressTextField(
-            value = address?.city ?: "",
-            label = "City",
-            onValueChange = { onEvent(AddressEvents.UpdateCity(it)) },
             modifier = Modifier.fillMaxWidth(),
+            value = addressStates.streetAddressText,
+            label = "Street Address",
+            onValueChange = { onEvent(AddressEvents.StreetAddressChanged(it)) },
+            imeAction = ImeAction.Next
+        )
+
+        CustomAddressTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = addressStates.cityText,
+            label = "City",
+            onValueChange = { onEvent(AddressEvents.CityChanged(it)) },
             imeAction = ImeAction.Next
         )
 
@@ -54,34 +52,28 @@ fun AddAddressForm(
             verticalAlignment = Alignment.CenterVertically
         ) {
             CustomAddressTextField(
-                value = address?.state ?: "",
-                label = "State",
-                onValueChange = { onEvent(AddressEvents.UpdateState(it)) },
                 modifier = Modifier.weight(1f),
+                value = addressStates.stateText,
+                label = "State",
+                onValueChange = { onEvent(AddressEvents.StateChanged(it)) },
                 imeAction = ImeAction.Next
             )
 
             CustomAddressTextField(
-                value = address?.zipCode ?: "",
-                label = "Zip Code",
-                onValueChange = { onEvent(AddressEvents.UpdateZipCode(it)) },
                 modifier = Modifier.weight(1f),
+                value = addressStates.zipCodeText,
+                label = "Zip Code",
+                onValueChange = { onEvent(AddressEvents.ZipCodeChanged(it)) },
                 imeAction = ImeAction.Done
             )
         }
+
         Button(
-            onClick = {
-                if (isEditing) {
-                    address?.id?.let { id ->
-                        onEvent(AddressEvents.EditAddressSubmit(id))
-                    }
-                } else {
-                    onEvent(AddressEvents.AddAddressSubmit)
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(if (isEditing) "Edit Address" else "Save Address")
+            modifier = Modifier.fillMaxWidth(), onClick = { onEvent(AddressEvents.SaveAddress) }) {
+            Text(
+                text = if (addressStates.isEditing) "Update Address" else "Add Address",
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
     }
 }

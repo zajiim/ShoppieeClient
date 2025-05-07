@@ -80,30 +80,27 @@ class CheckOutViewModel(
         }
     }
 
+
     private fun getSelectedAddress() = viewModelScope.launch {
         getSelectedAddressUseCase().collectLatest { result ->
-            Log.e(TAG, "result is ===> $result", )
             when (result) {
                 is Resource.Loading -> {
                     checkOutState = checkOutState.copy(isLoading = true)
                 }
                 is Resource.Success -> {
-                    val firstAddress = result.data
                     checkOutState = checkOutState.copy(
-                        selectAddress = firstAddress,
+                        selectedAddress = result.data,
                         isLoading = false
                     )
-                    Log.e(TAG, "getSelectedAddress: Address result is ${checkOutState.selectAddress}", )
                 }
                 is Resource.Error -> {
-                    Log.e(TAG, "Error is ===> ${result.message}", )
                     checkOutState = checkOutState.copy(
-                        selectAddress = emptyList(),
-                        isLoading = false
+                        selectedAddress = emptyList(),
+                        isLoading = false,
+                        error = result.message
                     )
                 }
             }
-
         }
     }
 

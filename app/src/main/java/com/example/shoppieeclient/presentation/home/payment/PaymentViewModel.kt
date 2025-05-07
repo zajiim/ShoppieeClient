@@ -185,7 +185,7 @@ class PaymentViewModel(
                     cardHolderName = paymentState.nameText,
                     expirationDate = paymentState.expiryText,
                     cvv = paymentState.cvvText,
-                    isSelected = paymentState.selectedCard?.isSelected ?: false
+                    isSelected = paymentState.selectedCard?.isSelected == true
                 )
 
                 viewModelScope.launch {

@@ -161,7 +161,6 @@ class AddressRepoImpl(
             val addressResponse = addressApiService.getSelectedAddress()
             val addressList = addressResponse.result.addresses
             if (addressResponse.status == 200) {
-                Log.e(TAG, "getSelectedAddress: ${addressResponse.result}", )
                 val address = addressList.map { it.toAddressModel() }
                 emit(Resource.Success(address))
             } else {

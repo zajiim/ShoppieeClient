@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeGesturesPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,7 +24,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,15 +39,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.unit.dp
-import com.example.shoppieeclient.presentation.common.components.CustomAlertBox
 import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
 import com.example.shoppieeclient.presentation.home.address.components.AddAddressForm
-import com.example.shoppieeclient.presentation.home.address.components.AddressItem
+import com.example.shoppieeclient.presentation.home.address.components.CustomAddressItem
 import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
 import com.example.shoppieeclient.ui.theme.BackGroundColor
 import com.example.shoppieeclient.ui.theme.PrimaryBlue
 import org.koin.androidx.compose.koinViewModel
-import com.example.shoppieeclient.R
 
 private const val TAG = "AddressScreen"
 
@@ -59,24 +55,22 @@ fun AddressScreen(
     modifier: Modifier = Modifier,
     onNavigateClick: () -> Unit,
     addressViewModel: AddressViewModel = koinViewModel(),
-    onNavigateBack: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
     val state = addressViewModel.addressState
-    Box(modifier = modifier
-        .fillMaxSize()
-        .background(BackGroundColor)
-        .clickable(
-            interactionSource = remember { MutableInteractionSource() }, indication = null
-        ) {
-            if (state.selectedForDeletion != null) {
-                addressViewModel.onEvent(AddressEvents.UnSelectAddress)
-            }
-        }) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(BackGroundColor)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() }, indication = null
+            ) {
+            }) {
         Column(modifier = Modifier.fillMaxSize()) {
-            CustomNavigationTopAppBar(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            CustomNavigationTopAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 title = "Address",
                 navigationIcon = {
                     IconButton(
@@ -93,10 +87,10 @@ fun AddressScreen(
                     }
                 },
                 actions = {
-                    if (state.addresses?.isNotEmpty() == true) {
+                    if (state.addresses.isNotEmpty() == true) {
                         IconButton(
                             onClick = {
-                                addressViewModel.onEvent(AddressEvents.AddAddressClicked)
+                                addressViewModel.onEvent(AddressEvents.ShowAddAddressSheet)
                             },
                             modifier = Modifier
                                 .wrapContentSize()
@@ -111,143 +105,135 @@ fun AddressScreen(
                         }
                     }
                 })
-            when {
-                state.isLoading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                    ) {
-                        CustomLineProgressIndicator()
-                    }
-                }
 
-                state.addresses?.isEmpty() == true -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .padding(20.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(LightGray)
-                            .clickable {
-                                addressViewModel.onEvent(AddressEvents.AddAddressClicked)
-                            }, contentAlignment = Alignment.Center
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (state.isLoading) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Add, contentDescription = "Add address"
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Text(text = "Add address")
+                            CustomLineProgressIndicator()
                         }
                     }
                 }
 
-                state.addresses?.isNotEmpty() == true -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(state.addresses) { address ->
-                            AddressItem(
-                                address = address,
-                                isSelected = address == state.selectedForDeletion,
-                                onEditClick = {
-                                    addressViewModel.onEvent(AddressEvents.EditButtonClicked(address))
-                                },
-                                onLongClick = {
-                                    if (address == state.selectedForDeletion) {
-                                        addressViewModel.onEvent(AddressEvents.UnSelectAddress)
-                                    } else {
-                                        addressViewModel.onEvent(
-                                            AddressEvents.LongPressAddress(
-                                                address
-                                            )
-                                        )
-                                    }
-                                },
-                                onDeleteClick = {
-                                    addressViewModel.onEvent(AddressEvents.DeleteClicked)
-                                },
-                                onSelectAddress = {
-                                    addressViewModel.onEvent(AddressEvents.SelectAddress(address))
-                                }
-                            )
+                if (state.addresses.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .padding(20.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(LightGray)
+                                .clickable {
+                                    addressViewModel.onEvent(AddressEvents.ShowAddAddressSheet)
+                                }, contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "Add address"
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(text = "Add address")
+                            }
                         }
+                    }
+                } else {
+                    items(state.addresses) { address ->
+                        Log.e(TAG, "address details: ${address.id}")
+                        CustomAddressItem(
+                            address = address,
+                            onClick = {
+                                addressViewModel.onEvent(AddressEvents.LoadAddressDetails(address))
+                            },
+                            onLongClick = {
+                                addressViewModel.onEvent(AddressEvents.ShowDeleteDialog(address))
+                            },
+                            onSelectAddress = {
+                                addressViewModel.onEvent(AddressEvents.ShowSelectionDialog(address))
+                            }
+                        )
                     }
                 }
             }
         }
 
-        if (state.addresses?.any { it.isSelected } == true) {
-                Button(
-                    onClick = { state.selectedAddress?.id?.let { addressViewModel.onEvent(AddressEvents.ConfirmAddressSelection(addressId = it)) } },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter)
-                        .safeGesturesPadding()
-                ) {
-                    Text("Confirm Selection")
-                }
-            }
 
-
-
-        if (state.showDeleteConfirmation) {
-            AlertDialog(onDismissRequest = { addressViewModel.onEvent(AddressEvents.CancelDelete) },
-                title = { Text(text = "Remove address") },
-                text = { Text(text = "Are you sure you want to remove this address?") },
-                confirmButton = {
-                    TextButton(onClick = {
-                        state.selectedForDeletion?.let { address ->
-                            addressViewModel.onEvent(AddressEvents.ConfirmDelete(address))
-                        }
-                    }) {
-                        Text("Yes")
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { addressViewModel.onEvent(AddressEvents.CancelDelete) }) {
-                        Text("No")
-                    }
-                })
-        }
-
-
-
-        if (state.isAddAddressClicked) {
+        if (state.showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = {
-                    addressViewModel.onEvent(AddressEvents.DismissBottomSheet)
+                    addressViewModel.onEvent(AddressEvents.DismissAddAddressSheet)
                 }, sheetState = sheetState
             ) {
                 AddAddressForm(
-                    address = state.selectedAddress,
-                    onEvent = { onEditClickEvents ->
-                        addressViewModel.onEvent(onEditClickEvents)
-                    },
-                    isEditing = state.selectedAddress?.id?.isNotEmpty() == true
+                    addressStates = state,
+                    onEvent = { event ->
+                        addressViewModel.onEvent(event)
+                    }
                 )
-
             }
         }
-
-        if(state.confirmSelectedAddress) {
-            CustomAlertBox(
-                buttonText = "Go Back",
-                onDismiss = {},
-                onButtonClick = {
-                    onNavigateBack()
-                },
-                animationRes = R.raw.success,
-                message = "Address added successfully"
-            )
-        }
-
     }
+
+
+    if (state.showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { addressViewModel.onEvent(AddressEvents.DismissDeleteDialog) },
+            title = { Text("Delete Address") },
+            text = {
+                Text("Are you sure you want to delete this address?")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        state.addressToDeleteId?.let { id ->
+                            addressViewModel.onEvent(AddressEvents.DeleteAddress(id))
+                        }
+                    }) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { addressViewModel.onEvent(AddressEvents.DismissDeleteDialog) }) {
+                    Text("Cancel")
+                }
+            })
+    }
+
+    if (state.showSelectionDialog) {
+        AlertDialog(
+            onDismissRequest = { addressViewModel.onEvent(AddressEvents.DismissSelectionDialog) },
+            title = { Text("Set as Default Address") },
+            text = {
+                Text("Do you want to set this address as your default shipping address?")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        state.addressToSelect?.let { address ->
+                            addressViewModel.onEvent(AddressEvents.ConfirmAddressSelection)
+                        }
+                    }) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { addressViewModel.onEvent(AddressEvents.DismissSelectionDialog) }) {
+                    Text("Cancel")
+                }
+            })
+    }
+
 }
