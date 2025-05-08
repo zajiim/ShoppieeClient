@@ -12,12 +12,7 @@ data class CheckOutStates(
     val platformFees: Double = 0.0,
     val totalCost: Double = 0.0,
     val error: String? = null,
-    val paymentStatus: PaymentStatus = PaymentStatus.IDLE,
-    val paymentId: String? = null
+    val paymentId: String? = null,
+    val orderId: String? = null,
+    val razorPayOrderId: String? = null
 )
-
-
-
-enum class PaymentStatus {
-    IDLE, PROCESSING, SUCCESS, FAILED, CANCELLED
-}

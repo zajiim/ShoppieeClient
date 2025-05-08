@@ -1,5 +1,6 @@
 package com.example.shoppieeclient.presentation.home.checkout
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,22 +9,31 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shoppieeclient.domain.address.use_cases.GetSelectedAddressUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.GetCartTotalUseCase
+import com.example.shoppieeclient.domain.checkout.use_cases.CreateOrderUseCase
 import com.example.shoppieeclient.domain.checkout.use_cases.StartRPPaymentUseCase
 import com.example.shoppieeclient.domain.payment.use_cases.GetSelectedCardUseCase
 import com.example.shoppieeclient.utils.Resource
 import com.example.shoppieeclient.utils.roundToTwoDecimalPlaces
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 
 private const val TAG = "CheckOutViewModel"
 class CheckOutViewModel(
     private val getSelectedCardUseCase: GetSelectedCardUseCase,
     private val getSelectedAddressUseCase: GetSelectedAddressUseCase,
     private val getCartTotalUseCase: GetCartTotalUseCase,
+    private val createOrderUseCase: CreateOrderUseCase,
     private val startRPPaymentUseCase: StartRPPaymentUseCase
 ): ViewModel() {
     var checkOutState by mutableStateOf(CheckOutStates())
         private set
+
+    private var currentActivity: WeakReference<Activity>? = null
+
+    fun setActivity(activity: Activity?) {
+        currentActivity = WeakReference(activity)
+    }
 
     init {
         getSelectedCard()
@@ -36,46 +46,78 @@ class CheckOutViewModel(
         getSelectedCard()
     }
 
-    fun onEvent(event: CheckoutEvents) {
-        when(event) {
-            is CheckoutEvents.InitiatePayment -> {
-                checkOutState = checkOutState.copy(
-                    isLoading = true,
-                    paymentStatus = PaymentStatus.PROCESSING
-                )
-                try {
-                    startRPPaymentUseCase(
-                        amount = checkOutState.totalCost,
-                        activity = event.activity,
-                        description = event.description
-                    )
-                }catch (e: Exception) {
-                    checkOutState = checkOutState.copy(
-                        isLoading = false,
-                        paymentStatus = PaymentStatus.FAILED,
-                        error = e.message
-                    )
-                }
+    fun onEvent(events: CheckoutEvents) {
+        when(events) {
+            is CheckoutEvents.CreateOrder -> {
+                setActivity(events.activity)
+                Log.e(TAG, "currecy = ${events.currency}", )
+                createOrder(addressId = events.addressId, amount = events.amount, currency = events.currency)
             }
-            CheckoutEvents.PaymentCancelled -> {
-                checkOutState = checkOutState.copy(
-                    isLoading = false,
-                    paymentStatus = PaymentStatus.CANCELLED
+            is CheckoutEvents.PaymentSuccess -> {
+                Log.e(TAG, "success ss", )
+            checkOutState = checkOutState.copy(
+                isLoading = false,
+                paymentId = events.paymentId,
                 )
             }
             is CheckoutEvents.PaymentError -> {
+                Log.e(TAG, "failure ss", )
                 checkOutState = checkOutState.copy(
                     isLoading = false,
-                    paymentStatus = PaymentStatus.FAILED,
-                    error = event.errorDescription
+                    error = events.message
                 )
             }
-            is CheckoutEvents.PaymentSuccess -> {
-                checkOutState = checkOutState.copy(
-                    isLoading = false,
-                    paymentStatus = PaymentStatus.SUCCESS,
-                    paymentId = event.paymentId
-                )
+        }
+    }
+
+
+    fun createOrder(
+        addressId: String,
+        amount: Double,
+        currency: String
+    ) = viewModelScope.launch {
+        createOrderUseCase(addressId = addressId, amount = amount, currency = currency).collect { result ->
+            when(result) {
+                is Resource.Loading -> {
+                    checkOutState = checkOutState.copy(isLoading = true)
+                }
+                is Resource.Success -> {
+                    val orderResult = result.data
+                    if (orderResult != null) {
+                        Log.e(TAG, "orderResiult is not null: ", )
+                        val activity = currentActivity?.get()
+                        Log.e(TAG, "activity is $activity")
+                        if (activity != null) {
+                            Log.e(TAG, "orderResult ---> $orderResult ", )
+                            startRPPaymentUseCase(
+                                amount = orderResult.amount / 100.0,
+                                activity = activity,
+                                currency = orderResult.currency,
+                                keyId = orderResult.keyId,
+                                razorPayOrderId = orderResult.razorpayId,
+                                description = "Payment for Order"
+                            )
+                        } else {
+                            Log.e(TAG, "activity null: ", )
+                            checkOutState = checkOutState.copy(
+                                isLoading = false,
+                                error = "Activity is not available"
+                            )
+                        }
+                    } else {
+                        Log.e(TAG, "orderResiult is null: ", )
+                        checkOutState = checkOutState.copy(
+                            isLoading = false,
+                            error = "Failed to create order"
+                        )
+                    }
+                }
+                is Resource.Error -> {
+                    checkOutState = checkOutState.copy(
+                        isLoading = false,
+                        error = result.message
+                    )
+                }
             }
         }
     }
@@ -134,6 +176,4 @@ class CheckOutViewModel(
             }
         }
     }
-
-
 }

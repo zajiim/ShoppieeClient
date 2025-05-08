@@ -1,6 +1,7 @@
 package com.example.shoppieeclient.presentation.home.checkout
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
 import com.example.shoppieeclient.presentation.home.cart.components.CustomCheckOutCard
 import com.example.shoppieeclient.presentation.home.checkout.components.CustomCheckOutDetails
 import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
@@ -38,6 +40,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 private const val TAG = "CheckOutScreen"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckOutScreen(
@@ -46,49 +49,52 @@ fun CheckOutScreen(
     onAddressRoute: () -> Unit,
     onPaymentRoute: () -> Unit,
     viewModel: CheckOutViewModel = koinViewModel(),
-    paymentHandler: PaymentHandler = koinInject()
+    onPaymentSuccess: () -> Unit
 ) {
     val checkoutCardHeight = remember { mutableIntStateOf(0) }
     val checkOutState = viewModel.checkOutState
     val context = LocalContext.current
     val activity = context.findActivity()
-    val paymentResult = paymentHandler.paymentState
 
 
-    LaunchedEffect(paymentResult.paymentStatus) {
-        when(paymentResult.paymentStatus) {
-            PaymentStatus.SUCCESS -> {
-                viewModel.onEvent(CheckoutEvents.PaymentSuccess(paymentResult.paymentId.toString()))
-                paymentHandler.resetPaymentState()
-            }
-            PaymentStatus.FAILED -> {
-                viewModel.onEvent(CheckoutEvents.PaymentError(-1, paymentResult.error ?: "Unknown error occurred"))
-                paymentHandler.resetPaymentState()
-            }
-            PaymentStatus.CANCELLED -> {
-                viewModel.onEvent(CheckoutEvents.PaymentCancelled)
-            }
-            else -> {}
+    if (checkOutState.isLoading) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CustomLineProgressIndicator()
         }
     }
 
+    checkOutState.error?.let { errorMsg ->
+        Log.e(TAG, "CheckOutScreen: error ===> $errorMsg")
+        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
+    }
 
+    // Handle payment success
+    checkOutState.paymentId?.let { paymentId ->
+        LaunchedEffect(paymentId) {
+            Toast.makeText(context, "Payment successful", Toast.LENGTH_LONG).show()
+            onPaymentSuccess()
+        }
+    }
 
     LaunchedEffect(checkOutState.selectedAddress?.getOrNull(0)?.streetAddress) {
-        Log.e(TAG, "CheckOutScreen: called", )
+        Log.e(TAG, "CheckOutScreen: called")
         viewModel.refreshData()
     }
 
-    Log.e(TAG, "Checkout payment state ====> ${checkOutState.selectedCard}", )
+    Log.e(TAG, "Checkout payment state ====> ${checkOutState.selectedCard}")
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(BackGroundColor)
     ) {
         Column(/*modifier = Modifier.padding(bottom = with(LocalDensity.current) { checkoutCardHeight.intValue.toDp() })*/) {
-            CustomNavigationTopAppBar(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            CustomNavigationTopAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 title = "CheckOut",
                 navigationIcon = {
                     IconButton(
@@ -121,7 +127,13 @@ fun CheckOutScreen(
             CustomCheckOutDetails(
                 modifier = Modifier,
                 title = "Payment Method",
-                subtitle = checkOutState.selectedCard?.let { "**** **** **** ${it.cardNumber.takeLast(4)}" } ?: "Add new payment card",
+                subtitle = checkOutState.selectedCard?.let {
+                    "**** **** **** ${
+                        it.cardNumber.takeLast(
+                            4
+                        )
+                    }"
+                } ?: "Add new payment card",
                 onNavigateClick = onPaymentRoute
             )
         }
@@ -129,23 +141,27 @@ fun CheckOutScreen(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .wrapContentSize(Alignment.BottomCenter)
-                /*.onGloballyPositioned { layoutCoordinates ->
-                    checkoutCardHeight.intValue = layoutCoordinates.size.height
-                }*/,
+            /*.onGloballyPositioned { layoutCoordinates ->
+                checkoutCardHeight.intValue = layoutCoordinates.size.height
+            }*/,
             subTotal = checkOutState.subTotal,
             platformFees = checkOutState.platformFees,
             totalCost = checkOutState.totalCost,
             onCheckOutClicked = {
-                activity?.let {
-                    viewModel.onEvent(
-                        CheckoutEvents.InitiatePayment(
-                            amount = checkOutState.totalCost,
-                            activity = it,
-                            description = "Payment for order"
-                        )
-                    )
-                    Log.e(TAG, "total ===> ${checkOutState.totalCost}", )
+                if (checkOutState.selectedAddress.isNullOrEmpty()) {
+                    Toast.makeText(context, "Please add a delivery address", Toast.LENGTH_SHORT).show()
+                    return@CustomCheckOutCard
                 }
+                val addressId = checkOutState.selectedAddress[0].id
+                val totalAmountToBePaid = checkOutState.totalCost
+                val currency = "INR"
+
+                viewModel.onEvent(CheckoutEvents.CreateOrder(
+                    amount = totalAmountToBePaid,
+                    activity = activity,
+                    currency = currency,
+                    addressId = addressId.toString(),
+                ))
             },
             buttonText = "Place Order"
         )

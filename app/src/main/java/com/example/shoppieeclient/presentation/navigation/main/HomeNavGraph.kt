@@ -118,6 +118,9 @@ fun NavGraphBuilder.homeNavGraph(
                 },
                 onPaymentRoute = {
                     navController.navigate(Destination.Payment)
+                },
+                onPaymentSuccess = {
+                    navController.navigateUp()
                 }
             )
         }
