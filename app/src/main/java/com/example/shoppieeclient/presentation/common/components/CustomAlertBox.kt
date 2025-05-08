@@ -28,6 +28,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.presentation.auth.components.CustomButton
 import com.example.shoppieeclient.ui.theme.Primary
+import com.example.shoppieeclient.ui.theme.PrimaryBlue
 
 @Composable
 fun CustomAlertBox(
@@ -73,7 +74,7 @@ fun CustomAlertBox(
                 CustomButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = buttonText,
-                    backgroundColor = Primary,
+                    backgroundColor = PrimaryBlue,
                     contentColor = Color.White,
                     onButtonClicked = { onButtonClick() },
                     isLoading = isLoading

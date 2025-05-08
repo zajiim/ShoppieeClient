@@ -1,7 +1,6 @@
 package com.example.shoppieeclient.data.home.account.repository
 
 import android.util.Log
-import com.example.shoppieeclient.data.home.account.local.ProfileDatabase
 import com.example.shoppieeclient.data.home.account.local.dao.ProfileDao
 import com.example.shoppieeclient.data.home.account.remote.api.ShoppieeUserProfileService
 import com.example.shoppieeclient.data.home.account.remote.dto.UpdateProfileBody

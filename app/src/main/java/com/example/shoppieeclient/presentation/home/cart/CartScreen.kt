@@ -1,6 +1,5 @@
 package com.example.shoppieeclient.presentation.home.cart
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -33,7 +31,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
@@ -46,12 +43,14 @@ import com.example.shoppieeclient.ui.theme.BackGroundColor
 import org.koin.androidx.compose.koinViewModel
 
 private const val TAG = "CartScreen"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
     modifier: Modifier = Modifier,
     cartViewModel: CartViewModel = koinViewModel(),
     onNavigateClick: () -> Unit,
+    onCheckOutClicked: () -> Unit
 ) {
     val checkoutCardHeight = remember { mutableIntStateOf(0) }
     val uiState = cartViewModel.uiState
@@ -75,13 +74,13 @@ fun CartScreen(
                     CustomLineProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             }
+
             uiState.error != null -> {
                 EmptyScreen(
-                    title = "Error",
-                    subtitle = uiState.error,
-                    modifier = Modifier.fillMaxSize()
+                    title = "Error", subtitle = uiState.error, modifier = Modifier.fillMaxSize()
                 )
             }
+
             cartItems?.itemCount == 0 -> {
                 EmptyScreen(
                     modifier = Modifier
@@ -91,17 +90,13 @@ fun CartScreen(
                     subtitle = "Go shopping"
                 )
             }
+
             else -> {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.padding(
-                        bottom = with(LocalDensity.current) { checkoutCardHeight.intValue.toDp() }
-                    )
-                ) {
-                    CustomNavigationTopAppBar(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(bottom = with(LocalDensity.current) { checkoutCardHeight.intValue.toDp() })) {
+                    CustomNavigationTopAppBar(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                         title = "My Cart",
                         navigationIcon = {
                             IconButton(
@@ -116,10 +111,8 @@ fun CartScreen(
                                     contentDescription = "Go back"
                                 )
                             }
-                        }
-                    )
-                    CustomCartCardList(
-                        modifier = Modifier,
+                        })
+                    CustomCartCardList(modifier = Modifier,
                         cartItems = cartItems,
                         onIncrement = { id, size ->
                             cartViewModel.onEvent(CartEvents.IncrementItem(id, size))
@@ -131,8 +124,7 @@ fun CartScreen(
                             cartViewModel.onEvent(CartEvents.RemoveCartItem(id))
                         },
                         isLoading = uiState.isItemLoading,
-                        showToast = {cartViewModel.showToast()}
-                    )
+                        showToast = { cartViewModel.showToast() })
                 }
                 CustomCheckOutCard(
                     modifier = Modifier
@@ -143,36 +135,36 @@ fun CartScreen(
                         },
                     subTotal = uiState.subTotal,
                     platformFees = uiState.platformFees,
-                    totalCost = uiState.totalCost
+                    totalCost = uiState.totalCost,
+                    onCheckOutClicked = {
+                        onCheckOutClicked()
+                    },
+                    buttonText = "Checkout"
                 )
             }
         }
 
         if (uiState.showDeleteDialog) {
-            AlertDialog(
-                onDismissRequest = { cartViewModel.dismissDeletionDialog() },
+            AlertDialog(onDismissRequest = { cartViewModel.dismissDeletionDialog() },
                 title = { Text(text = "Remove Item") },
                 text = { Text(text = "Are you sure you want to remove this item from your cart?") },
                 confirmButton = {
-                    TextButton(
-                        onClick = { cartViewModel.confirmDeletion() }
-                    ) {
+                    TextButton(onClick = { cartViewModel.confirmDeletion() }) {
                         Text("Yes")
                     }
                 },
                 dismissButton = {
-                    TextButton(
-                        onClick = { cartViewModel.dismissDeletionDialog() }
-                    ) {
+                    TextButton(onClick = { cartViewModel.dismissDeletionDialog() }) {
                         Text("No")
                     }
-                }
-            )
+                })
         }
 
         if (uiState.showToast) {
             CustomToast(
-                modifier = modifier.align(Alignment.BottomCenter).padding(bottom = bottomBarHeight),
+                modifier = modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = bottomBarHeight),
                 message = "No more products available"
             )
         }

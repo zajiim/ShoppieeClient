@@ -3,11 +3,12 @@ package com.example.shoppieeclient.data.di
 
 import androidx.credentials.CredentialManager
 import androidx.room.Room
+import com.example.shoppieeclient.data.address.remote.api.AddressApiService
 import com.example.shoppieeclient.data.auth.remote.api.ShoppieApiService
 import com.example.shoppieeclient.data.cart.remote.api.ShoppieCartApiService
+import com.example.shoppieeclient.data.common.database.ShoppieDatabase
 import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObserverImpl
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
-import com.example.shoppieeclient.data.home.account.local.ProfileDatabase
 import com.example.shoppieeclient.data.home.account.remote.api.ShoppieeUserProfileService
 import com.example.shoppieeclient.data.home.home.remote.api.ShoppieeHomeApiService
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
@@ -33,6 +34,7 @@ import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import kotlin.math.sin
 
 val networkModule = module {
     //Unauthorized HttpClient
@@ -94,14 +96,15 @@ val networkModule = module {
     single {
         Room.databaseBuilder(
             androidContext(),
-            ProfileDatabase::class.java,
-            Constants.PROFILE_DATA_TABLE
+            ShoppieDatabase::class.java,
+            Constants.SHOPPIEE_DB
         ).fallbackToDestructiveMigration()
             .build()
     }
     //Provides profileDao
-    single { get<ProfileDatabase>().profileDao() }
-
+    single { get<ShoppieDatabase>().profileDao() }
+//    single { get<ShoppieDatabase>().selectedAddressDao() }
+    single { get<ShoppieDatabase>().paymentDao()}
     single { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
 
     // Provide NetworkConnectivityObserver
@@ -117,6 +120,7 @@ val networkModule = module {
     single { ShoppieeHomeApiService(get(named("UnauthorizedHttpClient")), get(named("AuthorizedHttpClient"))) }
     single { ShoppieCartApiService(get(named("AuthorizedHttpClient"))) }
     single { ShoppieeUserProfileService(get(named("AuthorizedHttpClient"))) }
+    single { AddressApiService(get(named("AuthorizedHttpClient"))) }
 
     // Provide Credential Manager
 
