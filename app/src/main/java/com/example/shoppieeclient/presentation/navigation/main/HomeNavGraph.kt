@@ -22,6 +22,7 @@ import com.example.shoppieeclient.presentation.home.notifications.NotificationsS
 import com.example.shoppieeclient.presentation.home.payment.PaymentScreen
 import com.example.shoppieeclient.presentation.home.profile.ProfileScreen
 import com.example.shoppieeclient.presentation.home.checkout.CheckOutScreen
+import com.example.shoppieeclient.presentation.home.checkout.CheckOutViewModel
 import com.example.shoppieeclient.presentation.navigation.Destination
 import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
 import org.koin.androidx.compose.koinViewModel
@@ -32,6 +33,7 @@ import org.koin.androidx.compose.koinViewModel
 fun NavGraphBuilder.homeNavGraph(
     navController: NavHostController,
     sharedTransitionScope: SharedTransitionScope,
+    checkOutViewModel: CheckOutViewModel
 ) {
     navigation<Graphs.Home>(
         startDestination = Destination.Home
@@ -110,6 +112,7 @@ fun NavGraphBuilder.homeNavGraph(
 
         composable<Destination.CheckOut> {
             CheckOutScreen(
+                viewModel = checkOutViewModel,
                 onNavigateClick = {
                     navController.navigateUp()
                 },

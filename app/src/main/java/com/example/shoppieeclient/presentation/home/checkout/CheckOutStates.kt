@@ -14,5 +14,8 @@ data class CheckOutStates(
     val error: String? = null,
     val paymentId: String? = null,
     val orderId: String? = null,
-    val razorPayOrderId: String? = null
+    val razorPayOrderId: String? = null,
+    val paymentVerificationLoading: Boolean = false,
+    val paymentVerified: Boolean = false,
+    val paymentSignature: String? = null
 )

@@ -1,6 +1,7 @@
 package com.example.shoppieeclient.domain.checkout.repository
 
 import android.app.Activity
+import com.example.shoppieeclient.domain.checkout.model.PaymentVerificationResponseModel
 import com.example.shoppieeclient.domain.checkout.model.RazorPayOrderResponseModel
 import com.example.shoppieeclient.utils.Resource
 import kotlinx.coroutines.flow.Flow
@@ -21,4 +22,12 @@ interface RazorPayPaymentRepository {
         keyId: String,
         description: String = "Payment for Order"
     )
+
+    fun verifyPayment(
+        orderId: String,
+        paymentId: String,
+        signature: String,
+        razorPayOrderId: String
+    ): Flow<Resource<PaymentVerificationResponseModel>>
+
 }

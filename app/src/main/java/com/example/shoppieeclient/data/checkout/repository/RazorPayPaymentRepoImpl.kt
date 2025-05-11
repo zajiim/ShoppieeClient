@@ -6,7 +6,10 @@ import com.example.shoppieeclient.BuildConfig
 import com.example.shoppieeclient.R
 import com.example.shoppieeclient.data.checkout.remote.api.ShoppieCheckoutApiService
 import com.example.shoppieeclient.data.checkout.remote.dto.CreateOrderRequestDto
+import com.example.shoppieeclient.data.checkout.remote.dto.VerifyPaymentRequestDto
 import com.example.shoppieeclient.data.checkout.remote.mapper.toOrderResponseModel
+import com.example.shoppieeclient.data.checkout.remote.mapper.toPaymentVerificationResponseModel
+import com.example.shoppieeclient.domain.checkout.model.PaymentVerificationResponseModel
 import com.example.shoppieeclient.domain.checkout.model.RazorPayOrderResponseModel
 import com.example.shoppieeclient.domain.checkout.repository.RazorPayPaymentRepository
 import com.example.shoppieeclient.utils.Resource
@@ -88,13 +91,6 @@ class RazorPayPaymentRepoImpl(
                 put("currency", currency)
                 put("amount", (amount * 100).toLong())
                 put("order_id", razorPayOrderId)
-                put("method", JSONObject().apply {
-                    put("upi", true)
-                    put("qr", true)
-                    put("card", true)
-                    put("netbanking", true)
-                    put("wallet", true)
-                })
                 put("upi", JSONObject().apply {
                     put("flow", "intent")
                 })
@@ -114,7 +110,45 @@ class RazorPayPaymentRepoImpl(
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            Log.e(TAG, "Payment start failed: ${e.localizedMessage}")
         }
     }
+
+    override fun verifyPayment(
+        orderId: String,
+        paymentId: String,
+        signature: String,
+        razorPayOrderId: String
+    ): Flow<Resource<PaymentVerificationResponseModel>> = flow {
+        try {
+            emit(Resource.Loading())
+            val response = shoppieCheckoutApiService.verifyPayment(VerifyPaymentRequestDto(
+                orderId = orderId,
+                paymentId = paymentId,
+                signature = signature,
+                razorpayId = razorPayOrderId
+                )
+            )
+            val result = response.result
+            if (response.status == 200) {
+                val orderResult = result.toPaymentVerificationResponseModel()
+                emit(Resource.Success(orderResult))
+            } else {
+                emit(Resource.Error("Error: ${response.message}"))
+            }
+        } catch (e: ClientRequestException) {
+            emit(Resource.Error(e.message))
+        } catch (e: ServerResponseException) {
+            emit(Resource.Error(e.message))
+        } catch (e: SerializationException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Unknown error occurred"))
+        }
+    }.catch { e ->
+        emit(Resource.Error(e.message ?: "Unexpected error occurred"))
+    }.flowOn(Dispatchers.IO)
 
 }

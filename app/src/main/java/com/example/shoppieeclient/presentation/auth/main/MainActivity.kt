@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
@@ -28,8 +29,12 @@ private const val TAG = "MainActivity"
 class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
     private val connectivityObserver: NetworkConnectivityObserver by inject()
     private val mainActivityViewModel: MainActivityViewModel by viewModel()
-//    private val paymentHandler: PaymentHandler by inject()
-    private val checkOutViewModel: CheckOutViewModel by viewModel()
+
+    //    private val paymentHandler: PaymentHandler by inject()
+//    private val checkOutViewModel: CheckOutViewModel by viewModel()
+    private val sharedCheckOutViewModel: CheckOutViewModel by viewModel()
+
+//    private val checkOutViewModel: CheckOutViewModel by viewModels()
 
     @OptIn(ExperimentalSharedTransitionApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +65,8 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                         ShoppieNavGraph(
                             navController = navController,
                             connectivityObserver = connectivityObserver,
-                            mainActivityViewModel = mainActivityViewModel
+                            mainActivityViewModel = mainActivityViewModel,
+                            checkOutViewModel = sharedCheckOutViewModel
                         )
                     }
                 }
@@ -71,14 +77,28 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
     override fun onPaymentSuccess(paymentId: String?, data: PaymentData?) {
         data?.let {
 //            paymentHandler.onPaymentSuccess(paymentId ?: "Unknown error occurred")
-            Log.e(TAG, "onPaymentSuccess: ", )
-            checkOutViewModel.onEvent(CheckoutEvents.PaymentSuccess(paymentId = it.paymentId))
+            Log.e(TAG, "onPaymentSuccess: ${data.signature}")
+            Log.e(TAG, "Before event - OrderID: ${sharedCheckOutViewModel.checkOutState.orderId}, " +
+                    "RazorPayID: ${sharedCheckOutViewModel.checkOutState.razorPayOrderId}")
+
+            sharedCheckOutViewModel.onEvent(
+                CheckoutEvents.PaymentSuccess(
+                    paymentId = it.paymentId,
+                    signature = data.signature
+                )
+            )
+//            finish()
         }
     }
 
     override fun onPaymentError(code: Int, description: String?, data: PaymentData?) {
 //        paymentHandler.onPaymentError(code, description ?: "Unknown error occurred")
-        Log.e(TAG, "onPaymentError: ", )
-        checkOutViewModel.onEvent(CheckoutEvents.PaymentError(message = description ?: "Payment failed"))
+        Log.e(TAG, "onPaymentError: ")
+        sharedCheckOutViewModel.onEvent(
+            CheckoutEvents.PaymentError(
+                message = description ?: "Payment failed"
+            )
+        )
+//        finish()
     }
 }

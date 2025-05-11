@@ -81,7 +81,8 @@ val viewmodelModule = module {
             getSelectedAddressUseCase = get(),
             getCartTotalUseCase = get(),
             startRPPaymentUseCase = get(),
-            createOrderUseCase = get()
+            createOrderUseCase = get(),
+            verifyPaymentUseCase = get()
         )
     }
 }

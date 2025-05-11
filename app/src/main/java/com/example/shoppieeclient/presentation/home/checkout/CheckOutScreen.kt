@@ -48,7 +48,8 @@ fun CheckOutScreen(
     onNavigateClick: () -> Unit,
     onAddressRoute: () -> Unit,
     onPaymentRoute: () -> Unit,
-    viewModel: CheckOutViewModel = koinViewModel(),
+    viewModel: CheckOutViewModel,
+//    viewModel: CheckOutViewModel = koinViewModel(),
     onPaymentSuccess: () -> Unit
 ) {
     val checkoutCardHeight = remember { mutableIntStateOf(0) }
@@ -72,19 +73,7 @@ fun CheckOutScreen(
     }
 
     // Handle payment success
-    checkOutState.paymentId?.let { paymentId ->
-        LaunchedEffect(paymentId) {
-            Toast.makeText(context, "Payment successful", Toast.LENGTH_LONG).show()
-            onPaymentSuccess()
-        }
-    }
 
-    LaunchedEffect(checkOutState.selectedAddress?.getOrNull(0)?.streetAddress) {
-        Log.e(TAG, "CheckOutScreen: called")
-        viewModel.refreshData()
-    }
-
-    Log.e(TAG, "Checkout payment state ====> ${checkOutState.selectedCard}")
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -157,7 +146,8 @@ fun CheckOutScreen(
                 val currency = "INR"
 
                 viewModel.onEvent(CheckoutEvents.CreateOrder(
-                    amount = totalAmountToBePaid,
+//                    amount = totalAmountToBePaid,
+                    amount = 10.0,
                     activity = activity,
                     currency = currency,
                     addressId = addressId.toString(),
