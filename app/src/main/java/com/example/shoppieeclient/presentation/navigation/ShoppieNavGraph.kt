@@ -22,6 +22,7 @@ import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
 import com.example.shoppieeclient.presentation.navigation.main.homeNavGraph
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.runtime.getValue
+import com.example.shoppieeclient.presentation.home.checkout.CheckOutViewModel
 
 
 private const val TAG = "ShoppieNavGraph"
@@ -33,7 +34,8 @@ private const val TAG = "ShoppieNavGraph"
 fun ShoppieNavGraph(
     navController: NavHostController,
     mainActivityViewModel: MainActivityViewModel,
-    connectivityObserver: NetworkConnectivityObserver
+    connectivityObserver: NetworkConnectivityObserver,
+    checkOutViewModel: CheckOutViewModel
 ) {
     val startDestination = mainActivityViewModel.startDestination
     val userDetails by mainActivityViewModel.userDetails.collectAsState()
@@ -78,6 +80,7 @@ fun ShoppieNavGraph(
 
                 homeNavGraph(
                     navController = navController,
+                    checkOutViewModel = checkOutViewModel,
                     sharedTransitionScope = this@SharedTransitionLayout,
                 )
             }

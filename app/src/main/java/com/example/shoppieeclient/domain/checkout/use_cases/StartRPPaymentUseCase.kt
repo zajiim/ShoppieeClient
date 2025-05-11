@@ -7,11 +7,21 @@ import com.example.shoppieeclient.domain.checkout.repository.RazorPayPaymentRepo
 class StartRPPaymentUseCase(
     private val paymentRepository: RazorPayPaymentRepository
 ) {
-    operator fun invoke(amount: Double, activity: Activity, description: String) {
-        paymentRepository.startPayment(amount, activity, description)
-    }
-
-    fun setPaymentResultCallback(callback: PaymentResultCallback) {
-        paymentRepository.setPaymentResultCallback(callback)
+    operator fun invoke(
+        amount: Double,
+        activity: Activity,
+        currency: String,
+        razorPayOrderId: String,
+        keyId: String,
+        description: String = "Payment for Order"
+    ) {
+        paymentRepository.startPayment(
+            amount = amount,
+            activity = activity,
+            currency = currency,
+            razorPayOrderId = razorPayOrderId,
+            keyId = keyId,
+            description = description
+        )
     }
 }

@@ -33,6 +33,8 @@ import com.example.shoppieeclient.domain.cart.use_cases.GetCartTotalUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.GetCartUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.IncrementItemUseCase
 import com.example.shoppieeclient.domain.cart.use_cases.RemoveItemUseCase
+import com.example.shoppieeclient.domain.checkout.use_cases.CreateOrderUseCase
+import com.example.shoppieeclient.domain.checkout.use_cases.PaymentVerificationUseCase
 import com.example.shoppieeclient.domain.checkout.use_cases.StartRPPaymentUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.GetProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UpdateProfileDataUseCase
@@ -253,5 +255,12 @@ val useCasesModule = module {
         StartRPPaymentUseCase(get())
     }
 
+    single {
+        CreateOrderUseCase(get())
+    }
+
+    single {
+        PaymentVerificationUseCase(get())
+    }
 
 }

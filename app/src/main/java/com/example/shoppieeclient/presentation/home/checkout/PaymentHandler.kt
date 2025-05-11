@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import com.example.shoppieeclient.domain.checkout.repository.PaymentResultCallback
 import com.example.shoppieeclient.domain.checkout.use_cases.StartRPPaymentUseCase
 
+/*
 class PaymentHandler(
     startRPPaymentUseCase: StartRPPaymentUseCase
 ): PaymentResultCallback {
@@ -49,4 +50,4 @@ class PaymentHandler(
             error = null
         )
     }
-}
+}*/

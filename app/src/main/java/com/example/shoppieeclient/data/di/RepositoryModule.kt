@@ -18,7 +18,6 @@ import com.example.shoppieeclient.domain.checkout.repository.RazorPayPaymentRepo
 import com.example.shoppieeclient.domain.home.account.repository.AccountsCloudinaryRepo
 import com.example.shoppieeclient.domain.home.account.repository.ShoppieeUserProfileRepo
 import com.example.shoppieeclient.domain.payment.repository.PaymentRepository
-import com.example.shoppieeclient.presentation.home.checkout.PaymentHandler
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -32,6 +31,6 @@ val repositoryModule = module {
     single<SocialMediaSignInRepo> { SocialMediaSignInRepoImpl(credentialManager = get(), callbackManager = get()) }
     single<AddressRepo> { AddressRepoImpl(addressApiService = get()) }
     single<PaymentRepository> { PaymentRepoImpl(paymentDao = get()) }
-    single<RazorPayPaymentRepository> { RazorPayPaymentRepoImpl() }
-    single { PaymentHandler(get()) }
+    single<RazorPayPaymentRepository> { RazorPayPaymentRepoImpl(shoppieCheckoutApiService = get()) }
+//    single { PaymentHandler(get()) }
 }
