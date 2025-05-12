@@ -45,4 +45,7 @@ sealed class Destination() {
     @Serializable
     object Address: Destination()
 
+    @Serializable
+    object Order: Destination()
+
 }

@@ -1,7 +1,9 @@
 package com.example.shoppieeclient.presentation.navigation
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
@@ -27,6 +29,7 @@ import com.example.shoppieeclient.presentation.home.checkout.CheckOutViewModel
 
 private const val TAG = "ShoppieNavGraph"
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalSharedTransitionApi
 @SuppressLint("RestrictedApi", "UnusedMaterial3ScaffoldPaddingParameter")

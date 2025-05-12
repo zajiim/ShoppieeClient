@@ -23,6 +23,7 @@ import com.example.shoppieeclient.presentation.home.payment.PaymentScreen
 import com.example.shoppieeclient.presentation.home.profile.ProfileScreen
 import com.example.shoppieeclient.presentation.home.checkout.CheckOutScreen
 import com.example.shoppieeclient.presentation.home.checkout.CheckOutViewModel
+import com.example.shoppieeclient.presentation.home.order.OrderScreen
 import com.example.shoppieeclient.presentation.navigation.Destination
 import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
 import org.koin.androidx.compose.koinViewModel
@@ -38,68 +39,70 @@ fun NavGraphBuilder.homeNavGraph(
     navigation<Graphs.Home>(
         startDestination = Destination.Home
     ) {
-            composable<Destination.Home> {
-                HomeScreen(
-                    onNavigateToDetails = {
-                        navController.navigate(
-                            Destination.Details(
-                                id = it
-                            )
+        composable<Destination.Home> {
+            HomeScreen(
+                onNavigateToDetails = {
+                    navController.navigate(
+                        Destination.Details(
+                            id = it
                         )
-                    },
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = this
-                )
-            }
+                    )
+                },
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = this
+            )
+        }
 
-            composable<Destination.Details> { backStackEntry ->
-                val user = backStackEntry.toRoute<Destination.Details>()
-                val viewModel: DetailsViewModel = koinViewModel()
-                DetailsScreen(
-                    viewModel = viewModel,
-                    onNavigateClick = { navController.navigateUp() },
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = this
-                )
-            }
+        composable<Destination.Details> { backStackEntry ->
+            val user = backStackEntry.toRoute<Destination.Details>()
+            val viewModel: DetailsViewModel = koinViewModel()
+            DetailsScreen(
+                viewModel = viewModel,
+                onNavigateClick = { navController.navigateUp() },
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = this
+            )
+        }
 
-            composable<Destination.Favorites> {
-                FavoriesScreen()
-            }
-            composable<Destination.Cart> {
-                CartScreen(
-                    onNavigateClick = {
-                        navController.navigateUp()
-                    },
-                    onCheckOutClicked = {
-                        navController.navigate(Destination.CheckOut)
-                    }
-                )
-            }
-            composable<Destination.Notifications> {
-                NotificationsScreen()
-            }
-            composable<Destination.Profile> {
-                ProfileScreen(
-                    onNavigateClick = {
-                        navController.navigateUp()
-                    },
-                    onProfileSettingsClick = {
-                        navController.navigate(Destination.Account)
-                    },
-                    onShippingAddressClick = {
-                        navController.navigate(Destination.CheckOut)
-                    },
-                    onPaymentInfoClick = {
-                        navController.navigate(Destination.Payment)
+        composable<Destination.Favorites> {
+            FavoriesScreen()
+        }
+        composable<Destination.Cart> {
+            CartScreen(
+                onNavigateClick = {
+                    navController.navigateUp()
+                },
+                onCheckOutClicked = {
+                    navController.navigate(Destination.CheckOut)
+                }
+            )
+        }
+        composable<Destination.Notifications> {
+            NotificationsScreen()
+        }
+        composable<Destination.Profile> {
+            ProfileScreen(
+                onNavigateClick = {
+                    navController.navigateUp()
+                },
+                onProfileSettingsClick = {
+                    navController.navigate(Destination.Account)
+                },
+                onShippingAddressClick = {
+                    navController.navigate(Destination.CheckOut)
+                },
+                onPaymentInfoClick = {
+                    navController.navigate(Destination.Payment)
 
-                    },
-                    onDeleteAccountClick = {
-                        navController.navigate(Destination.Delete)
-
-                    }
-                )
-            }
+                },
+                onDeleteAccountClick = {
+                    navController.navigate(Destination.Delete)
+                },
+                onOrderClick = {
+                    navController.navigate(Destination.Order)
+                }
+            )
+        }
 
 
         composable<Destination.Account> {
@@ -152,6 +155,9 @@ fun NavGraphBuilder.homeNavGraph(
                     navController.navigateUp()
                 }
             )
+        }
+        composable<Destination.Order> {
+            OrderScreen()
         }
 
     }

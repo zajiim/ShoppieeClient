@@ -49,7 +49,6 @@ fun CheckOutScreen(
     onAddressRoute: () -> Unit,
     onPaymentRoute: () -> Unit,
     viewModel: CheckOutViewModel,
-//    viewModel: CheckOutViewModel = koinViewModel(),
     onPaymentSuccess: () -> Unit
 ) {
     val checkoutCardHeight = remember { mutableIntStateOf(0) }

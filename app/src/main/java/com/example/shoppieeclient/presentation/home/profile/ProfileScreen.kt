@@ -45,7 +45,8 @@ fun ProfileScreen(
     onProfileSettingsClick: () -> Unit,
     onShippingAddressClick: () -> Unit,
     onPaymentInfoClick: () -> Unit,
-    onDeleteAccountClick: () -> Unit
+    onDeleteAccountClick: () -> Unit,
+    onOrderClick: () -> Unit,
  ) {
 
     val state = profileViewModel.profileStates
@@ -70,6 +71,11 @@ fun ProfileScreen(
             icon = painterResource(R.drawable.ic_delete_account),
             title = "Delete Account",
             onClick = onDeleteAccountClick
+        ),
+        ProfileSectionItem(
+            icon = painterResource(R.drawable.ic_order),
+            title = "Orders",
+            onClick = onOrderClick
         )
     )
     Column(
