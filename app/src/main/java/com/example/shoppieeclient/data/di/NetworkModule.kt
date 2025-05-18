@@ -1,6 +1,7 @@
 package com.example.shoppieeclient.data.di
 
 
+import android.util.Log
 import androidx.credentials.CredentialManager
 import androidx.room.Room
 import com.example.shoppieeclient.data.address.remote.api.AddressApiService
@@ -12,6 +13,7 @@ import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObse
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
 import com.example.shoppieeclient.data.home.account.remote.api.ShoppieeUserProfileService
 import com.example.shoppieeclient.data.home.home.remote.api.ShoppieeHomeApiService
+import com.example.shoppieeclient.data.order.remote.api.ShoppieeOrderApiService
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
 import com.example.shoppieeclient.domain.checkout.repository.RazorPayPaymentRepository
@@ -121,6 +123,7 @@ val networkModule = module {
     single { ShoppieApiService(get(named("UnauthorizedHttpClient"))) }
     single { ShoppieeHomeApiService(get(named("UnauthorizedHttpClient")), get(named("AuthorizedHttpClient"))) }
     single { ShoppieCartApiService(get(named("AuthorizedHttpClient"))) }
+    single { ShoppieeOrderApiService(get(named("AuthorizedHttpClient"))) }
     single { ShoppieeUserProfileService(get(named("AuthorizedHttpClient"))) }
     single { AddressApiService(get(named("AuthorizedHttpClient"))) }
     single { ShoppieCheckoutApiService(get(named("AuthorizedHttpClient"))) }

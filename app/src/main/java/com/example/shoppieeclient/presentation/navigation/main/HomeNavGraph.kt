@@ -157,7 +157,11 @@ fun NavGraphBuilder.homeNavGraph(
             )
         }
         composable<Destination.Order> {
-            OrderScreen()
+            OrderScreen(
+                onNavigateClick = {
+                    navController.navigateUp()
+                }
+            )
         }
 
     }

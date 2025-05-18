@@ -8,6 +8,7 @@ import com.example.shoppieeclient.data.checkout.repository.RazorPayPaymentRepoIm
 import com.example.shoppieeclient.data.home.account.repository.AccountsCloudinaryRepoImpl
 import com.example.shoppieeclient.data.home.account.repository.ShoppieeUpdateProfileRepoImpl
 import com.example.shoppieeclient.data.home.home.repository.ShoppieeHomeRepoImpl
+import com.example.shoppieeclient.data.order.repository.ShoppieeOrderRepoImpl
 import com.example.shoppieeclient.data.payment.repository.PaymentRepoImpl
 import com.example.shoppieeclient.domain.address.repository.AddressRepo
 import com.example.shoppieeclient.domain.auth.repository.ShoppieRepo
@@ -17,6 +18,7 @@ import com.example.shoppieeclient.domain.cart.repository.ShoppieCartRepo
 import com.example.shoppieeclient.domain.checkout.repository.RazorPayPaymentRepository
 import com.example.shoppieeclient.domain.home.account.repository.AccountsCloudinaryRepo
 import com.example.shoppieeclient.domain.home.account.repository.ShoppieeUserProfileRepo
+import com.example.shoppieeclient.domain.order.repository.ShoppieeOrderRepo
 import com.example.shoppieeclient.domain.payment.repository.PaymentRepository
 import org.koin.dsl.module
 
@@ -26,6 +28,7 @@ val repositoryModule = module {
     single<ShoppieRepo> { ShoppieeRepoImpl(get()) }
     single<ShoppieeHomeRepo> { ShoppieeHomeRepoImpl(get()) }
     single<ShoppieCartRepo> { ShoppieCartRepoImpl(get()) }
+    single<ShoppieeOrderRepo> { ShoppieeOrderRepoImpl(get()) }
     single<AccountsCloudinaryRepo> { AccountsCloudinaryRepoImpl() }
     single<ShoppieeUserProfileRepo> { ShoppieeUpdateProfileRepoImpl(shoppieeUserProfileService = get(), profileDao = get()) }
     single<SocialMediaSignInRepo> { SocialMediaSignInRepoImpl(credentialManager = get(), callbackManager = get()) }

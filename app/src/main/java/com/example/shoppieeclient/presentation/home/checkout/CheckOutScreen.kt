@@ -145,8 +145,7 @@ fun CheckOutScreen(
                 val currency = "INR"
 
                 viewModel.onEvent(CheckoutEvents.CreateOrder(
-//                    amount = totalAmountToBePaid,
-                    amount = 10.0,
+                    amount = totalAmountToBePaid,
                     activity = activity,
                     currency = currency,
                     addressId = addressId.toString(),
