@@ -63,7 +63,8 @@ fun AddressScreen(
             .fillMaxSize()
             .background(BackGroundColor)
             .clickable(
-                interactionSource = remember { MutableInteractionSource() }, indication = null
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
             ) {
             }) {
         Column(modifier = Modifier.fillMaxSize()) {

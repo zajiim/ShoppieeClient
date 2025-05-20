@@ -206,7 +206,7 @@ class CheckOutViewModel(
     }
 
 
-    private fun getSelectedAddress() = viewModelScope.launch {
+     fun getSelectedAddress() = viewModelScope.launch {
         getSelectedAddressUseCase().collectLatest { result ->
             when (result) {
                 is Resource.Loading -> {

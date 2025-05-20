@@ -16,7 +16,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -24,9 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.example.shoppieeclient.presentation.common.components.CustomLineProgressIndicator
 import com.example.shoppieeclient.presentation.home.cart.components.CustomCheckOutCard
@@ -34,10 +31,6 @@ import com.example.shoppieeclient.presentation.home.checkout.components.CustomCh
 import com.example.shoppieeclient.presentation.home.details.components.CustomNavigationTopAppBar
 import com.example.shoppieeclient.ui.theme.BackGroundColor
 import com.example.shoppieeclient.utils.findActivity
-import com.razorpay.PaymentData
-import com.razorpay.PaymentResultWithDataListener
-import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 
 private const val TAG = "CheckOutScreen"
 
@@ -57,6 +50,9 @@ fun CheckOutScreen(
     val context = LocalContext.current
     val activity = context.findActivity()
 
+    LaunchedEffect(checkOutState.selectedAddress) {
+        viewModel.getSelectedAddress()
+    }
 
     if (checkOutState.isLoading) {
         Box(
@@ -138,20 +134,23 @@ fun CheckOutScreen(
             totalCost = checkOutState.totalCost,
             onCheckOutClicked = {
                 if (checkOutState.selectedAddress.isNullOrEmpty()) {
-                    Toast.makeText(context, "Please add a delivery address", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Please add a delivery address", Toast.LENGTH_SHORT)
+                        .show()
                     return@CustomCheckOutCard
                 }
                 val addressId = checkOutState.selectedAddress[0].id
                 val totalAmountToBePaid = checkOutState.totalCost
                 val currency = "INR"
 
-                viewModel.onEvent(CheckoutEvents.CreateOrder(
-//                    amount = totalAmountToBePaid,
-                    amount = 10.0,
-                    activity = activity,
-                    currency = currency,
-                    addressId = addressId.toString(),
-                ))
+                viewModel.onEvent(
+                    CheckoutEvents.CreateOrder(
+                    amount = totalAmountToBePaid,
+//                        amount = 10.0,
+                        activity = activity,
+                        currency = currency,
+                        addressId = addressId.toString(),
+                    )
+                )
             },
             buttonText = "Place Order"
         )

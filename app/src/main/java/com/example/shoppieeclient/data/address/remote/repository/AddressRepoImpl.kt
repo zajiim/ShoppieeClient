@@ -28,7 +28,7 @@ class AddressRepoImpl(
             val addressResponse = addressApiService.getAddresses()
             val addresses = addressResponse.result.addresses
             if (addressResponse.status == 200) {
-                val address = addresses?.map { it.toAddressModel() }
+                val address = addresses.map { it.toAddressModel() }
                 emit(Resource.Success(address))
             } else {
                 emit(Resource.Error(addressResponse.message))
