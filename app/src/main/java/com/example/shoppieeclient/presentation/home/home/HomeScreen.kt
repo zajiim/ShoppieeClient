@@ -42,8 +42,8 @@ private const val TAG = "HomeScreen"
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel = koinViewModel(),
     onNavigateToDetails: (String) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope

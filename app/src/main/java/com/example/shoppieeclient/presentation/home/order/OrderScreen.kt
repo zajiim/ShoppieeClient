@@ -3,8 +3,11 @@ package com.example.shoppieeclient.presentation.home.order
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -44,6 +47,7 @@ fun OrderScreen(
     val orderCardHeight = remember { mutableIntStateOf(0) }
     val orderUiStates = ordersViewModel.ordersUiStates
     val orderItems = orderUiStates.orders?.collectAsLazyPagingItems()
+    val bottomBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
 
     Box(
@@ -109,20 +113,14 @@ fun OrderScreen(
                             }
                         })
                     CustomOrderItem(
-                        modifier = Modifier,
+                        modifier = Modifier.padding(bottom = bottomBarHeight),
                         orderItems = orderItems,
                         onTrackOrderClick = {
 
                         }
                     )
-
-
                 }
             }
         }
-
-
     }
-
-
 }
