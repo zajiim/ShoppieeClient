@@ -77,7 +77,7 @@ fun OrderScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp),
-                    title = "Cart is empty",
+                    title = "Order is empty",
                     subtitle = "Go shopping"
                 )
             }

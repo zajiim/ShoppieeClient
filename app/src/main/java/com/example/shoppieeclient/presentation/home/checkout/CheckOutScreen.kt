@@ -57,6 +57,10 @@ fun CheckOutScreen(
     val activity = context.findActivity()
 
 
+    LaunchedEffect(checkOutState.selectedAddress) {
+        viewModel.getSelectedAddress()
+    }
+
     if (checkOutState.isLoading) {
         Box(
             modifier = modifier.fillMaxSize(),
