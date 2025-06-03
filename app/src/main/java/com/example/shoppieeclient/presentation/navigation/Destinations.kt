@@ -32,7 +32,6 @@ sealed class Destination() {
     @Serializable
     object Account: Destination()
 
-
     @Serializable
     object Payment: Destination()
 
@@ -47,5 +46,8 @@ sealed class Destination() {
 
     @Serializable
     object Order: Destination()
+
+    @Serializable
+    data class TrackOrder(val orderId: String): Destination()
 
 }

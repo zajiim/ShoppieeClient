@@ -17,7 +17,7 @@ private const val TAG = "CustomOrderItem"
 fun CustomOrderItem(
     modifier: Modifier = Modifier,
     orderItems: LazyPagingItems<OrderProductModel>?,
-    onTrackOrderClick: () -> Unit,
+    onTrackOrderClick: (String) -> Unit,
 ) {
 
     LazyColumn(
@@ -33,7 +33,7 @@ fun CustomOrderItem(
                 CustomOrderCard(
                     orderItems = order,
                     onTrackOrderClick = {
-                        onTrackOrderClick()
+                        onTrackOrderClick(order.orderId)
                     }
                 )
             }

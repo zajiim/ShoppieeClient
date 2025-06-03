@@ -24,6 +24,7 @@ import com.example.shoppieeclient.presentation.home.profile.ProfileScreen
 import com.example.shoppieeclient.presentation.home.checkout.CheckOutScreen
 import com.example.shoppieeclient.presentation.home.checkout.CheckOutViewModel
 import com.example.shoppieeclient.presentation.home.order.OrderScreen
+import com.example.shoppieeclient.presentation.home.track_order.TrackOrderScreen
 import com.example.shoppieeclient.presentation.navigation.Destination
 import com.example.shoppieeclient.presentation.navigation.graphs.Graphs
 import org.koin.androidx.compose.koinViewModel
@@ -54,7 +55,6 @@ fun NavGraphBuilder.homeNavGraph(
         }
 
         composable<Destination.Details> { backStackEntry ->
-            val user = backStackEntry.toRoute<Destination.Details>()
             val viewModel: DetailsViewModel = koinViewModel()
             DetailsScreen(
                 viewModel = viewModel,
@@ -160,7 +160,21 @@ fun NavGraphBuilder.homeNavGraph(
             OrderScreen(
                 onNavigateClick = {
                     navController.navigateUp()
-                }
+                },
+                onTrackOrderClick = { orderId ->
+                    navController.navigate(
+                        Destination.TrackOrder(
+                            orderId = orderId
+                        )
+                    )
+                },
+            )
+        }
+        composable<Destination.TrackOrder> { backStackEntry ->
+            val orderId = backStackEntry.toRoute<Destination.TrackOrder>()
+            TrackOrderScreen(
+                orderId = orderId.orderId,
+                onNavigateClick = { navController.navigateUp() },
             )
         }
 

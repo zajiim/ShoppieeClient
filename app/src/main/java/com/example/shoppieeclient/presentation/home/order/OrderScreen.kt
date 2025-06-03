@@ -42,6 +42,7 @@ import org.koin.androidx.compose.koinViewModel
 fun OrderScreen(
     modifier: Modifier = Modifier,
     onNavigateClick: () -> Unit,
+    onTrackOrderClick: (String) -> Unit,
     ordersViewModel: OrdersViewModel = koinViewModel()
 ) {
     val orderCardHeight = remember { mutableIntStateOf(0) }
@@ -115,8 +116,8 @@ fun OrderScreen(
                     CustomOrderItem(
                         modifier = Modifier.padding(bottom = bottomBarHeight),
                         orderItems = orderItems,
-                        onTrackOrderClick = {
-
+                        onTrackOrderClick = { orderId ->
+                            onTrackOrderClick(orderId)
                         }
                     )
                 }
