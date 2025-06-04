@@ -50,6 +50,7 @@ class CheckOutViewModel(
     fun refreshData() {
         getSelectedAddress()
         getSelectedCard()
+        calculateTotals()
     }
 
     fun onEvent(events: CheckoutEvents) {
@@ -259,6 +260,7 @@ class CheckOutViewModel(
                         platformFees = cartTotal?.platformFee?.roundToTwoDecimalPlaces() ?: 0.0,
                         totalCost = cartTotal?.grandTotal?.roundToTwoDecimalPlaces() ?: 0.0
                     )
+                    Log.e(TAG, "calculateTotals: ${checkOutState.totalCost}", )
                 }
             }
         }

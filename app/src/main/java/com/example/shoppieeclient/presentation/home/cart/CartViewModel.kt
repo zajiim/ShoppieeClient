@@ -1,6 +1,7 @@
 package com.example.shoppieeclient.presentation.home.cart
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,6 +23,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
+
+private const val TAG = "CartViewModel"
 class CartViewModel(
     private val getCartUseCase: GetCartUseCase,
     private val incrementItemUseCase: IncrementItemUseCase,
@@ -80,6 +83,7 @@ class CartViewModel(
                         platformFees = cartTotal?.platformFee?.roundToTwoDecimalPlaces() ?: 0.0,
                         totalCost = cartTotal?.grandTotal?.roundToTwoDecimalPlaces() ?: 0.0
                     )
+                    Log.e(TAG, "calculateTotals: is ${uiState.totalCost}", )
                 }
             }
         }
@@ -87,7 +91,6 @@ class CartViewModel(
 
     fun onEvent(events: CartEvents) {
         when(events) {
-            CartEvents.Checkout -> handleCheckOut()
             is CartEvents.DecrementItem -> handleDecrementItem(events.id)
             is CartEvents.IncrementItem -> handleIncrementItem(events.id, events.size)
             is CartEvents.RemoveCartItem -> showDeleteDialog(events.id)
@@ -160,9 +163,6 @@ class CartViewModel(
         }
     }
 
-    private fun handleCheckOut() {
-        TODO("Not yet implemented")
-    }
 
     fun showToast() {
         uiState = uiState.copy(showToast = true)
