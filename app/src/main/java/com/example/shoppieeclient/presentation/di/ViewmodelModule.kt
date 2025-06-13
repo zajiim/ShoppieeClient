@@ -12,8 +12,10 @@ import com.example.shoppieeclient.presentation.home.cart.CartViewModel
 import com.example.shoppieeclient.presentation.home.checkout.CheckOutViewModel
 import com.example.shoppieeclient.presentation.home.details.DetailsViewModel
 import com.example.shoppieeclient.presentation.home.home.HomeViewModel
+import com.example.shoppieeclient.presentation.home.order.OrdersViewModel
 import com.example.shoppieeclient.presentation.home.payment.PaymentViewModel
 import com.example.shoppieeclient.presentation.home.profile.ProfileViewModel
+import com.example.shoppieeclient.presentation.home.track_order.TrackOrderViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -83,6 +85,16 @@ val viewmodelModule = module {
             startRPPaymentUseCase = get(),
             createOrderUseCase = get(),
             verifyPaymentUseCase = get()
+        )
+    }
+    viewModel<OrdersViewModel> {
+        OrdersViewModel(
+            getOrdersUseCase = get()
+        )
+    }
+    viewModel<TrackOrderViewModel> {
+        TrackOrderViewModel(
+            getTrackOrderDetailsUseCase = get()
         )
     }
 }

@@ -50,6 +50,7 @@ class CheckOutViewModel(
     fun refreshData() {
         getSelectedAddress()
         getSelectedCard()
+        calculateTotals()
     }
 
     fun onEvent(events: CheckoutEvents) {
@@ -206,7 +207,7 @@ class CheckOutViewModel(
     }
 
 
-    private fun getSelectedAddress() = viewModelScope.launch {
+    fun getSelectedAddress() = viewModelScope.launch {
         getSelectedAddressUseCase().collectLatest { result ->
             when (result) {
                 is Resource.Loading -> {
@@ -259,6 +260,7 @@ class CheckOutViewModel(
                         platformFees = cartTotal?.platformFee?.roundToTwoDecimalPlaces() ?: 0.0,
                         totalCost = cartTotal?.grandTotal?.roundToTwoDecimalPlaces() ?: 0.0
                     )
+                    Log.e(TAG, "calculateTotals: ${checkOutState.totalCost}", )
                 }
             }
         }

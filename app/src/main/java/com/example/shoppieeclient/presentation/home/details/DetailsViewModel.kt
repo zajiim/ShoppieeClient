@@ -87,7 +87,7 @@ class DetailsViewModel(
 
         }
 
-    private fun fetchDetails(productId: String) = viewModelScope.launch {
+     fun fetchDetails(productId: String) = viewModelScope.launch {
         uiState = uiState.copy(isLoading = true)
         fetchDetailsUseCase(productId).collect { result ->
             when (result) {
