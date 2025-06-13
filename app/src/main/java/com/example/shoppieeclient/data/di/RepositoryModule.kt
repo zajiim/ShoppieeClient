@@ -8,6 +8,7 @@ import com.example.shoppieeclient.data.checkout.repository.RazorPayPaymentRepoIm
 import com.example.shoppieeclient.data.home.account.repository.AccountsCloudinaryRepoImpl
 import com.example.shoppieeclient.data.home.account.repository.ShoppieeUpdateProfileRepoImpl
 import com.example.shoppieeclient.data.home.home.repository.ShoppieeHomeRepoImpl
+import com.example.shoppieeclient.data.home.track_order.repository.ShoppieeTrackOrderRepoImpl
 import com.example.shoppieeclient.data.order.repository.ShoppieeOrderRepoImpl
 import com.example.shoppieeclient.data.payment.repository.PaymentRepoImpl
 import com.example.shoppieeclient.domain.address.repository.AddressRepo
@@ -18,9 +19,11 @@ import com.example.shoppieeclient.domain.cart.repository.ShoppieCartRepo
 import com.example.shoppieeclient.domain.checkout.repository.RazorPayPaymentRepository
 import com.example.shoppieeclient.domain.home.account.repository.AccountsCloudinaryRepo
 import com.example.shoppieeclient.domain.home.account.repository.ShoppieeUserProfileRepo
+import com.example.shoppieeclient.domain.home.track_order.repository.ShoppieeTrackOrderRepo
 import com.example.shoppieeclient.domain.order.repository.ShoppieeOrderRepo
 import com.example.shoppieeclient.domain.payment.repository.PaymentRepository
 import org.koin.dsl.module
+import kotlin.math.sin
 
 val repositoryModule = module {
 
@@ -35,5 +38,6 @@ val repositoryModule = module {
     single<AddressRepo> { AddressRepoImpl(addressApiService = get()) }
     single<PaymentRepository> { PaymentRepoImpl(paymentDao = get()) }
     single<RazorPayPaymentRepository> { RazorPayPaymentRepoImpl(shoppieCheckoutApiService = get()) }
+    single<ShoppieeTrackOrderRepo> { ShoppieeTrackOrderRepoImpl(shoppieeTrackOrderApiService = get()) }
 //    single { PaymentHandler(get()) }
 }

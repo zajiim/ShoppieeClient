@@ -22,6 +22,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -34,6 +35,7 @@ import com.example.shoppieeclient.presentation.home.track_order.components.Order
 import com.example.shoppieeclient.presentation.home.track_order.components.OrderHeaderSection
 import com.example.shoppieeclient.presentation.home.track_order.components.OrderStatusSection
 import com.example.shoppieeclient.ui.theme.BackGroundColor
+import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,10 +44,24 @@ fun TrackOrderScreen(
     modifier: Modifier = Modifier,
     orderId: String? = null,
     onNavigateClick: () -> Unit,
-//    viewModel: TrackOrderViewModel = koinViewModel(),
+    viewModel: TrackOrderViewModel = koinViewModel(),
 ) {
     val orderCardHeight = remember { mutableIntStateOf(0) }
     val bottomBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val state = viewModel.uiState
+    val order = state.trackOrderDetails?.order
+
+    val currentStep = when {
+        order?.paymentStatus == "completed" && order.status == "processing" -> 2
+        order?.paymentStatus == "completed" && order.status == "shipped" -> 3
+        order?.paymentStatus == "completed" && order.status == "delivered" -> 4
+        order?.paymentStatus == "pending" -> 1
+        else -> 1
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(TrackOrderEvents.LoadTrackOrderDetails(orderId ?: ""))
+    }
 
 
     Box(
@@ -60,8 +76,15 @@ fun TrackOrderScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(
                     top = 64.dp,
-                    bottom = with(LocalDensity.current) { orderCardHeight.intValue.toDp() })) {
-            OrderHeaderSection(modifier = modifier.padding(horizontal = 20.dp))
+                    bottom = with(LocalDensity.current) { orderCardHeight.intValue.toDp() })
+        ) {
+            order?.items?.forEach { orderItem ->
+                OrderHeaderSection(
+                    modifier = modifier
+                        .padding(horizontal = 20.dp),
+                    item = orderItem
+                )
+            }
             Spacer(modifier = Modifier.height(20.dp))
             HorizontalDivider(
                 thickness = 1.dp,
@@ -69,7 +92,10 @@ fun TrackOrderScreen(
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
             Spacer(modifier = Modifier.height(20.dp))
-            OrderDetailSection(modifier = modifier.padding(horizontal = 20.dp))
+            OrderDetailSection(
+                modifier = modifier.padding(horizontal = 20.dp),
+                totalAmount = order?.totalAmount.toString()
+            )
             Spacer(modifier = Modifier.height(20.dp))
             HorizontalDivider(
                 thickness = 1.dp,
@@ -77,7 +103,7 @@ fun TrackOrderScreen(
                 modifier = Modifier.padding(horizontal = 20.dp)
             )
             Spacer(modifier = Modifier.height(20.dp))
-            OrderStatusSection(modifier = modifier.padding(horizontal = 20.dp), currentStep = 5)
+            OrderStatusSection(modifier = modifier.padding(horizontal = 20.dp), currentStep = currentStep)
         }
         CustomNavigationTopAppBar(
             modifier = Modifier

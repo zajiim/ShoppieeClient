@@ -21,8 +21,14 @@ import androidx.compose.ui.unit.dp
 fun OrderDetailSection(
     modifier: Modifier = Modifier,
     deliveryDate: String = "2023-10-15",
-    trackingTime: String = "10:00 AM - 12:00 PM"
+    trackingTime: String = "10:00 AM - 12:00 PM",
+    totalAmount: String? = null
 ) {
+    val orderDetails = listOf(
+        "Total Amount" to (totalAmount ?: "-"),
+        "Expected Delivery Date" to deliveryDate,
+        "Tracking ID" to trackingTime
+    )
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.Start,
@@ -32,36 +38,23 @@ fun OrderDetailSection(
             text = "Order Details",
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Medium)
         )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Expected Delivery Date",
-                style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
-            )
+        orderDetails.forEach { (label, value) ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
+                )
 
-            Text(
-                text = deliveryDate,
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-            )
+                Text(
+                    text = value,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                )
 
+            }
         }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Tracking ID",
-                style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
-            )
-
-            Text(
-                text = trackingTime,
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-            )
-
-        }
     }
 }

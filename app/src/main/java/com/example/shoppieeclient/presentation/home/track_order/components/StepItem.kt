@@ -73,7 +73,7 @@ fun StepItem(
         ) {
             Box(
                 modifier = Modifier
-                    .size(32.dp)
+                    .size(40.dp)
                     .clip(CircleShape)
                     .background(circleColor),
                 contentAlignment = Alignment.Center
@@ -90,7 +90,7 @@ fun StepItem(
                         painter = painterResource(step.icon),
                         contentDescription = step.title,
                         tint = iconColor,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(18.dp)
                     )
                 }
             }

@@ -39,6 +39,7 @@ import com.example.shoppieeclient.domain.checkout.use_cases.StartRPPaymentUseCas
 import com.example.shoppieeclient.domain.home.account.use_cases.GetProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UpdateProfileDataUseCase
 import com.example.shoppieeclient.domain.home.account.use_cases.UploadImageUseCase
+import com.example.shoppieeclient.domain.home.track_order.use_cases.GetTrackOrderDetailsUseCase
 import com.example.shoppieeclient.domain.order.use_case.GetOrdersUseCase
 import com.example.shoppieeclient.domain.payment.use_cases.DeleteCardByIdUseCase
 import com.example.shoppieeclient.domain.payment.use_cases.GetAllCardsUseCase
@@ -267,6 +268,12 @@ val useCasesModule = module {
     single {
         GetOrdersUseCase(
             shoppieeOrderRepo = get()
+        )
+    }
+
+    single {
+        GetTrackOrderDetailsUseCase(
+            shoppieeTrackOrderRepo = get()
         )
     }
 

@@ -24,13 +24,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.shoppieeclient.domain.home.track_order.models.ItemModel
 import com.example.shoppieeclient.ui.theme.BackGroundColor
 import com.example.shoppieeclient.ui.theme.SubTitleColor
 
 @Composable
 fun OrderHeaderSection(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    item: ItemModel? = null
 ) {
+    val sum = item?.quantity?.toInt()?.let { item.product?.price?.times( it) }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -38,7 +41,7 @@ fun OrderHeaderSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = "https://picsum.photos/200/300",
+            model = item?.product?.images?.get(0),
             contentDescription = "Order Image",
             modifier = Modifier
                 .size(72.dp)
@@ -54,25 +57,20 @@ fun OrderHeaderSection(
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Text(
-                text = "Brown Shoes",
+                text = item?.product?.name ?: "Product Name",
                 style = MaterialTheme.typography.titleSmall
             )
             Text(
-                text = "Size: 42 || Quantity: 1pcs",
+                text = "Size: ${item?.product?.size} || Quantity: ${item?.quantity} pcs",
                 style = MaterialTheme.typography.bodyMedium.copy(color = SubTitleColor)
             )
             Text(
-                text = "$120.00",
+                text = "${sum.toString()}/-",
                 style = MaterialTheme.typography.titleMedium
             )
 
         }
+        Spacer(modifier = Modifier.width(12.dp))
     }
 }
 
-
-@Preview
-@Composable
-private fun PreviewOrderHeader() {
-    OrderHeaderSection()
-}

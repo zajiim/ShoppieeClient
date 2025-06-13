@@ -13,6 +13,7 @@ import com.example.shoppieeclient.data.common.repository.NetworkConnectivityObse
 import com.example.shoppieeclient.data.datamanager.LocalUserManagerImpl
 import com.example.shoppieeclient.data.home.account.remote.api.ShoppieeUserProfileService
 import com.example.shoppieeclient.data.home.home.remote.api.ShoppieeHomeApiService
+import com.example.shoppieeclient.data.home.track_order.remote.api.ShoppieeTrackOrderApiService
 import com.example.shoppieeclient.data.order.remote.api.ShoppieeOrderApiService
 import com.example.shoppieeclient.domain.auth.datamanager.LocalUserManager
 import com.example.shoppieeclient.domain.auth.use_cases.auth.siginin.ReadAppTokenUseCase
@@ -127,6 +128,7 @@ val networkModule = module {
     single { ShoppieeUserProfileService(get(named("AuthorizedHttpClient"))) }
     single { AddressApiService(get(named("AuthorizedHttpClient"))) }
     single { ShoppieCheckoutApiService(get(named("AuthorizedHttpClient"))) }
+    single { ShoppieeTrackOrderApiService(get(named("AuthorizedHttpClient"))) }
 
     // Provide Credential Manager
 
